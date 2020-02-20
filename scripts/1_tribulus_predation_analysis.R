@@ -25,7 +25,7 @@ lgth_insc_eaten =length(which(!is.na(tribulus_data$eaten.insects)))
 
 png("output/Proportion_of_seeds_predation.png", height = 5, width = 5,res = 300, units = "in")
 barplot(round(tables.eat/lgth_insc_eaten,3)*100, 
-        main = "Barplot birds and insect predataion", 
+        main = "Barplot birds and insect predation", 
         ylim = c(0,100),
         xlab = "Bird predation",ylab = "Proportion of predation", 
         col = c("black","white"))
