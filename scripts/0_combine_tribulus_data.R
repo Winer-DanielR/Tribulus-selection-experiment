@@ -10,22 +10,22 @@
 ##########################################################################################
 
 library(openxlsx)
-trib.df3 = read.xlsx("data/majo.xlsx", sheet = 3, startRow = 2)
-trib.df4 = read.xlsx("data/majo.xlsx", sheet = 4, startRow = 2)
-trib.df5 = read.xlsx("data/majo.xlsx", sheet = 5, startRow = 2)
-trib.df6 = read.xlsx("data/majo.xlsx", sheet = 6, startRow = 2)
-trib.df7 = read.xlsx("data/majo.xlsx", sheet = 7, startRow = 2)
-trib.df8 = read.xlsx("data/majo.xlsx", sheet = 8, startRow = 2)
-trib.df9 = read.xlsx("data/majo.xlsx", sheet = 9, startRow = 2)
-trib.df10 = read.xlsx("data/majo.xlsx",sheet = 10, startRow = 2)
-trib.df11 = read.xlsx("data/majo.xlsx",sheet = 11, startRow = 2)
-trib.df12 = read.xlsx("data/majo.xlsx",sheet = 12, startRow = 2)
-trib.df13 = read.xlsx("data/majo.xlsx",sheet = 13, startRow = 2)
-trib.df14 = read.xlsx("data/majo.xlsx",sheet = 14, startRow = 2)
-trib.df15 = read.xlsx("data/majo.xlsx",sheet = 15, startRow = 2)
-trib.df16 = read.xlsx("data/majo.xlsx",sheet = 16, startRow = 2)
-trib.df17 = read.xlsx("data/majo.xlsx",sheet = 17, startRow = 2)
-trib.df18 = read.xlsx("data/majo.xlsx",sheet = 18, startRow = 2)
+trib.df3 = read.xlsx("selection experiment/point in time data/raw/majo.xlsx", sheet = 3, startRow = 2)
+trib.df4 = read.xlsx("selection experiment/point in time data/raw/majo.xlsx", sheet = 4, startRow = 2)
+trib.df5 = read.xlsx("selection experiment/point in time data/raw/majo.xlsx", sheet = 5, startRow = 2)
+trib.df6 = read.xlsx("selection experiment/point in time data/raw/majo.xlsx", sheet = 6, startRow = 2)
+trib.df7 = read.xlsx("selection experiment/point in time data/raw/majo.xlsx", sheet = 7, startRow = 2)
+trib.df8 = read.xlsx("selection experiment/point in time data/raw/majo.xlsx", sheet = 8, startRow = 2)
+trib.df9 = read.xlsx("selection experiment/point in time data/raw/majo.xlsx", sheet = 9, startRow = 2)
+trib.df10 = read.xlsx("selection experiment/point in time data/raw/majo.xlsx",sheet = 10, startRow = 2)
+trib.df11 = read.xlsx("selection experiment/point in time data/raw/majo.xlsx",sheet = 11, startRow = 2)
+trib.df12 = read.xlsx("selection experiment/point in time data/raw/majo.xlsx",sheet = 12, startRow = 2)
+trib.df13 = read.xlsx("selection experiment/point in time data/raw/majo.xlsx",sheet = 13, startRow = 2)
+trib.df14 = read.xlsx("selection experiment/point in time data/raw/majo.xlsx",sheet = 14, startRow = 2)
+trib.df15 = read.xlsx("selection experiment/point in time data/raw/majo.xlsx",sheet = 15, startRow = 2)
+trib.df16 = read.xlsx("selection experiment/point in time data/raw/majo.xlsx",sheet = 16, startRow = 2)
+trib.df17 = read.xlsx("selection experiment/point in time data/raw/majo.xlsx",sheet = 17, startRow = 2)
+trib.df18 = read.xlsx("selection experiment/point in time data/raw/majo.xlsx",sheet = 18, startRow = 2)
 
 
 trib.df3$pop = 2
@@ -89,6 +89,7 @@ trib.df18$site = "Cementerio entrada"
 
 
 names(trib.df3)[9]<-"total.seed.predated"
+names(trib.df8)[2]<-"Widht"
 names(trib.df9)[2]<-"Widht"
 names(trib.df10)[2]<-"Widht"
 names(trib.df11)[2]<-"Widht"
@@ -100,7 +101,7 @@ names(trib.df16)[2]<-"Widht"
 names(trib.df17)[2]<-"Widht"
 names(trib.df18)[2]<-"Widht"
 
-head(trib.df)
+trib.df8 = trib.df8[,-10]
 trib.df9 = trib.df9[,-10]
 trib.df10 = trib.df10[,-10]
 trib.df11 = trib.df11[,-10]
@@ -112,24 +113,25 @@ trib.df16 = trib.df16[,-10]
 trib.df17 = trib.df17[,-10]
 trib.df18 = trib.df18[,-10]
 
-cbind(names(trib.df3),names(trib.df9))
+cbind(names(trib.df3),names(trib.df8))
 
+names(trib.df3)==names(trib.df8)
 data.final= rbind(trib.df3,
-      trib.df4,
-      trib.df5,
-      trib.df6,
-      trib.df7,
-      trib.df8,
-      trib.df9,
-      trib.df10,
-      trib.df11,
-      trib.df12,
-      trib.df13,
-      trib.df14,
-      trib.df15,
-      trib.df16,
-      trib.df17,
-      trib.df18
-      )
+                  trib.df4,
+                  trib.df5,
+                  trib.df6,
+                  trib.df7,
+                  trib.df8,
+                  trib.df9,
+                  trib.df10,
+                  trib.df11,
+                  trib.df12,
+                  trib.df13,
+                  trib.df14,
+                  trib.df15,
+                  trib.df16,
+                  trib.df17,
+                  trib.df18
+)
 
-write.csv(data.final,"data/tribulus_combined.csv")
+write.csv(data.final,"selection experiment/point in time data/processed/tribulus_combined.csv")
