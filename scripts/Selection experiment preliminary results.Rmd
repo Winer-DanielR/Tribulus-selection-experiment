@@ -1,0 +1,69 @@
+---
+title: "Selection paper preliminary results"
+author: "Daniel Reyes"
+date: "11/8/2020"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+source("00_packages_v1.R", local = knitr::knit_global())
+# source("01_data manipulation_V1.R", local = knitr::knit_global())
+source("02_S estimates plot_v1.R", local = knitr::knit_global())
+source("03_Time data prep_v1.R", local = knitr::knit_global())
+source("04_Time data plot_v1.R", local = knitr::knit_global())
+```
+
+```{r install packages, include=FALSE}
+library(xtable) #For making ANOVA outcomes dataframes and tables
+library(broom) #For making other statistical objects into Tidy Tibbles
+library(ggpubr) #For arrage ggplots into a single plot
+library(knitr)
+library(kableExtra)
+```
+
+# Selection experiment methods
+We used two methods to estimate selection of mericarp traits due to predation by
+finches: *Mark recapture*, which consisted in marking individual mericarps that were recovered at different point trough a year scoring their survival. And, *Point in time*, which consisted in randomly collecting 100 mericarps per population and score their traits and whether or not they show evidence for predation.
+
+# Selection experiment preliminary results
+
+## S* estimates
+The S* estimates were calculated as the difference of the means between survivior (uneaten mericarps "0") and dead (eaten mericarps "1"). This difference was estimated per trait and then plotted to compare the two methods:
+mark recapture (MR) and point in time (PT).
+
+```{r plot_estimates, echo=FALSE, fig.height=8, fig.width=10}
+plot_estimates <- plot(x=point_in_time, y=mark_recapture, main = "S* Estimates (mean non eaten - mean eaten)",
+      xlab = "Point in Time S* estimates", ylab =  "Mark Recapture S* estimates", 
+      col = color_easy, pch = pcheasy, bg = color_easy, cex = 1.5)
+
+legend("topleft", legend = c("depth", "length", "longest spine", "width"), pch = c(16,15,18,17), cex = 1.1)
+legend("topright", legend = c("Floreana", "Isabela", "Santa Cruz"), pch = c(15),
+       col = color_easy, cex = 1.1)
+abline(v=0, h=0, col = "black")
+abline(a=0, b=1, col = "red")
+```
+
+## Effect of time on mericarp size
+The mark recapture experiment finished in a year. I measured the size of the recovered mericarps of Santa Cruz Island and plotted the mean difference per trait and link them with a line.
+
+```{r time_plot, echo = F}
+labels
+```
+
+I made the same comparison in a series ob box plots.
+
+```{r time_box_plot, echo= FALSE, fig.show='hold', warning=FALSE, out.width="50%"}
+trait_comparisons <- ggarrange(length_plot,
+width_plot,
+depth_plot,
+spine_plot,
+longest_plot,
+labels = c("A", "B", "C", "D", "E"),
+                                    ncol = 3,
+                                    nrow = 2)
+
+trait_comparisons
+```
