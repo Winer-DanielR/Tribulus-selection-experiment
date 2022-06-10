@@ -5,6 +5,10 @@
 ### By Daniel Reyes Corral
 ### 
 ### Package script
-
-library(readr)
-library(tidyverse)
+# Data preparation
+library(readr) #Reading datasets
+library(tidyverse) #Data manipulation/arrangement
+# Data analysis
+library(lme4)
+library(car)
+library(glmmTMB)
