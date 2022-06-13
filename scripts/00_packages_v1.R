@@ -1,9 +1,10 @@
 #################################################################
-################Tribulus Selection experiments Dataset##############
+############    Tribulus Selection experiments     ##############
 #################################################################
-### Goal: Compare the two methods of natural selection estimates. Point in time and Mark Recapture.
-### By Daniel Reyes Corral
-### 
+ # By Daniel Reyes Corral
+
+# This script holds the packages used for analysis
+
 ### Package script
 # Data preparation
 library(readr) #Reading datasets

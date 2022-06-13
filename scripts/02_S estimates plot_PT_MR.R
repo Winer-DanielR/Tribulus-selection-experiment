@@ -1,7 +1,14 @@
-################Tribulus Selection experiments Dataset##############
+################Tribulus Selection experiments Dataset ##############
+# Goal: Compare the two methods of natural selection estimates. 
+# Point in time (PT) and Mark Recapture (MR).
+# By Daniel Reyes Corral
+
+# The methods comparinson was made using a specific time 2019 where the two methods
+# were implemented
 
 ####### Goal: Plot the S estimates show comparisons between methods, traits and islands ####
 
+# I used the dataset created using the first script: S_estimates.csv
 
 S_summary_dataset <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/S_estimates.csv")
 str(S_summary_dataset)
@@ -65,6 +72,11 @@ CI_estimates <- select(CI_estimates, !c(5,6))
 S_CI_estimates <- cbind(S_estimates,CI_estimates)
 S_CI_estimates <- select(S_CI_estimates, !c(5,6))
 
+# Plots ####
+# Using the dataset and data prep I create the figure comparing both methods
+# I used two methods to create the plots one with Base R the other with ggplot
+
+## Base R plot ####
 color_easy <- c("red", "blue", "black")[S_estimates$island]
 pcheasy <- c(21,22,23,24)[S_estimates$trait]
 
@@ -78,7 +90,15 @@ legend("topright", legend = c("Floreana", "Isabela", "Santa Cruz"), pch = c(16),
 abline(v=0, h=0, col = "black")
 abline(a=0, b=1, col = "red")
 
+### The base R plot is a draft ####
 
+
+## Ggplot ####
+# This plot uses the estimated CI calculated per island for both methods.
+# The larger CI corresponds to the mark recapture estimates which are larger!
+# However, this plot shows that both methods are infering the same
+# which is that selection is positive for most traits
+# Caveat: lower spines and spine position is not included ####
 ggplot(S_CI_estimates) +
   aes(x = P_Time_S, y = Mark_Recap_S, colour = island) +
   geom_point(size = 0) +

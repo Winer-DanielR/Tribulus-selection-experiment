@@ -1,12 +1,13 @@
-
 ################Tribulus Selection experiments Dataset##############
+# Goal: Compare the two methods of natural selection estimates. 
+# Point in time (PT) and Mark Recapture (MR).
+# By Daniel Reyes Corral
 
-### Goal: Compare the two methods of natural selection estimates. Point in time (PT) and Mark Recapture (MR).
-### By Daniel Reyes Corral
-
-##### Data wrangling ####
-# Objective: Estimate the mean of survivors (non-eaten/present) and dead (eaten/missing) mericarps per trait.
+##### Data preparation ####
+# Objective: Estimate the mean of survivors (non-eaten/present) 
+# and dead (eaten/missing) mericarps per trait.
 # Objective: Estimate the difference of the means per method and plot the means.
+# Product: Created a new dataset called S_estimates which have the calculated estimates
 
 ##### Insert the data
 
