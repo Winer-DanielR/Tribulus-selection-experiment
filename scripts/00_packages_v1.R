@@ -8,7 +8,9 @@
 # Data preparation
 library(readr) #Reading datasets
 library(tidyverse) #Data manipulation/arrangement
+library(ggplot2)
 # Data analysis
 library(lme4)
 library(car)
 library(glmmTMB)
+library(ggrepel)
