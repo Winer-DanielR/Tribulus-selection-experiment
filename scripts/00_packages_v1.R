@@ -10,8 +10,12 @@
 library(readr) #Reading datasets
 library(tidyverse) #Data manipulation/arrangement
 library(ggplot2)
+library(ggrepel)
+library(ggpubr)
+library(grid)
+
 # Data analysis
 library(lme4)
 library(car)
 library(glmmTMB)
-library(ggrepel)
+
