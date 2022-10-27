@@ -32,26 +32,25 @@ width <- width %>% mutate_at(vars(year, island, population, survival), list(fact
 length_depth <- left_join(length, depth)
 length_depth <- na.omit(length_depth)
 
+
+
 ### Plots ####
 # Using the plot comparisons function above we generate plots per island
 # for each comparison. Later we could combine these into a single plot.
 #### Santa Cruz ####
-length_depth %>%
-    filter(island %in% "Santa.Cruz") %>%
-    ggplot() +
+    ggplot(length_depth) +
     aes(x = length_mean, y = depth_mean, colour = population, shape = survival) +
-    geom_point(size = 3L) +
-    geom_path(aes(group = population), 
-              color = "black", 
+    #geom_point(size = 3L) +
+    geom_path(aes(group = population, colour = island), 
               arrow = arrow(length = unit(0.3,"cm")), size = 0.7) +
     scale_color_brewer(palette = "Dark2", direction = 1) +
-    labs(title = "Santa Cruz",
+    labs(#title = "Santa Cruz",
          x = "Length",
          y = "Depth",
-         color = "Populations", shape = "Selection") +
+         color = "Islands", shape = "Selection") +
     ggthemes::theme_few() +
-    theme(legend.position = "right") +
-    #guides(shape = "none", colour = "none") +
+    theme(legend.position = "right") + facet_null(vars(year))
+    guides(shape = "none", colour = "none") +
     facet_wrap(vars(year), scales = "free")
 
 #### San Cristobal ####
@@ -130,15 +129,35 @@ length_depth %>%
 ## Length-Width ####
 length_width <- left_join(length, width)
 length_width <- na.omit(length_width)
+length_width <- length_width %>% unite("year_pop", year, population, remove = F)
+
 
 ### Plots ####
 #### Santa Cruz ####
+length_width %>%
+  filter(island %in% "Isabela") %>%
+  ggplot() +
+  aes(x = length_mean, y = width_mean, colour = population) +
+  #geom_point(shape = "circle", size = 2) +
+  geom_line(aes(group = year_pop, colour = population), 
+            #colour = island, 
+            arrow = arrow(length = unit(0.3,"cm")), size = 0.7) +
+  #scale_color_hue(direction = 1) +
+  labs(title = "Isabela",
+       x = "Length",
+       y = "Width",
+       color = "Populations", shape = "Selection") +
+  ggthemes::theme_few() +
+  theme(legend.position = "right") +
+  guides(shape = "none") +
+  facet_wrap(vars(island))
+
 length_width %>%
   filter(island %in% "Santa.Cruz") %>%
   ggplot() +
   aes(x = length_mean, y = width_mean, colour = population, shape = survival) +
   geom_point(size = 3L) +
-  geom_path(aes(group = population), 
+  geom_line(aes(group = population), 
             color = "black", 
             arrow = arrow(length = unit(0.3,"cm")), size = 0.7) +
   scale_color_brewer(palette = "Dark2", direction = 1) +
@@ -148,7 +167,7 @@ length_width %>%
        color = "Populations", shape = "Selection") +
   ggthemes::theme_few() +
   theme(legend.position = "right") +
-  #guides(shape = "none") +
+  guides(shape = "none") +
   facet_wrap(vars(year), scales = "free")
 
 #### San Cristobal ####
@@ -167,7 +186,7 @@ length_width %>%
        color = "Populations", shape = "Selection") +
   ggthemes::theme_few() +
   theme(legend.position = "right") +
-  #guides(shape = "none") +
+  guides(shape = "none") +
   facet_wrap(vars(year), scales = "free")
 
 #### Floreana ####

@@ -7,7 +7,7 @@
 
 
 
-time_effect <- read_csv("C:/Users/Daniel/Documents/R/Tribulus/Tribulus Selection experiment/Data/Processed/Time effect measurements.csv")
+time_effect <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Time effect measurements.csv")
 time_effect <- as_tibble(time_effect)
 
 # Changed variables to factors

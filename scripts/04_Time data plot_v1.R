@@ -3,7 +3,7 @@
 ####### Goal: Plot the effect of time by relating measurements of the start and the end of the experiment ####
 # This was done using mericarps recovered from Santa Cruz island. I missed the information on the other two.
 
-mericarp_time <- read_csv("C:/Users/Daniel/Documents/R/Tribulus/Tribulus Selection experiment/Data/Processed/Time effect summary.csv")
+mericarp_time <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Time effect summary.csv")
 str(mericarp_time)
 # Changed variables to factors
 mericarp_time <- mericarp_time %>% mutate_at(vars(year, trait), list(factor))
