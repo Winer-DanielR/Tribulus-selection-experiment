@@ -15,6 +15,8 @@ invlogit <- function(x) {exp(x)/(1+exp(x))}
 
 # Reading the data  -------------------------------------------------------
 trib.data = read.csv("data/raw/Point in time populations.csv")
+# Making the data ready for the model 
+trib.data$island = as.factor(trib.data$island)
 isl = levels(trib.data$island)
 
 # Summary of data 
@@ -22,8 +24,6 @@ head(trib.data)
 summary(trib.data)
 ftable(trib.data$year~trib.data$island)
 
-# Making the data ready for the model 
-trib.data$island = as.factor(trib.data$island)
 
 # levels(trib.data$island)
 table(trib.data$island)
@@ -59,7 +59,9 @@ plot(trib.data[,c("width","length","depth")])
 png(filename = "output/fitness.surface.png", width = 7, height = 7 , units = "in", res = 300)
 
 # Empty plot 
-plot(newdata$length, yhat, type="n", 
+plot(trib.data$length, 
+     trib.data$eaten, 
+     type="n", 
      ylim = c(0,1), 
      xlab = "Mericarp length",
      main = "GLM all data")
@@ -76,29 +78,31 @@ for (j in isl) {
   tmp = trib.data[trib.data$island %in% j,]
   
   # Adding phenotypic means 
-  points(mean(tmp$length), .7, pch = 19, col = w, cex = 3)
+  points(x = mean(tmp$length), y = .7, 
+         pch = 19, col = w, cex = 3)
   
   # Model per island 
   glmout = glm(eaten ~ x.l+ x.l2, data = tmp, family = binomial(link = "logit"))
   
   # Predict the islands 
-  z1 <- predict(glmout, 
-                newdata = data.frame(x.l = newdata$length,  
-                                     x.l2 = newdata$length^2), se.fit = TRUE)
+  new.seq = seq(min(trib.data$length, na.rm = TRUE), max(trib.data$length, na.rm = TRUE), length.out = 100)
+  newdata = data.frame(x.l = new.seq,  
+                       x.l2 = new.seq^2)
+  z1 <- predict(glmout, newdata = newdata, se.fit = TRUE)
   
   yhat <-  invlogit(z1$fit)
   upper <- invlogit(z1$fit + z1$se.fit)
   lower <- invlogit(z1$fit - z1$se.fit)
   
   # Add fitness functions 
-  lines(newdata$length, yhat, lty = 1, col = w , lwd = 5)
+  lines(newdata$x.l, yhat, lty = 1, col = w , lwd = 5)
   
   # Adding the points 
-  points(tmp$length,ifelse(tmp$eaten == 1, tmp$eaten-v, tmp$eaten+v), col = w, pch = 19) 
+  points(tmp$x.l,ifelse(tmp$eaten == 1, tmp$eaten-v, tmp$eaten+v), col = w, pch = 19) 
   
   # Error around the lines 
-  lines(newdata$length, upper, lty = 2,col = w, lwd = .5)
-  lines(newdata$length, lower, lty = 2,col = w, lwd = .5)
+  lines(newdata$x.l, upper, lty = 2,col = w, lwd = .5)
+  lines(newdata$x.l, lower, lty = 2,col = w, lwd = .5)
   
   # Make the parameters increment 
   w  = w  + 1
@@ -106,8 +110,9 @@ for (j in isl) {
 }
 
 # Add legend of islands 
-legend("topleft", bg = scales::alpha("white", alpha = .5),
-       legend = (isl), lwd = 5,
+legend("topleft", 
+       bg = scales::alpha("white", alpha = .5),
+       legend = isl, lwd = 5,
        col = 1:length(isl))
 
 # Clear the image 
