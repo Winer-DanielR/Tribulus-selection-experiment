@@ -14,7 +14,7 @@ invlogit <- function(x) {exp(x)/(1+exp(x))}
 
 
 # Reading the data  -------------------------------------------------------
-trib.data = read.csv("data/raw/Point in time populations.csv")
+trib.data = read.csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Point in time populations.csv")
 # Making the data ready for the model 
 trib.data$island = as.factor(trib.data$island)
 isl = levels(trib.data$island)
