@@ -1,9 +1,12 @@
-#### Mark Recapture S* estimates per year, island and population ####
+# Mark Recapture S* estimates per year, island and population ####
+
 # By: Daniel Reyes Corral
 # Once the one mark recapture data was created I was able to calculate S* estimates per island
 # year, treatment, size, etc.
 
-# Load the point in time dataset
+## Load the point in time dataset ####
+## The dataset was created from script 05.
+
 mark_recapture <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Mark Recapture S.csv")
 mark_recapture <- as_tibble(mark_recapture)
 mark_recapture <- dplyr::rename(mark_recapture, eaten = eaten_sum, eaten1 = eaten_sum1,
@@ -13,6 +16,7 @@ mark_recapture <- dplyr::rename(mark_recapture, eaten = eaten_sum, eaten1 = eate
 mark_recapture <- mark_recapture %>% mutate_at(vars(c(2:6,13:25)), list(factor))
 str(mark_recapture)
 
+## Data preparation ####
 # Here I divide the dataset into two groups one that uses eaten (assumes that NAs survived)
 # The other one uses eaten1 (assumes that NAs did NOT survived)
 
@@ -30,7 +34,7 @@ mark_recapture_1 <- group_by(mark_recapture, island,
                              eaten1)
 
 # Select per traits to check and remove NAs
-## Length 0 ####
+## Length 0, Uneaten ####
 MC_length_0 <- select(mark_recapture_0, length)
 MC_length_0 <- na.omit(MC_length_0)
 MC_length_0 <- MC_length_0 %>%  
@@ -40,7 +44,7 @@ MC_length_0 <- MC_length_0 %>%
                       length_n = length,
   ), length)
 
-## Length 1 ####
+## Length 1, Eaten ####
 MC_length_1 <- select(mark_recapture_1, length)
 MC_length_1 <- na.omit(MC_length_1)
 MC_length_1 <- MC_length_1 %>%  
@@ -65,7 +69,7 @@ MC_length_S_1$S_length_1 <- (MC_length_S_1$length_mean_0 - MC_length_S_1$length_
 
 MC_length_S$S_length_1 <- MC_length_S_1$S_length_1
 
-## Width 0 ####
+## Width 0. Uneaten ####
 MC_width_0 <- select(mark_recapture_0, width)
 MC_width_0 <- na.omit(MC_width_0)
 MC_width_0 <- MC_width_0 %>%  
@@ -75,7 +79,7 @@ MC_width_0 <- MC_width_0 %>%
                       width_n = length,
   ), width)
 
-## Width 1 ####
+## Width 1. Eaten ####
 MC_width_1 <- select(mark_recapture_1, width)
 MC_width_1 <- na.omit(MC_width_1)
 MC_width_1 <- MC_width_1 %>%  
@@ -100,7 +104,7 @@ MC_width_S_1$S_width_1 <- (MC_width_S_1$width_mean_0 - MC_width_S_1$width_mean_1
 
 MC_width_S$S_width_1 <- MC_width_S_1$S_width_1
 
-## Depth 0 ####
+## Depth 0. Uneaten ####
 MC_depth_0 <- select(mark_recapture_0, depth)
 MC_depth_0 <- na.omit(MC_depth_0)
 MC_depth_0 <- MC_depth_0 %>%  
@@ -110,7 +114,7 @@ MC_depth_0 <- MC_depth_0 %>%
                       depth_n = length,
   ), depth)
 
-## Depth 1 ####
+## Depth 1. Eaten ####
 MC_depth_1 <- select(mark_recapture_1, depth)
 MC_depth_1 <- na.omit(MC_depth_1)
 MC_depth_1 <- MC_depth_1 %>%  
@@ -135,7 +139,7 @@ MC_depth_S_1$S_depth_1 <- (MC_depth_S_1$depth_mean_0 - MC_depth_S_1$depth_mean_1
 
 MC_depth_S$S_depth_1 <- MC_depth_S_1$S_depth_1
 
-## Longest spine 0 ####
+## Longest spine 0. Uneaten ####
 MC_longest_spine_0 <- select(mark_recapture_0, longest_spine)
 MC_longest_spine_0 <- na.omit(MC_longest_spine_0)
 MC_longest_spine_0 <- MC_longest_spine_0 %>%  
@@ -145,7 +149,7 @@ MC_longest_spine_0 <- MC_longest_spine_0 %>%
                       longest_spine_n = length,
   ), longest_spine)
 
-## Longest spine 1 ####
+## Longest spine 1. Eaten ####
 MC_longest_spine_1 <- select(mark_recapture_1, longest_spine)
 MC_longest_spine_1 <- na.omit(MC_longest_spine_1)
 MC_longest_spine_1 <- MC_longest_spine_1 %>%  
@@ -171,7 +175,7 @@ MC_longest_spine_S_1$S_longest_spine_1 <- (MC_longest_spine_S_1$longest_spine_me
 MC_longest_spine_S$S_longest_spine_1 <- MC_longest_spine_S_1$S_longest_spine_1
 
 
-## Spine tip distance 0 ####
+## Spine tip distance 0. Uneaten ####
 MC_tip_distance_0 <- select(mark_recapture_0, spine_tip_distance)
 MC_tip_distance_0 <- na.omit(MC_tip_distance_0)
 MC_tip_distance_0 <- MC_tip_distance_0 %>%  
@@ -181,7 +185,7 @@ MC_tip_distance_0 <- MC_tip_distance_0 %>%
                       spine_tip_dist_n = length,
   ), spine_tip_distance)
 
-## Spine tip distance 1 ####
+## Spine tip distance 1. Eaten ####
 MC_tip_distance_1 <- select(mark_recapture_1, spine_tip_distance)
 MC_tip_distance_1 <- na.omit(MC_tip_distance_1)
 MC_tip_distance_1 <- MC_tip_distance_1 %>%  
@@ -210,6 +214,9 @@ MC_tip_distance_S$S_spine_tip_distance_1 <- MC_tip_distance_S_1$S_spine_tip_dist
 
 # Plots per trait ####
 ## Length ####
+## This plot shows outliers in Santa Cruz, and Isabela.
+## Also, check the lower spines, to do that for the mark recapture.
+### Survived ####
 ggplot(MC_length_S) +
  aes(x = island, y = S_length, fill = treatment) +
  geom_boxplot(shape = "circle") +
@@ -219,6 +226,7 @@ ggplot(MC_length_S) +
  fill = "Mericarp groups") +
  theme_classic() + geom_hline(yintercept = 0, col = "#333333", size = 0.5)
 
+### Not survived ####
 ggplot(MC_length_S) +
  aes(x = island, y = S_length_1, fill = treatment) +
  geom_boxplot(shape = "circle") +
@@ -248,6 +256,7 @@ ggplot(MC_length_S) +
 
 
 ## Width ####
+### Survived ####
 ggplot(MC_width_S) +
   aes(x = island, y = S_width, fill = treatment) +
   geom_boxplot(shape = "circle") +
@@ -257,6 +266,7 @@ ggplot(MC_width_S) +
        fill = "Mericarp groups") +
   theme_classic() + geom_hline(yintercept = 0, col = "#333333", size = 0.5)
 
+### Not Survived ####
 ggplot(MC_width_S_1) +
   aes(x = island, y = S_width_1, fill = treatment) +
   geom_boxplot(shape = "circle") +
@@ -284,6 +294,7 @@ ggplot(MC_width_S) +
   theme_classic() + geom_hline(yintercept = 0, col = "#333333", size = 0.5)
 
 ## Depth ####
+### Survived ####
 ggplot(MC_depth_S) +
   aes(x = island, y = S_depth, fill = treatment) +
   geom_boxplot(shape = "circle") +
@@ -293,6 +304,7 @@ ggplot(MC_depth_S) +
        fill = "Mericarp groups") +
   theme_classic() + geom_hline(yintercept = 0, col = "#333333", size = 0.5)
 
+### Not survived ####
 ggplot(MC_depth_S_1) +
   aes(x = island, y = S_depth_1, fill = treatment) +
   geom_boxplot(shape = "circle") +
