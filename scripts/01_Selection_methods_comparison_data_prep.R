@@ -1,17 +1,26 @@
-################Tribulus Selection experiments Dataset##############
+
+# Point in time and Mark recapture comparison: Data preparation ####
 # Goal: Compare the two methods of natural selection estimates. 
 # Point in time (PT) and Mark Recapture (MR).
 # By Daniel Reyes Corral
 
-##### Data preparation ####
+## Data preparation ####
+
 # Objective: Estimate the mean of survivors (non-eaten/present) 
 # and dead (eaten/missing) mericarps per trait.
+ 
+
 # Objective: Estimate the difference of the means per method and plot the means.
 # Product: Created a new dataset called S_estimates which have the calculated estimates
 
-##### Insert the data
+### Load the data ####
 
 dataset <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/PT and MR comparison.csv")
+
+# The dataset comparison was a subset of the point in time and mark recapture
+# This subset corresponds to the end of the mark recapture experiment (time 4) and the 2019 point in time samples
+# this was the time when both datasets were collected at the same time.
+
 dataset <- as_tibble(dataset)
 dataset
 
@@ -31,7 +40,7 @@ germinated_position_2, germinated_position_3,
 germinated_position_4, germinated_position_5,
 germinated_position_6), list(factor))
 
-############################# Select and filter ############################
+### Select and filter ####
 # This selects for all mericarp traits and methods.
 dataset_select <- select(dataset, method, 
                          year, 
@@ -44,6 +53,8 @@ dataset_select <- select(dataset, method,
                          eaten)
 # dataset_PT <- filter(dataset_select, method == "Point in time")
 # dataset_PT <- as.tibble(dataset_PT)
+ 
+### Summary of the data ####
 dataset_select <- group_by(dataset_select, method, island, eaten)
 dataset_summary <- dataset_select %>%  
   summarise_each(funs(mean,
@@ -55,10 +66,18 @@ dataset_summary <- dataset_select %>%
             width,
             depth,
             longest_spine)
-# This summary estimates the ns of all traits wich is redundant
+
+# This summary estimates the means of all traits which is redundant
 # Select all the columns but only one that estimates the length
+
 dataset_summary <- select(dataset_summary, c(1:20))
 dataset_summary <- dplyr::rename(dataset_summary, n = length_n)
+
+# This summary creates the means, standard variation, variance and error per traits
+# for eaten and uneaten mericarps.
+
+## Calculating  confidence intervals ####
+#### Extracting the variance of traits ####
 
 dataset_var <- select(dataset_summary, eaten,
                       length_var,
@@ -88,9 +107,10 @@ dataset_summary_v <- group_by(dataset_summary_v, method, island, eaten)
 dataset_summary_v <- pivot_wider(dataset_summary_v, names_from = eaten,
                                  values_from = c(4:24))
 
+# This pivots the table to create uneaten and eaten means and variances
+
 # Convert NA to zero
 dataset_summary_v[is.na(dataset_summary_v)] = 0
-
 
 # Sum of V uneaten and eaten per trait
 dataset_summary_v$length_v_total <- dataset_summary_v$length_v_0 + 
@@ -111,7 +131,7 @@ dataset_summary_v$width_sp <- dataset_summary_v$width_v_total/dataset_summary_v$
 dataset_summary_v$depth_sp <- dataset_summary_v$depth_v_total/dataset_summary_v$df2
 dataset_summary_v$longest_spine_sp <- dataset_summary_v$longest_spine_v_total/dataset_summary_v$df2
 
-# Calculate margin for CIs using the poobled variance per trait
+## Calculate margin for CIs using the pooled variance per trait ####
 # Caulculate margin df n0 + n1 - 1
 dataset_summary_v$df_margin <- (dataset_summary_v$n_0+dataset_summary_v$n_1 - 1)
 # Margins per trait
@@ -137,7 +157,7 @@ dataset_summary_v$S_depth <- (dataset_summary_v$depth_mean_0 - dataset_summary_v
 
 dataset_summary_v$S_longest_spine <- (dataset_summary_v$longest_spine_mean_0 - dataset_summary_v$longest_spine_mean_1)
 
-# Calculate confidence intervals for the mean differences (S) per traits
+## Calculate confidence intervals for the mean differences (S) per traits ####
 
 dataset_summary_v$low_CI_length <- dataset_summary_v$S_length - dataset_summary_v$margin_length 
 dataset_summary_v$upper_CI_length <- dataset_summary_v$S_length + dataset_summary_v$margin_length 
@@ -151,8 +171,11 @@ dataset_summary_v$upper_CI_depth <- dataset_summary_v$S_depth + dataset_summary_
 dataset_summary_v$low_CI_longest_spine <- dataset_summary_v$S_longest_spine - dataset_summary_v$margin_longest_spine 
 dataset_summary_v$upper_CI_longest_spine <- dataset_summary_v$S_longest_spine + dataset_summary_v$margin_longest_spine 
 
+# This sets up the dataset with all the summary data for the S estimates.
+# Mean differences and confidence intervals
 
 ##### Write .csv file of S* estimates ####
 S_estimates <- dataset_summary_v
 write.csv(S_estimates, "S_estimates.csv")
 
+# This creates a table and is exported in the Data processed folder.
