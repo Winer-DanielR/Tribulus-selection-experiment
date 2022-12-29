@@ -1,13 +1,16 @@
-################Tribulus Selection experiments Dataset ##############
-# Goal: Compare the two methods of natural selection estimates. 
+# S estimate plot. Methods comparison ####
+# 
+# 
+# Goal: Create the plot for the method comparisons.
+#  
 # Point in time (PT) and Mark Recapture (MR).
 # By Daniel Reyes Corral
 
-# The methods comparinson was made using a specific time 2019 where the two methods
-# were implemented
+# The methods comparison was made using a specific time 2019 where the two methods
+# were implemented. This script
 
-####### Goal: Plot the S estimates show comparisons between methods, traits and islands ####
-
+## Load dataset ####
+ 
 # I used the dataset created using the first script: S_estimates.csv
 
 S_summary_dataset <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/S_estimates.csv")
@@ -16,6 +19,8 @@ S_summary_dataset <- S_summary_dataset %>% mutate_at(vars(island, method), list(
 
 # Select S estimates from the dataset
 S_estimates <- select(S_summary_dataset, method, island, c(60:63))
+
+## Select S estimates ####
 
 # Arrange the estimates per trait and then per method
 # This creates a new column (name) with the traits and another (value) with the S
@@ -34,7 +39,9 @@ S_estimates <- dplyr::rename(S_estimates, Mark_Recap_S = "Mark Recapture",
                              P_Time_S = "Point in time")
 
 S_estimates <- S_estimates %>% mutate_at(vars(island, trait), list(factor))
-# Select estimated CI from the dataset
+
+### Select Low CI from the dataset ####
+
 Low_CI_estimates <- select(S_summary_dataset, method, island, c(64,66,68,70))
 
 Low_CI_estimates <- pivot_longer(Low_CI_estimates,
@@ -50,7 +57,7 @@ Low_CI_estimates <- pivot_wider(Low_CI_estimates, names_from = method, values_fr
 Low_CI_estimates <- dplyr::rename(Low_CI_estimates, Mark_Recap_Low_CI = "Mark Recapture",
                              P_Time_Low_CI = "Point in time")
 
-# Select estimated CI from the dataset
+### Select Upper CI from the dataset ####
 Upper_CI_estimates <- select(S_summary_dataset, method, island, c(65,67,69,71))
 
 Upper_CI_estimates <- pivot_longer(Upper_CI_estimates,
@@ -73,6 +80,7 @@ S_CI_estimates <- cbind(S_estimates,CI_estimates)
 S_CI_estimates <- select(S_CI_estimates, !c(5,6))
 
 # Plots ####
+# 
 # Using the dataset and data prep I create the figure comparing both methods
 # I used two methods to create the plots one with Base R the other with ggplot
 
@@ -90,13 +98,16 @@ legend("topright", legend = c("Floreana", "Isabela", "Santa Cruz"), pch = c(16),
 abline(v=0, h=0, col = "black")
 abline(a=0, b=1, col = "red")
 
-### The base R plot is a draft ####
+# The base R plot is a draft
+# It seems that the comparison shows a possible outlier, longest spine from Santa Cruz.
+# In general it seems that both methods show positive selection for mericarp traits.
+
 
 
 ## Ggplot ####
 # This plot uses the estimated CI calculated per island for both methods.
 # The larger CI corresponds to the mark recapture estimates which are larger!
-# However, this plot shows that both methods are infering the same
+# However, this plot shows that both methods are inferring the same
 # which is that selection is positive for most traits
 # Caveat: lower spines and spine position is not included ####
 ggplot(S_CI_estimates) +
@@ -120,7 +131,8 @@ ggplot(S_CI_estimates) +
   geom_linerange(ymin = S_CI_estimates$Mark_Recap_Low_CI,
                  ymax = S_CI_estimates$Mark_Recap_Upper_CI,
                  size = 1)
-  
+
+# The confidence intervals could be estimated using the ggplot code.
                  
             
   
