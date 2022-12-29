@@ -93,10 +93,10 @@ spine_position_wozero <- dplyr::filter(spine_position, !spine_position == 0)
 # 15 mericarps without spine angle
 # 
 
-length_m1 <- glmmTMB(length ~ eaten + 
+
+length_m1 <- lmer(length ~ eaten + 
                     (1|year) +
                     (1|island) +
-                    (1|population) +
                     (1|island/population),
                       data = length,
                       REML = F)
