@@ -38,20 +38,24 @@ length_depth <- na.omit(length_depth)
 # Using the plot comparisons function above we generate plots per island
 # for each comparison. Later we could combine these into a single plot.
 #### Santa Cruz ####
-    ggplot(length_depth) +
-    aes(x = length_mean, y = depth_mean, colour = population, shape = survival) +
-    #geom_point(size = 3L) +
-    geom_path(aes(group = population, colour = island), 
-              arrow = arrow(length = unit(0.3,"cm")), size = 0.7) +
-    scale_color_brewer(palette = "Dark2", direction = 1) +
-    labs(#title = "Santa Cruz",
-         x = "Length",
-         y = "Depth",
-         color = "Islands", shape = "Selection") +
-    ggthemes::theme_few() +
-    theme(legend.position = "right") + facet_null(vars(year))
-    guides(shape = "none", colour = "none") +
-    facet_wrap(vars(year), scales = "free")
+length_depth %>%
+  filter(island %in% "Santa.Cruz") %>%
+  ggplot() +
+  aes(x = length_mean, y = depth_mean, colour = population, shape = survival) +
+  geom_point(size = 3L) +
+  geom_path(aes(group = population), 
+            color = "black", 
+            arrow = arrow(length = unit(0.3,"cm")), size = 0.7) +
+  scale_color_brewer(palette = "Dark2", direction = 1) +
+  labs(title = "Santa Cruz",
+       x = "Length",
+       y = "Depth",
+       color = "Populations", shape = "Selection") +
+  ggthemes::theme_few() +
+  theme(legend.position = "right") +
+  #guides(shape = "none", colour = "none") +
+  facet_wrap(vars(year), scales = "free")
+
 
 #### San Cristobal ####
 length_depth %>%
