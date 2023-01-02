@@ -1,5 +1,9 @@
 # Question 1: Are Galápagos mericarps generally under selection? ####
 
+# Date: 02 January, 2023
+# By: Daniel Reyes
+
+# Description ####
 # There are two approaches to this question. The first one is model testing.
 # The second one, is to build the main figure for this question. The figure is
 # a 1:1 comparison of eaten and uneaten mericarps grouped by island or population.
@@ -11,8 +15,6 @@
 # as predictor of survival (eaten/uneaten mericarps). 
 # We used Year, Island, and Population (nested within Island) as random factors ####
 
-# By: Daniel Reyes Corral
-
 # Load the point in time dataset ####
 # This dataset is the point in time dataset for all years
 
@@ -22,7 +24,9 @@ point_time
 
 # Changed variables to factors
 point_time <- point_time %>% mutate_at(vars(year,
-                                      island, population, lower_spine, spine_position, eaten, eaten_insects,
+                                      island, population, lower_spine, 
+                                      #spine_position, 
+                                      eaten, eaten_insects,
                                       `year island`, year_pop,
                                       seed_position_1, seed_position_2,
                                       seed_position_3, seed_position_4,
@@ -34,49 +38,18 @@ point_time <- point_time %>% mutate_at(vars(year,
 str(point_time)
 
 # Data preparation ####
-# I want to separate each trait for the models and remove NAs ####
-
-## Group dataset into populations and islands
-# Point in time S* estimates per year, island and population ####
-
-# By: Daniel Reyes Corral
-
-
-# In this script I want to group mericarps per year, island and population
-# Estimate their mean differences per trait with their CIs.
-
-# Load the point in time dataset ####
-# This dataset is the point in time dataset for all years
-
-point_time <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Point in time populations.csv")
-point_time <- as_tibble(point_time)
-point_time
-
-# Changed variables to factors
-point_time <- point_time %>% mutate_at(vars(year,
-                                            island, population, lower_spine, eaten, eaten_insects,
-                                            `year island`, year_pop,
-                                            seed_position_1, seed_position_2,
-                                            seed_position_3, seed_position_4,
-                                            seed_position_5, seed_position_6,
-                                            germinated, germinated_position_1,
-                                            germinated_position_2, germinated_position_3,
-                                            germinated_position_4, germinated_position_5,
-                                            germinated_position_6), list(factor))
-str(point_time)
-
-# Data preparation ####
 ## Select per traits to check and remove NAs
 ## Length ####
 length <- select(point_time, c(1:8), eaten)
 length <- na.omit(length)
-length <- filter(length, !is.na(length))
+length <- filter(length, !is.na(length)) 
 
-# The length dataset can be used for model testing between eaten and uneaten mericarps
+# The length dataset can be used for model testing between eaten and uneaten mericarps (See script 11)
+
 # The datasets below are for building the figure.
 
-# Group length dataset for mean estimates ####
-## Group by island ####
+### Group for mean estimates ####
+#### Group by island ####
 length <- group_by(length, island, eaten)
 
 length_means_island <- length %>%  
@@ -87,15 +60,16 @@ length_means_island <- length %>%
   ), length)
 
 
-## Pivot table ####
+# Pivot table
 ## To compare eaten and uneaten mericarps
 length_means_island <- pivot_wider(length_means_island, names_from = eaten,
                                    values_from = c(3:6))
 
-length_means_island$S_length <- (length_means_island$length_mean_0 - length_means_island$length_mean_1)
+length_means_island$S_length <- (length_means_island$length_mean_0 - 
+                                   length_means_island$length_mean_1)
 # I can estimate the difference of uneaten and eaten mericarps (selection) in this dataset.
 
-# Group by island and population ####
+#### Group by island and population ####
 length <- group_by(length, island, population, eaten)
 
 length_means_pop <- length %>%  
@@ -105,10 +79,59 @@ length_means_pop <- length %>%
                       length_n = length,
   ), length)
 
+#### Pivot table 
+## To compare eaten and uneaten mericarps
+length_means_pop <- pivot_wider(length_means_pop, names_from = eaten,
+                                   values_from = c(4:7))
+
+length_means_pop$S_length <- (length_means_pop$length_mean_0 - 
+                                length_means_pop$length_mean_1)
+
+# These new datasets are for the figure (See script 12)
 
 ## Width ####
 width <- select(point_time, c(1:7), width, eaten)
 width <- na.omit(width)
+width <- filter(width, !is.na(width)) 
+
+### Group for mean estimates ####
+#### Group by island ####
+width <- group_by(width, island, eaten)
+
+width_means_island <- width %>%  
+  summarise_each(funs(width_mean = mean,
+                      width_var = var,
+                      width_se = sd(.)/sqrt(n()),
+                      width_n = length,
+  ), width)
+
+
+## Pivot table
+## To compare eaten and uneaten mericarps
+width_means_island <- pivot_wider(width_means_island, names_from = eaten,
+                                   values_from = c(3:6))
+
+width_means_island$S_width <- (width_means_island$width_mean_0 - 
+                                 width_means_island$width_mean_1)
+# I can estimate the difference of uneaten and eaten mericarps (selection) in this dataset.
+
+#### Group by island and population ####
+width <- group_by(width, island, population, eaten)
+
+width_means_pop <- width %>%  
+  summarise_each(funs(width_mean = mean,
+                      width_var = var,
+                      width_se = sd(.)/sqrt(n()),
+                      width_n = length,
+  ), width)
+
+## Pivot table
+## To compare eaten and uneaten mericarps
+width_means_pop <- pivot_wider(width_means_pop, names_from = eaten,
+                                values_from = c(4:7))
+
+width_means_pop$S_width <- (width_means_pop$width_mean_0 - 
+                              width_means_pop$width_mean_1)
 
 
 
@@ -116,9 +139,92 @@ width <- na.omit(width)
 depth <- select(point_time, c(1:7), depth, eaten)
 depth <- na.omit(depth)
 
+
+### Group for mean estimates ####
+#### Group by island ####
+depth <- group_by(depth, island, eaten)
+
+depth_means_island <- depth %>%  
+  summarise_each(funs(depth_mean = mean,
+                      depth_var = var,
+                      depth_se = sd(.)/sqrt(n()),
+                      depth_n = length,
+  ), depth)
+
+
+## Pivot table
+## To compare eaten and uneaten mericarps
+depth_means_island <- pivot_wider(depth_means_island, names_from = eaten,
+                                  values_from = c(3:6))
+
+depth_means_island$S_depth <- (depth_means_island$depth_mean_0 - 
+                                 depth_means_island$depth_mean_1)
+
+
+#### Group by population ####
+depth <- group_by(depth, island, population, eaten)
+
+depth_means_pop <- depth %>%  
+  summarise_each(funs(depth_mean = mean,
+                      depth_var = var,
+                      depth_se = sd(.)/sqrt(n()),
+                      depth_n = length,
+  ), depth)
+
+
+## Pivot table
+## To compare eaten and uneaten mericarps
+depth_means_pop <- pivot_wider(depth_means_pop, names_from = eaten,
+                                  values_from = c(4:7))
+
+depth_means_pop$S_depth <- (depth_means_pop$depth_mean_0 - 
+                              depth_means_pop$depth_mean_1)
+
+
 ## Longest spine ####
 longest_spine <- select(point_time, c(1:7), longest_spine, eaten)
 longest_spine <- na.omit(longest_spine)
+
+
+### Group for mean estimates ####
+#### Group by island ####
+longest_spine <- group_by(longest_spine, island, eaten)
+
+longest_spine_means_island <- longest_spine %>%  
+  summarise_each(funs(longest_spine_mean = mean,
+                      longest_spine_var = var,
+                      longest_spine_se = sd(.)/sqrt(n()),
+                      longest_spine_n = length,
+  ), longest_spine)
+
+
+## Pivot table
+## To compare eaten and uneaten mericarps
+longest_spine_means_island <- pivot_wider(longest_spine_means_island, names_from = eaten,
+                                  values_from = c(3:6))
+
+longest_spine_means_island$S_longest_spine <- (longest_spine_means_island$longest_spine_mean_0 - 
+                                 longest_spine_means_island$longest_spine_mean_1)
+
+
+#### Group by population ####
+longest_spine <- group_by(longest_spine, island, population, eaten)
+
+longest_spine_means_pop <- longest_spine %>%  
+  summarise_each(funs(longest_spine_mean = mean,
+                      longest_spine_var = var,
+                      longest_spine_se = sd(.)/sqrt(n()),
+                      longest_spine_n = length,
+  ), longest_spine)
+
+
+## Pivot table
+## To compare eaten and uneaten mericarps
+longest_spine_means_pop <- pivot_wider(longest_spine_means_pop, names_from = eaten,
+                               values_from = c(4:7))
+
+longest_spine_means_pop$S_longest_spine <- (longest_spine_means_pop$longest_spine_mean_0 - 
+                              longest_spine_means_pop$longest_spine_mean_1)
 
 ## Longest spine without zero ####
 longest_spine_wozero <- dplyr::filter(longest_spine, !longest_spine == 0)
@@ -130,6 +236,47 @@ tip_distance <- na.omit(tip_distance)
 10007-9928
 # 79 mericarps without upper spines.
 
+
+### Group for mean estimates ####
+#### Group by island ####
+tip_distance <- group_by(tip_distance, island, eaten)
+
+spine_tip_distance_means_island <- tip_distance %>%  
+  summarise_each(funs(spine_tip_distance_mean = mean,
+                      spine_tip_distance_var = var,
+                      spine_tip_distance_se = sd(.)/sqrt(n()),
+                      spine_tip_distance_n = length,
+  ), spine_tip_distance)
+
+
+## Pivot table
+## To compare eaten and uneaten mericarps
+spine_tip_distance_means_island <- pivot_wider(spine_tip_distance_means_island, names_from = eaten,
+                                  values_from = c(3:6))
+
+spine_tip_distance_means_island$S_spine_tip_distance <- (spine_tip_distance_means_island$spine_tip_distance_mean_0 - 
+                                 spine_tip_distance_means_island$spine_tip_distance_mean_1)
+
+
+#### Group by population ####
+tip_distance <- group_by(tip_distance, island, population, eaten)
+
+spine_tip_distance_means_pop <- tip_distance %>%  
+  summarise_each(funs(spine_tip_distance_mean = mean,
+                      spine_tip_distance_var = var,
+                      spine_tip_distance_se = sd(.)/sqrt(n()),
+                      spine_tip_distance_n = length,
+  ), spine_tip_distance)
+
+
+## Pivot table
+## To compare eaten and uneaten mericarps
+spine_tip_distance_means_pop <- pivot_wider(spine_tip_distance_means_pop, names_from = eaten,
+                               values_from = c(4:7))
+
+spine_tip_distance_means_pop$S_spine_tip_distance <- (spine_tip_distance_means_pop$spine_tip_distance_mean_0 - 
+                              spine_tip_distance_means_pop$spine_tip_distance_mean_1)
+
 ### Spine tip distance without zero #####
 # We removed mericarps without upper spines from analysis.These mericarps had a tip distance of 0.
 tip_distance_wozero <- dplyr::filter(tip_distance, !spine_tip_distance == 0)
@@ -137,14 +284,59 @@ tip_distance_wozero <- dplyr::filter(tip_distance, !spine_tip_distance == 0)
 4003-3982
 # 21 mericarps without upper spines.
 
-
 ## Lower spines ####
+## Lower spines is a binomial trait, I need to summarize this in another way to 
+## group them as shown in the other figures. ASK ANDREW.
 lower_spines <- select(point_time, c(1:7), lower_spine, eaten)
 lower_spines <- na.omit(lower_spines)
 
 ## Spine position (as factor) ####
+## Check if spine position should be a factor!
+## Spine position may not be a factor and can be estimated in this case.
 spine_position <- select(point_time, c(1:7), spine_position, eaten)
 spine_position <- na.omit(spine_position)
+
+
+### Group for mean estimates ####
+#### Group by island ####
+spine_position <- group_by(spine_position, island, eaten)
+
+spine_position_means_island <- spine_position %>%  
+  summarise_each(funs(spine_position_mean = mean,
+                      spine_position_var = var,
+                      spine_position_se = sd(.)/sqrt(n()),
+                      spine_position_n = length,
+  ), spine_position)
+
+
+## Pivot table
+## To compare eaten and uneaten mericarps
+spine_position_means_island <- pivot_wider(spine_position_means_island, names_from = eaten,
+                                               values_from = c(3:6))
+
+spine_position_means_island$S_spine_position <- (spine_position_means_island$spine_position_mean_0 - 
+                                                           spine_position_means_island$spine_position_mean_1)
+
+
+#### Group by population ####
+spine_position <- group_by(spine_position, island, population, eaten)
+
+spine_position_means_pop <- spine_position %>%  
+  summarise_each(funs(spine_position_mean = mean,
+                      spine_position_var = var,
+                      spine_position_se = sd(.)/sqrt(n()),
+                      spine_position_n = length,
+  ), spine_position)
+
+
+## Pivot table
+## To compare eaten and uneaten mericarps
+spine_position_means_pop <- pivot_wider(spine_position_means_pop, names_from = eaten,
+                                            values_from = c(4:7))
+
+spine_position_means_pop$S_spine_position <- (spine_position_means_pop$spine_position_mean_0 - 
+                                                        spine_position_means_pop$spine_position_mean_1)
+
 
 ## Spine position wihtout zero ####
 spine_position_wozero <- dplyr::filter(spine_position, !spine_position == 0)
