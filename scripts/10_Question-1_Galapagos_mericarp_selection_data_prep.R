@@ -37,6 +37,8 @@ length <- select(point_time, c(1:8), eaten)
 length <- na.omit(length)
 length <- filter(length, !is.na(length))
 
+
+
 # This is a summarize code that estimates means, variance, sd, etc.
 # length <- length %>%  
 #   summarise_each(funs(length_mean = mean,
@@ -91,15 +93,3 @@ spine_position_wozero <- dplyr::filter(spine_position, !spine_position == 0)
 
 6198-6183
 # 15 mericarps without spine angle
-# 
-
-
-length_m1 <- lmer(length ~ eaten + 
-                    (1|year) +
-                    (1|island) +
-                    (1|island/population),
-                      data = length,
-                      REML = F)
-
-Anova(length_m1)
-diagnostic(resid(length_m1))
