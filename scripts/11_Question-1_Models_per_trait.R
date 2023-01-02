@@ -1,170 +1,145 @@
-# Script 03.Univariate models with year as covariate ####
+# Question 1. Model preparation script ####
 # By: Daniel Reyes Corral
 
-# This script uses the individual datasets per trait from script 02 to run the models
-# Models are organized by group comparisons and datasets.
-# Model 1 compares mainland and island populations (used for mericarps and flowers)
-# Model 2 compares Galapagos with the other island systems (used for flowers)
-# For each trait I test model assumptions and transform data accordingly for convergence
-# Data transformations are either log or squared roots.
-# I made some of the outputs comments because I do need the models for making the plots
-# but model comparisons were done before.
-# Emmeans estimates:
-# Use emmeans package for this_ Using "response" allows me to compare on the original scale for transformed data_
-# This gives me an idea of how much change there is between the factors of interest_
-# Using the that that worked best for each trait and model
-# the following estimates LS means for the mainland_island effect for each response
+# This script uses the point in time dataset per trait from script 10
+# to run the model. Are Galápagos mericarps generally under selection?
+# We used a GLMM with mericarp traits 
+# (size traits: length, depth, width and depth; 
+# and spine traits: longest spine, spine tip distance, lower spines) 
+# as predictor of survival (eaten/uneaten mericarps). 
+# We used Year, Island, and Population (nested within Island) as random factors
 
-# 03_01 Model 1: Mainland - Island ####
-# 03_01_01 Mericarp data ####
+# The datasets per trait are in script 10 
+# Model evaluation and selection ####
+
 ## Length ####
-# For length, the untransformed data seems the best
-#### Raw data ####
-meri_length_m1<- lmer(length ~ mainland_island +
-                       year_collected +
-                        Herbarium +
-                        # Temp +
-                        # Temp_S +
-                        # Prec +
-                        # varP +
-                      (1|ID),
-                      data = meri_length,
-                      REML = F)
-# #### Log transformed ####
-# meri_length_m2<- lmer(log(length) ~ mainland_island +
-#                         year_collected +
-#                         Herbarium +
-#                         (1|ID),
-#                       data = meri_length,
-#                       REML = F)
-# #### Square-root transformed ####
-# meri_length_m3<- lmer(sqrt(length) ~ mainland_island +
-#                         year_collected +
-#                         Herbarium +
-#                         (1|ID),
-#                       data = meri_length,
-#                       REML = F)
+# All of the covariates are random effects. For now this is the simplest model.
 
-#### ANOVA type II test ####
-# Use the Anova function from the car package
+length_m1 <- glmmTMB(length ~ eaten + 
+                    (1|year) +
+                    (1|island) +
+                    (1|island/population), #This is population nested with island
+                  data = length,
+                  REML = F)
 
-Anova(meri_length_m1)
+### Model diagnostics ####
+diagnostic(resid(length_m1)) # The untransformed data seem to work fine.
 
-#summary(meri_length_m1)
 
-#### Model Diagnostics ####
-# I used a custom diagnostic functionfrom script 01 and the testResiduals function
-# from the DHARMa package. This function shows the QQ residuals, dispersion test
-# and outlier tests. 
+### Results ####
+summary(length_m1)
+Anova(length_m1) # It seems is significant.
 
-# Diagnostic custom function
-#par(mfrow = c(1, 3))
-# Residual histograms distributions
-#diagnostic(resid(meri_length_m1))
-#diagnostic(resid(meri_length_m2))
-#diagnostic(resid(meri_length_m3))
+### Emmeans: Length ####
+EM_length <- emmeans(length_m1, ~ eaten)
 
-# Diagnostics with DHARMA
-#testResiduals(meri_length_m1)
-#testResiduals(meri_length_m2)
-#testResiduals(meri_length_m3)
-
-# After selecting the data transformation that converged the most I decided to
-# only show the output of that model.
-
-## Emmeans estimates: Length ####
-EM_length <- emmeans(meri_length_m1, ~ mainland_island)
-
-### Emmean plot: Length ####
+#### Emmean plot: Length ####
 plot(EM_length, comparisons = TRUE) + labs(title = "Mericarp Length")
 pwpp(EM_length)
-### Percentage difference ####
-# ((island mean/mainland mean)-1)*100%
-((6.16/5.72 - 1)* 100) # Mericarps ~ 7% longer on islands
 
 ## Width ####
-# For width, squared transformed seemed the best
-# #### Raw data ####
-# meri_width_m1 <- lmer(width ~ mainland_island +
-#                               year_collected +
-#                               (1|ID),
-#                       data = meri_width, 
-#                       REML = F)
-# #### Log transformed ####
-# meri_width_m2 <- lmer(log(width) ~ mainland_island +
-#                               year_collected +
-#                               (1|ID),
-#                       data = meri_width, 
-#                       REML = F)
-#### Square-root transformed ####
-meri_width_m3 <- lmer(sqrt(width) ~ mainland_island +
-                              year_collected +
-                        Herbarium +
-                              (1|ID),
-                      data = meri_width, 
-                      REML = F)
-#### ANOVA type II test ####
-Anova(meri_width_m3)
+ 
+width_m1 <- glmmTMB(width ~ eaten + 
+                    (1|year) +
+                    (1|island) +
+                    (1|island/population),
+                  data = width_filter,
+                  REML = F)
 
-#### Model Diagnostics ####
-# Residual histogram distributions
-# diagnostic(resid(meri_width_m1))
-# diagnostic(resid(meri_width_m2))
-# diagnostic(resid(meri_width_m3))
+width_m2 <- glmmTMB(log(width) ~ eaten + 
+                   (1|year) +
+                   (1|island) +
+                   (1|island/population), 
+                 data = width_filter,
+                 REML = F)
 
-# # DHARMa
-# testResiduals(meri_width_m1)
-# testResiduals(meri_width_m2)
-# testResiduals(meri_width_m3)
+width_m3 <- glmmTMB(sqrt(width) ~ eaten + 
+                   (1|year) +
+                   (1|island) +
+                   (1|island/population), 
+                 data = width_filter,
+                 REML = F)
 
-## Emmean estimates: Width ####
-EM_width <- emmeans(meri_width_m3, ~ mainland_island, type = "response")
+
+
+### Model diagnostics ####
+#diagnostic(resid(width_m1))
+#diagnostic(resid(width_m2))
+#diagnostic(resid(width_m3))
+
+#testResiduals(width_m1)
+#testResiduals(width_m2)
+#testResiduals(width_m3)
+
+# It seems there are a few outliers
+
+### Data adjustments ####
+# Check residual distributions.
+hist(resid(width_m1), breaks = 50) # It seems that mericarps with 5 mm of with are outliers
+
+width$residuals <- resid(width_m1)
+
+# I filter residuals that are lower than -5 and larger than 5.
+width_filter <- filter(width, !residuals > 2.5)
+width_filter <- filter(width, !residuals < -2.5)
+hist(width_filter$residuals, breaks = 50)
+
+### RUN again with width_filter! ####
+
+### Results ####
+summary(width_m1)
+Anova(width_m1) # Not significant.
+ 
+
+## Emmean: Width ####
+EM_width <- emmeans(width_m1, ~ eaten, type = "response")
 ### Emmean plot: Width ####
 plot(EM_width, comparisons = T) + labs(title = "Mericarp Width")
 pwpp(EM_width)
-### Percentage difference ####
-((3.15/2.96 - 1)*100) # Mericarps ~ 6.41% wider on islands
-
 
 ## Depth ####
-# For depth untransformed data seems to work the best
-#### Raw data ####
-meri_depth_m1 <- lmer(depth ~ mainland_island +
-                              year_collected +
-                        Herbarium +
-                              (1|ID),
-                      data=meri_depth, 
-                      REML = F)
-#### Log transformed data ####
-# meri_depth_m2 <- lmer(log(depth) ~ mainland_island +
-#                               year_collected +
-#                               (1|ID),
-#                       data=meri_depth, 
-#                       REML = F)
-#### Square-root transformed data ####
-# meri_depth_m3 <- lmer(sqrt(depth) ~ mainland_island +
-#                               year_collected +
-#                               (1|ID),
-#                       data=meri_depth, 
-#                       REML = F)
-#### ANOVA type II test ####
-Anova(meri_depth_m1)
+
+depth_m1 <- glmmTMB(depth ~ eaten + 
+                   (1|year) +
+                   (1|island) +
+                   (1|island/population),
+                 data = depth,
+                 REML = F)
+
+# Warning non-convergence problem.
+
+depth_m2 <- glmmTMB(log(depth) ~ eaten + 
+                      (1|year) +
+                      (1|island) +
+                      (1|island/population),
+                    data = depth,
+                    REML = F)
+
+depth_m3 <- glmmTMB(sqrt(depth) ~ eaten + 
+                      (1|year) +
+                      (1|island) +
+                      (1|island/population),
+                    data = depth,
+                    REML = F)
 
 #### Model Diagnostics ####
-# hist(resid(meri_depth_m1), breaks = 20)
+hist(resid(depth_m1), breaks = 50)
 
-# # Residual histograms
-# diagnostic(resid(meri_depth_m1))
-# diagnostic(resid(meri_depth_m2))
-# diagnostic(resid(meri_depth_m3))
-# 
-# # DHARMa
-# testResiduals(meri_depth_m1)
-# testResiduals(meri_depth_m2)
-# testResiduals(meri_depth_m3)
+# Residual histograms
+diagnostic(resid(depth_m1))
+diagnostic(resid(depth_m2))
+diagnostic(resid(depth_m3))
+ 
+# DHARMa
+ testResiduals(depth_m1)
+ testResiduals(depth_m2)
+ testResiduals(depth_m3)
+ 
+# Results
+Anova(depth_m2)
 
 ## Emmeans estimates: Depth ####
-EM_depth <- emmeans(meri_depth_m1, ~ mainland_island)
+EM_depth <- emmeans(depth_m2, ~ eaten)
 ### Emmeans plot: Depth ####
 plot(EM_depth, comparisons = T) + labs(title = "Mericarp Depth")
 pwpp(EM_depth)
