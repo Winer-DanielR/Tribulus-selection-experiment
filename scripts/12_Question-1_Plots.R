@@ -15,19 +15,22 @@
 # Plot theme and function ####
 ## Theme ####
 
-plot_theme <-     theme(axis.line = element_line(linetype = "solid", size = 1.5), 
+plot_theme <-     theme(axis.line = element_line(linetype = "solid", size = 1), 
                         axis.title = element_text(size = 12, 
                                                   #face = "bold"
                                                   ),
-                        axis.text = element_text(size = 12), 
-                        axis.text.x = element_text(size = 11), 
+                        axis.text = element_text(size = 11), 
+                        #axis.text.x = element_text(size = 8), 
                         plot.title = element_text(size = 12, face = "bold", hjust = 0),
                         text = element_text(family = "Noto Sans"),
                         legend.text = element_text(size = 11), 
                         legend.title = element_text(size = 12, face = "bold"),
                         legend.position = "right",
                         panel.background = element_rect(fill = NA),
-                        legend.background = element_rect(fill = NA, size = 0)
+                        legend.background = element_rect(fill = NA, size = 0),
+                        strip.text = element_text(size = 10, face = "bold"),
+                        strip.background = element_blank(),
+                        panel.spacing = unit(1, "cm")
                         ) 
 
 
@@ -57,6 +60,149 @@ island_fig <- function(dataset, x, y, title, subtitle)
   }
 
 # Plots ####
+## Lower Spine ####
+# Lower spine plots are based on their counts. They don't use the function above.
+
+ggplot(lower_spines_island) +
+  aes(
+    x = eaten,
+    y = uneaten,
+    colour = island,
+    shape = lower_spine
+  ) +
+  geom_point(size = 3.5) +
+  scale_color_manual(
+    values = c("#D55E00",
+                        "#E69F00",
+                        "#009E73",
+                        "#0072B2",
+                        "#56B4E9",
+                        "#CC79A7",
+                        "#666666")) +
+  labs(
+    x = "Eaten",
+    y = "Uneaten",
+    title = "Lower Spines",
+    color = "Islands",
+    shape = "Presence of lower spines"
+  ) +
+  plot_theme +
+  geom_abline(color = "black", size = 1)
+
+#### All populations in a plot ####
+ggplot(lower_spines_pop) +
+  aes(
+    x = eaten,
+    y = uneaten,
+    colour = island,
+    shape = lower_spine
+  ) +
+  geom_point(size = 3.5) +
+  scale_color_manual(
+    values = c("#D55E00",
+                        "#E69F00",
+                        "#009E73",
+                        "#0072B2",
+                        "#56B4E9",
+                        "#CC79A7",
+                        "#666666")) +
+                          labs(
+                            x = "Eaten",
+                            y = "Uneaten",
+                            title = "Lower Spines",
+                            color = "Islands",
+                            shape = "Presence of lower spines"
+                          ) +
+  plot_theme +
+  geom_abline(color = "black", size = 1)
+
+#### All populations separated ####
+ggplot(lower_spines_pop) +
+  aes(
+    x = eaten,
+    y = uneaten,
+    colour = island,
+    shape = lower_spine
+  ) +
+  geom_point(size = 2) +
+  scale_color_manual(
+    values = c("#D55E00",
+                        "#E69F00",
+                        "#009E73",
+                        "#0072B2",
+                        "#56B4E9",
+                        "#CC79A7",
+                        "#666666")) +
+  labs(
+    x = "Eaten",
+    y = "Uneaten",
+    title = "Lower Spines per population",
+    color = "Islands",
+    shape = "Presence of lower spines"
+  ) +
+  plot_theme + theme(axis.line = element_line()) +
+  geom_abline(color = "black", size = 0.8) +
+  facet_wrap(vars(island), scales = "free")
+
+
+## Spine position (counts) ####
+## Similar to lower spines if spine position is a factor then we should use this
+## plot.
+
+# By island separated. Spine position counts
+ggplot(spine_position_island) +
+  aes(x = uneaten, y = eaten, colour = spine_position) +
+  geom_point(shape = "circle", size = 3.3) +
+  scale_color_manual(
+    values = c(`0` = "#1B9E77",
+               `10` = "#AE6D1C",
+               `20` = "#0072B2",
+               `29` = "#9B58A5",
+               `30` = "#D8367D",
+               `40` = "#749829",
+               `50` = "#E69F00",
+               `55` = "#56B4E9",
+               `60` = "#CC79A7",
+               `70` = "#666666")
+  ) +
+  labs(
+    x = "Eaten",
+    y = "Uneaten",
+    title = "Spine Position Island",
+    color = "Spine Angle",
+    ) +
+  plot_theme +
+  geom_abline(color = "black", size = 1) +
+  facet_wrap(vars(island), scales = "free")
+
+# By island showing populations ###
+
+ggplot(spine_position_pop) +
+  aes(x = uneaten, y = eaten, colour = spine_position) +
+  geom_point(shape = "circle", size = 3.3) +
+  scale_color_manual(
+    values = c(`0` = "#1B9E77",
+               `10` = "#AE6D1C",
+               `20` = "#0072B2",
+               `29` = "#9B58A5",
+               `30` = "#D8367D",
+               `40` = "#749829",
+               `50` = "#E69F00",
+               `55` = "#56B4E9",
+               `60` = "#CC79A7",
+               `70` = "#666666")
+  ) +
+  labs(
+    x = "Eaten",
+    y = "Uneaten",
+    title = "Spine Position Island",
+    color = "Spine Angle",
+  ) +
+  plot_theme +
+  geom_abline(color = "black", size = 1) +
+  facet_wrap(vars(island), scales = "free")
+
+
 ## Length ####
 
 island_length <- island_fig(length_means_island, #Dataset
