@@ -25,7 +25,7 @@ point_time
 # Changed variables to factors
 point_time <- point_time %>% mutate_at(vars(year,
                                       island, population, lower_spine, 
-                                      #spine_position, 
+                                      spine_position, 
                                       eaten, eaten_insects,
                                       `year island`, year_pop,
                                       seed_position_1, seed_position_2,
@@ -290,6 +290,44 @@ tip_distance_wozero <- dplyr::filter(tip_distance, !spine_tip_distance == 0)
 lower_spines <- select(point_time, c(1:7), lower_spine, eaten)
 lower_spines <- na.omit(lower_spines)
 
+
+### Group for count estimates ####
+### One way to estimate this for lower spines to count the frequency of eaten
+### and uneaten mericarps. So, instead of using a mean I am using the number of 
+### mericarps that have lower spines and the number witouth lower spines.
+
+#### Group by island ####
+lower_spines <- group_by(lower_spines, island, eaten)
+
+
+# Count the frequency of lower spines
+lower_spines_island <- dplyr::count(lower_spines, lower_spine)
+
+## Pivot table
+## To compare eaten and uneaten mericarps
+lower_spines_island <- pivot_wider(lower_spines_island, names_from = eaten,
+                                               values_from = c(4))
+
+# Renamed the values of eaten mericarps
+lower_spines_island <- dplyr::rename(lower_spines_island, uneaten = "0")
+lower_spines_island <- dplyr::rename(lower_spines_island, eaten = "1")
+
+#### Group by populations ####
+lower_spines <- group_by(lower_spines, island, population, eaten)
+
+lower_spines_pop <- dplyr::count(lower_spines, lower_spine)
+
+## Pivot table
+## To compare eaten and uneaten mericarps
+lower_spines_pop <- pivot_wider(lower_spines_pop, names_from = eaten,
+                                  values_from = c(5))
+
+# Renamed the values of eaten mericarps
+lower_spines_pop <- dplyr::rename(lower_spines_pop, uneaten = "0")
+lower_spines_pop <- dplyr::rename(lower_spines_pop, eaten = "1")
+
+
+
 ## Spine position (as factor) ####
 ## Check if spine position should be a factor!
 ## Spine position may not be a factor and can be estimated in this case.
@@ -301,42 +339,62 @@ spine_position <- na.omit(spine_position)
 #### Group by island ####
 spine_position <- group_by(spine_position, island, eaten)
 
-spine_position_means_island <- spine_position %>%  
-  summarise_each(funs(spine_position_mean = mean,
-                      spine_position_var = var,
-                      spine_position_se = sd(.)/sqrt(n()),
-                      spine_position_n = length,
-  ), spine_position)
+# If is a factor use the count function to count the frequency of mericarps
+# with a determined angle.
+# 
+spine_position_island <- dplyr::count(spine_position, spine_position)
+
+# If is a continuous variable use this summary function
+# spine_position_means_island <- spine_position %>%  
+#   summarise_each(funs(spine_position_mean = mean,
+#                       spine_position_var = var,
+#                       spine_position_se = sd(.)/sqrt(n()),
+#                       spine_position_n = length,
+#   ), spine_position)
 
 
 ## Pivot table
 ## To compare eaten and uneaten mericarps
-spine_position_means_island <- pivot_wider(spine_position_means_island, names_from = eaten,
-                                               values_from = c(3:6))
+## 
 
-spine_position_means_island$S_spine_position <- (spine_position_means_island$spine_position_mean_0 - 
-                                                           spine_position_means_island$spine_position_mean_1)
+spine_position_island <- pivot_wider(spine_position_island, names_from = eaten,
+                                               values_from = c(4))
+
+# Renamed the values of eaten mericarps
+spine_position_island <- dplyr::rename(spine_position_island, uneaten = "0")
+spine_position_island <- dplyr::rename(spine_position_island, eaten = "1")
+
+# spine_position_means_island <- pivot_wider(spine_position_means_island, names_from = eaten,
+#                                                values_from = c(3:6))
+# 
+# spine_position_means_island$S_spine_position <- (spine_position_means_island$spine_position_mean_0 - 
+#                                                            spine_position_means_island$spine_position_mean_1)
 
 
 #### Group by population ####
 spine_position <- group_by(spine_position, island, population, eaten)
 
-spine_position_means_pop <- spine_position %>%  
-  summarise_each(funs(spine_position_mean = mean,
-                      spine_position_var = var,
-                      spine_position_se = sd(.)/sqrt(n()),
-                      spine_position_n = length,
-  ), spine_position)
+spine_position_pop <- dplyr::count(spine_position, spine_position)
+
+# spine_position_means_pop <- spine_position %>%  
+#   summarise_each(funs(spine_position_mean = mean,
+#                       spine_position_var = var,
+#                       spine_position_se = sd(.)/sqrt(n()),
+#                       spine_position_n = length,
+#   ), spine_position)
 
 
 ## Pivot table
 ## To compare eaten and uneaten mericarps
-spine_position_means_pop <- pivot_wider(spine_position_means_pop, names_from = eaten,
-                                            values_from = c(4:7))
+spine_position_pop <- pivot_wider(spine_position_pop, names_from = eaten,
+                                            values_from = c(5))
 
-spine_position_means_pop$S_spine_position <- (spine_position_means_pop$spine_position_mean_0 - 
-                                                        spine_position_means_pop$spine_position_mean_1)
+# spine_position_means_pop$S_spine_position <- (spine_position_means_pop$spine_position_mean_0 - 
+#                                                         spine_position_means_pop$spine_position_mean_1)
 
+# Renamed the values of eaten mericarps
+spine_position_pop <- dplyr::rename(spine_position_pop, uneaten = "0")
+spine_position_pop <- dplyr::rename(spine_position_pop, eaten = "1")
 
 ## Spine position wihtout zero ####
 spine_position_wozero <- dplyr::filter(spine_position, !spine_position == 0)
