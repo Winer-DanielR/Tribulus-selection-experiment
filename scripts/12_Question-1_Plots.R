@@ -16,13 +16,15 @@
 ## Theme ####
 
 plot_theme <-     theme(axis.line = element_line(linetype = "solid", size = 1.5), 
-                        axis.title = element_text(size = 14, face = "bold"),
+                        axis.title = element_text(size = 12, 
+                                                  #face = "bold"
+                                                  ),
                         axis.text = element_text(size = 12), 
                         axis.text.x = element_text(size = 11), 
-                        plot.title = element_text(size = 16, face = "bold", hjust = 0),
+                        plot.title = element_text(size = 12, face = "bold", hjust = 0),
                         text = element_text(family = "Noto Sans"),
-                        legend.text = element_text(size = 12), 
-                        legend.title = element_text(size = 14, face = "bold"),
+                        legend.text = element_text(size = 11), 
+                        legend.title = element_text(size = 12, face = "bold"),
                         legend.position = "right",
                         panel.background = element_rect(fill = NA),
                         legend.background = element_rect(fill = NA, size = 0)
@@ -30,7 +32,7 @@ plot_theme <-     theme(axis.line = element_line(linetype = "solid", size = 1.5)
 
 
 ## Functions ####
-# This function is for the plots per trait grouped by island.
+# This function is for the plots per trait grouped by pop.
 
 island_fig <- function(dataset, x, y, title, subtitle)
   {ggplot(dataset, aes(x = x, y = y, colour = island)) + #For the function to work the colors need to be defined here.
@@ -57,105 +59,132 @@ island_fig <- function(dataset, x, y, title, subtitle)
 # Plots ####
 ## Length ####
 
-island_fig(length_means_island, #Dataset
+island_length <- island_fig(length_means_island, #Dataset
            length_means_island$length_mean_1, # x label (eaten)
            length_means_island$length_mean_0, # y label (uneaten)
-           "Mericarp Length (mm)", # Title
-           "Means per island" # Subtitle (Island or Populations)
+           "Mericarp Length (mm)  ", # Title
+           " " # Subtitle (Island or Populations)
            )
 
-island_fig(length_means_pop,
+pop_length <- island_fig(length_means_pop,
            length_means_pop$length_mean_1,
            length_means_pop$length_mean_0,
-           "Mericarp Length (mm)",
-           "Means per populations"
+           "Mericarp Length (mm)  ",
+           " "
            )
 
 ## Width ####
 
-island_fig(width_means_island,
+island_width <- island_fig(width_means_island,
            width_means_island$width_mean_1,
            width_means_island$width_mean_0,
-           "Mericarp Width (mm)",
-           "Means per island"
+           "Mericarp Width (mm)  ",
+           " "
 )
 
 
-island_fig(width_means_pop,
+pop_width <- island_fig(width_means_pop,
            width_means_pop$width_mean_1,
            width_means_pop$width_mean_0,
-           "Mericarp Width (mm)",
-           "Means per populations"
+           "Mericarp Width (mm)  ",
+           " "
 )
 
 
 ## Depth ####
 
-island_fig(depth_means_island,
+island_depth <- island_fig(depth_means_island,
            depth_means_island$depth_mean_1,
            depth_means_island$depth_mean_0,
-           "Mericarp Depth (mm)",
-           "Means per island"
+           "Mericarp Depth (mm)  ",
+           " "
 )
 
-island_fig(depth_means_pop,
+pop_depth <- island_fig(depth_means_pop,
            depth_means_pop$depth_mean_1,
            depth_means_pop$depth_mean_0,
-           "Mericarp Depth (mm)",
-           "Means per populations"
+           "Mericarp Depth (mm)  ",
+           " "
 )
 
 
 ## Longest Spine ####
 
-island_fig(longest_spine_means_island,
+island_spine <- island_fig(longest_spine_means_island,
            longest_spine_means_island$longest_spine_mean_1,
            longest_spine_means_island$longest_spine_mean_0,
-           "Mericarp longest spine (mm)",
-           "Means per island"
+           "Spine Length (mm)  ",
+           " "
 )
 
-island_fig(longest_spine_means_pop,
+pop_spine <- island_fig(longest_spine_means_pop,
            longest_spine_means_pop$longest_spine_mean_1,
            longest_spine_means_pop$longest_spine_mean_0,
-           "Mericarp longest spine (mm)",
-           "Means per populations"
+           "Spine Length (mm)  ",
+           " "
 )
 
 ## Spine tip distance ####
 
-island_fig(spine_tip_distance_means_island,
+island_tip_distance <- island_fig(spine_tip_distance_means_island,
            spine_tip_distance_means_island$spine_tip_distance_mean_1,
            spine_tip_distance_means_island$spine_tip_distance_mean_0,
-           "Mericarp Spine Distance (mm)",
-           "Means per island"
+           "Spine Distance (mm)  ",
+           " "
 )
 
-island_fig(spine_tip_distance_means_pop,
+pop_tip_distance <- island_fig(spine_tip_distance_means_pop,
            spine_tip_distance_means_pop$spine_tip_distance_mean_1,
            spine_tip_distance_means_pop$spine_tip_distance_mean_0,
-           "Mericarp Spine Distance (mm)",
-           "Means per populations"
+           "Spine Distance (mm)  ",
+           " "
 )
 
 ## Spine position ####
 
-island_fig(spine_position_means_island,
+island_spine_pos <- island_fig(spine_position_means_island,
            spine_position_means_island$spine_position_mean_1,
            spine_position_means_island$spine_position_mean_0,
-           "Mericarp Spine Position",
-           "Means per island"
+           "Spine Position",
+           " "
 )
 
-island_fig(spine_position_means_pop,
+pop_spine_pos <- island_fig(spine_position_means_pop,
            spine_position_means_pop$spine_position_mean_1,
            spine_position_means_pop$spine_position_mean_0,
-           "Mericarp Spine Position",
-           "Means per populations"
+           "Spine Position",
+           " "
 )
 
 # Spine position was taken as a factor, so I am not sure if it should be
 # summarized this way.
 # 
 # 
+# Individual traits figure ####
+# Supplemental figure with individual mericarp traits. From the PCA.
+Q1_island_plot <- ggarrange(#island_length,
+                            #island_width,
+                            island_depth,
+                            #island_spine,
+                            island_tip_distance,
+                            island_spine_pos,
+                            common.legend = T,
+                            
+                            legend = "right",
+                               labels = c("D", "E", "F"),
+                               ncol = 3,
+                               nrow = 1)
+
+Q1_pop_plot <- ggarrange(pop_length,
+  pop_width,
+  #pop_depth,
+  pop_spine,
+  #pop_tip_distance,
+  #pop_spine_pos,
+  common.legend = T,
+  
+  legend = "right",
+  labels = c("A", "B", "C"),
+  ncol = 3,
+  nrow = 1)
 
