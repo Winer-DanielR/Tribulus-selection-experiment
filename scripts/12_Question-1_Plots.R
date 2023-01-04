@@ -65,8 +65,8 @@ island_fig <- function(dataset, x, y, title, subtitle)
 
 ggplot(lower_spines_island) +
   aes(
-    x = eaten,
-    y = uneaten,
+    x = freq_1,
+    y = freq_0,
     colour = island,
     shape = lower_spine
   ) +
@@ -92,8 +92,8 @@ ggplot(lower_spines_island) +
 #### All populations in a plot ####
 ggplot(lower_spines_pop) +
   aes(
-    x = eaten,
-    y = uneaten,
+    x = freq_1,
+    y = freq_0,
     colour = island,
     shape = lower_spine
   ) +
@@ -119,8 +119,8 @@ ggplot(lower_spines_pop) +
 #### All populations separated ####
 ggplot(lower_spines_pop) +
   aes(
-    x = eaten,
-    y = uneaten,
+    x = freq_1,
+    y = freq_0,
     colour = island,
     shape = lower_spine
   ) +
@@ -151,7 +151,7 @@ ggplot(lower_spines_pop) +
 
 # By island separated. Spine position counts
 ggplot(spine_position_island) +
-  aes(x = uneaten, y = eaten, colour = spine_position) +
+  aes(x = freq_0, y = freq_1, colour = spine_position) +
   geom_point(shape = "circle", size = 3.3) +
   scale_color_manual(
     values = c(`0` = "#1B9E77",
@@ -178,7 +178,7 @@ ggplot(spine_position_island) +
 # By island showing populations ###
 
 ggplot(spine_position_pop) +
-  aes(x = uneaten, y = eaten, colour = spine_position) +
+  aes(x = freq_0, y = freq_1, colour = spine_position) +
   geom_point(shape = "circle", size = 3.3) +
   scale_color_manual(
     values = c(`0` = "#1B9E77",

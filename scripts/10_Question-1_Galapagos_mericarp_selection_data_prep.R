@@ -324,29 +324,41 @@ lower_spines <- group_by(lower_spines, island, eaten)
 
 # Count the frequency of lower spines
 lower_spines_island <- dplyr::count(lower_spines, lower_spine)
+# This counts the number of mericarps that were eaten (or not) that have lower spines (or not)
+
+# Frequencies of lower spines
+lower_spines_island <- lower_spines_island %>%  
+  group_by(island) %>% mutate(freq = n/sum(n))
+# I think this way you estimate the frequency of mericarps with either lower spines
+# or not lower spines that were eaten or not per island.
+# The total sum of mericarps per island and the frequency of mericarps with (or not)]
+# lower spines that were eaten (or not).
 
 ## Pivot table
 ## To compare eaten and uneaten mericarps
 lower_spines_island <- pivot_wider(lower_spines_island, names_from = eaten,
-                                               values_from = c(4))
+                                               values_from = c(4:5))
 
-# Renamed the values of eaten mericarps
-lower_spines_island <- dplyr::rename(lower_spines_island, uneaten = "0")
-lower_spines_island <- dplyr::rename(lower_spines_island, eaten = "1")
+# Replace NAs for 0 frequencies
+lower_spines_island[is.na(lower_spines_island)] = 0
 
 #### Group by populations ####
 lower_spines <- group_by(lower_spines, island, population, eaten)
 
 lower_spines_pop <- dplyr::count(lower_spines, lower_spine)
 
+# Frequencies estimations. Per population
+lower_spines_pop <- lower_spines_pop %>%  
+  group_by(island, population) %>% mutate(freq = n/sum(n))
+
 ## Pivot table
 ## To compare eaten and uneaten mericarps
 lower_spines_pop <- pivot_wider(lower_spines_pop, names_from = eaten,
-                                  values_from = c(5))
+                                  values_from = c(5:6))
 
-# Renamed the values of eaten mericarps
-lower_spines_pop <- dplyr::rename(lower_spines_pop, uneaten = "0")
-lower_spines_pop <- dplyr::rename(lower_spines_pop, eaten = "1")
+# Replace NAs for 0 frequencies
+lower_spines_pop[is.na(lower_spines_pop)] = 0
+
 
 # write_csv(lower_spines_island, "lower_spines_island.csv")
 # write_csv(lower_spines_pop, "lower_spines_pop.csv")
@@ -368,6 +380,12 @@ spine_position <- group_by(spine_position, island, eaten)
 # 
 spine_position_island <- dplyr::count(spine_position, spine_position)
 
+
+spine_position_island <- spine_position_island %>%  
+  group_by(island) %>% mutate(freq = n/sum(n))
+# Sum of all mericarps frequencies per island and the frequency of positions
+
+
 # If is a continuous variable use this summary function
 # spine_position_means_island <- spine_position %>%  
 #   summarise_each(funs(spine_position_mean = mean,
@@ -382,11 +400,10 @@ spine_position_island <- dplyr::count(spine_position, spine_position)
 ## 
 
 spine_position_island <- pivot_wider(spine_position_island, names_from = eaten,
-                                               values_from = c(4))
+                                               values_from = c(4,5))
 
-# Renamed the values of eaten mericarps
-spine_position_island <- dplyr::rename(spine_position_island, uneaten = "0")
-spine_position_island <- dplyr::rename(spine_position_island, eaten = "1")
+# Replace NAs for 0s
+spine_position_island[is.na(spine_position_island)] = 0
 
 # spine_position_means_island <- pivot_wider(spine_position_means_island, names_from = eaten,
 #                                                values_from = c(3:6))
@@ -408,18 +425,20 @@ spine_position_pop <- dplyr::count(spine_position, spine_position)
 #   ), spine_position)
 
 
+# Frequencies estimations. Per population
+spine_position_pop <- spine_position_pop %>%  
+  group_by(island, population) %>% mutate(freq = n/sum(n))
+
 ## Pivot table
 ## To compare eaten and uneaten mericarps
 spine_position_pop <- pivot_wider(spine_position_pop, names_from = eaten,
-                                            values_from = c(5))
+                                            values_from = c(5,6))
+
+# Replace NAs as 0 frequencies
+spine_position_pop[is.na(spine_position_pop)] = 0
 
 # spine_position_means_pop$S_spine_position <- (spine_position_means_pop$spine_position_mean_0 - 
 #                                                         spine_position_means_pop$spine_position_mean_1)
-
-# Renamed the values of eaten mericarps
-spine_position_pop <- dplyr::rename(spine_position_pop, uneaten = "0")
-spine_position_pop <- dplyr::rename(spine_position_pop, eaten = "1")
-
 
 # write_csv(spine_position_island, "spine_position_island.csv")
 # write_csv(spine_position_pop, "spine_position_pop.csv")
