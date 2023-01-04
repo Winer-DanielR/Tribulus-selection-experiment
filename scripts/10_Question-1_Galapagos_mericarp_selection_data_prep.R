@@ -13,6 +13,8 @@
 # (size traits: length, depth, width and depth; 
 # and spine traits: longest spine, spine tip distance, lower spines) 
 # as predictor of survival (eaten/uneaten mericarps). 
+# The datasets are exported to the Processed Data folder.
+
 # We used Year, Island, and Population (nested within Island) as random factors ####
 
 # Load the point in time dataset ####
@@ -87,6 +89,9 @@ length_means_pop <- pivot_wider(length_means_pop, names_from = eaten,
 length_means_pop$S_length <- (length_means_pop$length_mean_0 - 
                                 length_means_pop$length_mean_1)
 
+# write_csv(length_means_island, "length_means_island.csv")
+# write_csv(length_means_pop, "length_means_pop.csv")
+
 # These new datasets are for the figure (See script 12)
 
 ## Width ####
@@ -132,6 +137,9 @@ width_means_pop <- pivot_wider(width_means_pop, names_from = eaten,
 
 width_means_pop$S_width <- (width_means_pop$width_mean_0 - 
                               width_means_pop$width_mean_1)
+
+# write_csv(width_means_island, "width_means_island.csv")
+# write_csv(width_means_pop, "width_means_pop.csv")
 
 
 
@@ -181,6 +189,10 @@ depth_means_pop$S_depth <- (depth_means_pop$depth_mean_0 -
                               depth_means_pop$depth_mean_1)
 
 
+# write_csv(depth_means_island, "depth_means_island.csv")
+# write_csv(depth_means_pop, "depth_means_pop.csv")
+
+
 ## Longest spine ####
 longest_spine <- select(point_time, c(1:7), longest_spine, eaten)
 longest_spine <- na.omit(longest_spine)
@@ -226,7 +238,11 @@ longest_spine_means_pop <- pivot_wider(longest_spine_means_pop, names_from = eat
 longest_spine_means_pop$S_longest_spine <- (longest_spine_means_pop$longest_spine_mean_0 - 
                               longest_spine_means_pop$longest_spine_mean_1)
 
-## Longest spine without zero ####
+
+# write_csv(longest_spine_means_island, "longest_spine_means_island.csv")
+# write_csv(longest_spine_means_pop, "longest_spine_means_pop.csv")
+
+# ## Longest spine without zero ####
 longest_spine_wozero <- dplyr::filter(longest_spine, !longest_spine == 0)
 
 ## Spine tip distance ####
@@ -277,6 +293,12 @@ spine_tip_distance_means_pop <- pivot_wider(spine_tip_distance_means_pop, names_
 spine_tip_distance_means_pop$S_spine_tip_distance <- (spine_tip_distance_means_pop$spine_tip_distance_mean_0 - 
                               spine_tip_distance_means_pop$spine_tip_distance_mean_1)
 
+
+# write_csv(spine_tip_distance_means_island, "spine_tip_distance_means_island.csv")
+# write_csv(spine_tip_distance_means_pop, "spine_tip_distance_means_pop.csv")
+
+
+
 ### Spine tip distance without zero #####
 # We removed mericarps without upper spines from analysis.These mericarps had a tip distance of 0.
 tip_distance_wozero <- dplyr::filter(tip_distance, !spine_tip_distance == 0)
@@ -326,6 +348,8 @@ lower_spines_pop <- pivot_wider(lower_spines_pop, names_from = eaten,
 lower_spines_pop <- dplyr::rename(lower_spines_pop, uneaten = "0")
 lower_spines_pop <- dplyr::rename(lower_spines_pop, eaten = "1")
 
+# write_csv(lower_spines_island, "lower_spines_island.csv")
+# write_csv(lower_spines_pop, "lower_spines_pop.csv")
 
 
 ## Spine position (as factor) ####
@@ -395,6 +419,11 @@ spine_position_pop <- pivot_wider(spine_position_pop, names_from = eaten,
 # Renamed the values of eaten mericarps
 spine_position_pop <- dplyr::rename(spine_position_pop, uneaten = "0")
 spine_position_pop <- dplyr::rename(spine_position_pop, eaten = "1")
+
+
+# write_csv(spine_position_island, "spine_position_island.csv")
+# write_csv(spine_position_pop, "spine_position_pop.csv")
+
 
 ## Spine position wihtout zero ####
 spine_position_wozero <- dplyr::filter(spine_position, !spine_position == 0)
