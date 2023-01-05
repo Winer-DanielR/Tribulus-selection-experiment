@@ -312,6 +312,18 @@ tip_distance_wozero <- dplyr::filter(tip_distance, !spine_tip_distance == 0)
 lower_spines <- select(point_time, c(1:7), lower_spine, eaten)
 lower_spines <- na.omit(lower_spines)
 
+#Extract the frequencies of total lower spines by island
+lower_spines <- group_by(lower_spines, island)
+lower_spines_count_island <- dplyr::count(lower_spines, lower_spine)
+lower_spines_count_island <- lower_spines_count_island %>%  
+  group_by(island) %>% mutate(freq_all = n/sum(n))
+
+# Extract the frequencies of total lower spines by population
+lower_spines <- group_by(lower_spines, island, population)
+lower_spines_count_population <- dplyr::count(lower_spines, lower_spine)
+lower_spines_count_population <- lower_spines_count_population %>%  
+  group_by(population) %>% mutate(freq_all = n/sum(n))
+
 
 ### Group for count estimates ####
 ### One way to estimate this for lower spines to count the frequency of eaten
@@ -342,6 +354,12 @@ lower_spines_island <- pivot_wider(lower_spines_island, names_from = eaten,
 # Replace NAs for 0 frequencies
 lower_spines_island[is.na(lower_spines_island)] = 0
 
+## Join lower spines by island with total lower spine frequency
+lower_spines_island <- right_join(lower_spines_island, 
+                                  lower_spines_count,
+                                  lower_spines_island,
+                                  by = c("island", "lower_spine"))
+
 #### Group by populations ####
 lower_spines <- group_by(lower_spines, island, population, eaten)
 
@@ -359,9 +377,22 @@ lower_spines_pop <- pivot_wider(lower_spines_pop, names_from = eaten,
 # Replace NAs for 0 frequencies
 lower_spines_pop[is.na(lower_spines_pop)] = 0
 
+## Join lower spines by island with total lower spine frequency
+lower_spines_pop <- right_join(lower_spines_pop, 
+                                  lower_spines_count_population,
+                                  lower_spines_pop,
+                                  by = c("island", "population","lower_spine"))
 
-# write_csv(lower_spines_island, "lower_spines_island.csv")
-# write_csv(lower_spines_pop, "lower_spines_pop.csv")
+
+# Calculate S estimates
+## Lower spine ####
+### S*estimates ####
+lower_spines_island$S_lower_spine <- (lower_spines_island$freq_0 - lower_spine_island$freq_1)
+lower_spines_pop$S_lower_spine <- (lower_spines_pop$freq_0 - lower_spines_pop$freq_1)
+
+
+#write_csv(lower_spines_island, "lower_spines_island.csv")
+#write_csv(lower_spines_pop, "lower_spines_pop.csv")
 
 
 ## Spine position (as factor) ####
