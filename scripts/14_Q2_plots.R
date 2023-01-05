@@ -4,13 +4,53 @@
 # By: Daniel Reyes
 # 
 # Goal: ####
-# This script contains the format and code the figure of question 1.
+# This script contains the format and code the figure of question 2.
 # 
 # Description: #### 
-# First, we set up the theme and functions for each plot.
+# First, load the datasets
+# Then, we set up the theme and functions for each plot.
+# The plot is a point plot between mean traits and selection estimate (uneaten - eaten)
+#
 # 
-# The figure is a 1:1 ratio line comparing eaten and uneaten mericarps. Per traits. 
-# CHECK LOWER SPINES METHODS HOW TO SUMMARIZE
+
+# Data loading ####
+## Islands ####
+depth_island <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Q2 trait datasets/depth_island_Q2.csv")
+length_island <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Q2 trait datasets/length_island_Q2.csv")
+longest_spine_island <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Q2 trait datasets/longest_spine_island_Q2.csv")
+tip_distance_island <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Q2 trait datasets/tip_distance_island_Q2.csv")
+width_island <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Q2 trait datasets/width_island_Q2.csv")
+
+
+## Populations ####
+depth_pop <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Q2 trait datasets/depth_population_Q2.csv")
+length_pop <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Q2 trait datasets/length_population_Q2.csv")
+longest_spine_pop <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Q2 trait datasets/longest_spine_population_Q2.csv")
+tip_distance_pop <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Q2 trait datasets/tip_distance_population_Q2.csv")
+width_pop <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Q2 trait datasets/width_population_Q2.csv")
+
+# Data preparation ####
+# Making char into factors (island, populations)
+# 
+### Island ####
+depth_island <- depth_island %>% mutate_at(vars(island), list(factor))
+length_island <- length_island %>% mutate_at(vars(island), list(factor))
+longest_spine_island <- longest_spine_island %>% mutate_at(vars(island), list(factor))
+lower_spine_island  <- lower_spine_island %>% mutate_at(vars(island, lower_spine), list(factor))
+spine_position_island <- spine_position_island %>% mutate_at(vars(island, spine_position), list(factor))
+tip_distance_island <- tip_distance_island %>% mutate_at(vars(island), list(factor))
+width_island <- width_island %>% mutate_at(vars(island), list(factor))
+
+
+### Populations #####
+depth_pop <- depth_pop %>% mutate_at(vars(island, population), list(factor))
+length_pop <- length_pop %>% mutate_at(vars(island, population), list(factor))
+longest_spine_pop  <- longest_spine_pop %>% mutate_at(vars(island, population), list(factor))
+lower_spine_pop <- lower_spine_pop %>% mutate_at(vars(island, population, lower_spine), list(factor))
+spine_position_pop <- spine_position_pop %>% mutate_at(vars(island, population, spine_position), list(factor))
+tip_distance_pop <- tip_distance_pop %>% mutate_at(vars(island, population), list(factor))
+width_pop <- width_pop %>% mutate_at(vars(island, population), list(factor))
+
 
 # Plot theme and function ####
 ## Theme ####
@@ -49,13 +89,17 @@ island_fig <- function(dataset, x, y, title, subtitle)
                           "#CC79A7",
                           "#666666")) + # Set colors
                             labs(
-                              x = "Eaten",
-                              y = "Uneaten",
+                              x = "Selection (Uneaten - Eaten)",
+                              y = "Mean Trait",
                               title = title,
                               subtitle = subtitle,
                               color = "Islands"
                             ) +
     plot_theme +
+    #geom_smooth(method = "lm")
+    #scale_x_continuous(limits = c(0,NA)) +
+    #scale_y_continuous(limits = c(0,NA)) +
+    geom_smooth(color = "black", size = 1, method = "lm",aes(group=1)) +
     geom_abline(color = "black", size = 1) # Abline is a 1:1 line!
 }
 
@@ -203,85 +247,86 @@ ggplot(spine_position_pop) +
   facet_wrap(vars(island), scales = "free")
 
 
+## Depth ####
+
+island_depth <- island_fig(depth_island,
+                           depth_island$S_depth,
+                           depth_island$mean_all,
+                           "Mericarp Depth (mm)  ",
+                           " ")
+
+pop_depth <- island_fig(depth_pop,
+                        depth_pop$S_depth,
+                        depth_pop$mean_all,
+                        "Mericarp Depth (mm)  ",
+                        " "
+)
+
+
 ## Length ####
 
-island_length <- island_fig(length_means_island, #Dataset
-                            length_means_island$length_mean_1, # x label (eaten)
-                            length_means_island$length_mean_0, # y label (uneaten)
+island_length <- island_fig(length_island, #Dataset
+                            length_island$S_length, # x label (eaten)
+                            length_island$mean_all, # y label (uneaten)
                             "Mericarp Length (mm)  ", # Title
                             " " # Subtitle (Island or Populations)
 )
 
-pop_length <- island_fig(length_means_pop,
-                         length_means_pop$length_mean_1,
-                         length_means_pop$length_mean_0,
+pop_length <- island_fig(length_pop,
+                         length_pop$S_length,
+                         length_pop$mean_all,
                          "Mericarp Length (mm)  ",
                          " "
 )
 
 ## Width ####
 
-island_width <- island_fig(width_means_island,
-                           width_means_island$width_mean_1,
-                           width_means_island$width_mean_0,
+island_width <- island_fig(width_island,
+                           width_island$S_width,
+                           width_island$mean_all,
                            "Mericarp Width (mm)  ",
                            " "
 )
 
 
-pop_width <- island_fig(width_means_pop,
-                        width_means_pop$width_mean_1,
-                        width_means_pop$width_mean_0,
+pop_width <- island_fig(width_pop,
+                        width_pop$S_width,
+                        width_pop$mean_all,
                         "Mericarp Width (mm)  ",
                         " "
 )
 
 
-## Depth ####
-
-island_depth <- island_fig(depth_means_island,
-                           depth_means_island$depth_mean_1,
-                           depth_means_island$depth_mean_0,
-                           "Mericarp Depth (mm)  ",
-                           " "
-)
-
-pop_depth <- island_fig(depth_means_pop,
-                        depth_means_pop$depth_mean_1,
-                        depth_means_pop$depth_mean_0,
-                        "Mericarp Depth (mm)  ",
-                        " "
-)
 
 
 ## Longest Spine ####
 
-island_spine <- island_fig(longest_spine_means_island,
-                           longest_spine_means_island$longest_spine_mean_1,
-                           longest_spine_means_island$longest_spine_mean_0,
+island_spine <- island_fig(longest_spine_island,
+                           longest_spine_island$S_longest_spine,
+                           longest_spine_island$mean_all,
                            "Spine Length (mm)  ",
                            " "
 )
 
-pop_spine <- island_fig(longest_spine_means_pop,
-                        longest_spine_means_pop$longest_spine_mean_1,
-                        longest_spine_means_pop$longest_spine_mean_0,
+pop_spine <- island_fig(longest_spine_pop,
+                        longest_spine_pop$S_longest_spine,
+                        longest_spine_pop$mean_all,
                         "Spine Length (mm)  ",
                         " "
 )
 
 ## Spine tip distance ####
 
-island_tip_distance <- island_fig(spine_tip_distance_means_island,
-                                  spine_tip_distance_means_island$spine_tip_distance_mean_1,
-                                  spine_tip_distance_means_island$spine_tip_distance_mean_0,
+island_tip_distance <- island_fig(tip_distance_island,
+                                  tip_distance_island$S_spine_tip_distance,
+                                  tip_distance_island$mean_all,
                                   "Spine Distance (mm)  ",
                                   " "
 )
 
-pop_tip_distance <- island_fig(spine_tip_distance_means_pop,
-                               spine_tip_distance_means_pop$spine_tip_distance_mean_1,
-                               spine_tip_distance_means_pop$spine_tip_distance_mean_0,
+pop_tip_distance <- island_fig(tip_distance_pop,
+                               tip_distance_pop$S_spine_tip_distance,
+                               tip_distance_pop$mean_all,
                                "Spine Distance (mm)  ",
                                " "
 )
