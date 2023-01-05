@@ -176,13 +176,6 @@ longest_spine_pop <- right_join(longest_spine_pop, longest_spine_pop_mean,
  # 
 
 
-## Lower spine ####
-### S*estimates ####
-lower_spine_island$S_lower_spine <- (lower_spine_island$freq_0 - lower_spine_island$freq_1)
-lower_spine_pop$S_lower_spine <- (lower_spine_pop$freq_0 - lower_spine_pop$freq_1)
-
-
- 
 ## tip_distance ####
 str(tip_distance)
 tip_distance <- ungroup(tip_distance) # I am not sure if this does anything but just in case ungroup the dataset
