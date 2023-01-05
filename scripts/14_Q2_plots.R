@@ -20,7 +20,8 @@ length_island <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter
 longest_spine_island <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Q2 trait datasets/longest_spine_island_Q2.csv")
 tip_distance_island <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Q2 trait datasets/tip_distance_island_Q2.csv")
 width_island <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Q2 trait datasets/width_island_Q2.csv")
-
+lower_spine_island <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Q2 trait datasets/lower_spines_island_Q2.csv")
+spine_position_island <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Q2 trait datasets/spine_position_island_Q2.csv")
 
 ## Populations ####
 depth_pop <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Q2 trait datasets/depth_population_Q2.csv")
@@ -28,6 +29,9 @@ length_pop <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. T
 longest_spine_pop <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Q2 trait datasets/longest_spine_population_Q2.csv")
 tip_distance_pop <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Q2 trait datasets/tip_distance_population_Q2.csv")
 width_pop <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Q2 trait datasets/width_population_Q2.csv")
+lower_spine_pop <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Q2 trait datasets/lower_spines_pop_Q2.csv")
+spine_position_pop <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Q2 trait datasets/spine_position_pop_Q2.csv")
+
 
 # Data preparation ####
 # Making char into factors (island, populations)
@@ -99,18 +103,18 @@ island_fig <- function(dataset, x, y, title, subtitle)
     #geom_smooth(method = "lm")
     #scale_x_continuous(limits = c(0,NA)) +
     #scale_y_continuous(limits = c(0,NA)) +
-    geom_smooth(color = "black", size = 1, method = "lm",aes(group=1)) +
-    geom_abline(color = "black", size = 1) # Abline is a 1:1 line!
+    geom_smooth(color = "black", size = 1, method = "lm",aes(group=1))
+    # + geom_abline(color = "black", size = 1) # Abline is a 1:1 line!
 }
 
 # Plots ####
 ## Lower Spine ####
 # Lower spine plots are based on their counts. They don't use the function above.
 
-ggplot(lower_spines_island) +
+ggplot(lower_spine_island) +
   aes(
-    x = freq_1,
-    y = freq_0,
+    x = S_lower_spine,
+    y = freq_all,
     colour = island,
     shape = lower_spine
   ) +
@@ -124,20 +128,21 @@ ggplot(lower_spines_island) +
                         "#CC79A7",
                         "#666666")) +
                           labs(
-                            x = "Eaten",
-                            y = "Uneaten",
+                            x = "Selection (Uneaten - Eaten)",
+                            y = "Total frequency Island",
                             title = "Lower Spines",
                             color = "Islands",
                             shape = "Presence of lower spines"
                           ) +
   plot_theme +
-  geom_abline(color = "black", size = 1)
+  geom_smooth(color = "black", size = 1, method = "lm",aes(group=1))
+  #geom_abline(color = "black", size = 1)
 
 #### All populations in a plot ####
-ggplot(lower_spines_pop) +
+ggplot(lower_spine_pop) +
   aes(
-    x = freq_1,
-    y = freq_0,
+    x = S_lower_spine,
+    y = freq_all,
     colour = island,
     shape = lower_spine
   ) +
@@ -151,20 +156,21 @@ ggplot(lower_spines_pop) +
                         "#CC79A7",
                         "#666666")) +
                           labs(
-                            x = "Eaten",
-                            y = "Uneaten",
+                            x = "Selection (Uneaten - Eaten)",
+                            y = "Total Frequency Population",
                             title = "Lower Spines",
                             color = "Islands",
                             shape = "Presence of lower spines"
                           ) +
   plot_theme +
-  geom_abline(color = "black", size = 1)
+  geom_smooth(color = "black", size = 1, method = "lm",aes(group=1))
+  #geom_abline(color = "black", size = 1)
 
 #### All populations separated ####
-ggplot(lower_spines_pop) +
+ggplot(lower_spine_pop) +
   aes(
-    x = freq_1,
-    y = freq_0,
+    x = S_lower_spine,
+    y = freq_all,
     colour = island,
     shape = lower_spine
   ) +
@@ -178,14 +184,15 @@ ggplot(lower_spines_pop) +
                         "#CC79A7",
                         "#666666")) +
                           labs(
-                            x = "Eaten",
-                            y = "Uneaten",
+                            x = "Selection (Uneaten - Eaten)",
+                            y = "Total Frequency Population",
                             title = "Lower Spines per population",
                             color = "Islands",
                             shape = "Presence of lower spines"
                           ) +
   plot_theme + theme(axis.line = element_line()) +
-  geom_abline(color = "black", size = 0.8) +
+  #geom_abline(color = "black", size = 0.8) +
+  geom_smooth(color = "black", size = 1, method = "lm",aes(group=1)) +
   facet_wrap(vars(island), scales = "free")
 
 
@@ -195,7 +202,7 @@ ggplot(lower_spines_pop) +
 
 # By island separated. Spine position counts
 ggplot(spine_position_island) +
-  aes(x = freq_0, y = freq_1, colour = spine_position) +
+  aes(x = S_spine_position, y = freq_all, colour = spine_position) +
   geom_point(shape = "circle", size = 3.3) +
   scale_color_manual(
     values = c(`0` = "#1B9E77",
@@ -210,19 +217,20 @@ ggplot(spine_position_island) +
                `70` = "#666666")
   ) +
   labs(
-    x = "Eaten",
-    y = "Uneaten",
+    x = "Selection (Uneaten - Eaten)",
+    y = "Total frequency Island",
     title = "Spine Position Island",
     color = "Spine Angle",
   ) +
   plot_theme +
-  geom_abline(color = "black", size = 1) +
+  #geom_abline(color = "black", size = 1) +
+  geom_smooth(color = "black", size = 1, method = "lm",aes(group=1)) +
   facet_wrap(vars(island), scales = "free")
 
 # By island showing populations ###
 
 ggplot(spine_position_pop) +
-  aes(x = freq_0, y = freq_1, colour = spine_position) +
+  aes(x = S_spine_position, y = freq_all, colour = spine_position) +
   geom_point(shape = "circle", size = 3.3) +
   scale_color_manual(
     values = c(`0` = "#1B9E77",
@@ -237,13 +245,14 @@ ggplot(spine_position_pop) +
                `70` = "#666666")
   ) +
   labs(
-    x = "Eaten",
-    y = "Uneaten",
+    x = "Selection (Uneaten - Eaten)",
+    y = "Total Frequency Population",
     title = "Spine Position Island",
     color = "Spine Angle",
   ) +
   plot_theme +
-  geom_abline(color = "black", size = 1) +
+  #geom_abline(color = "black", size = 1) +
+  geom_smooth(color = "black", size = 1, method = "lm",aes(group=1)) +
   facet_wrap(vars(island), scales = "free")
 
 
