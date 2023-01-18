@@ -377,7 +377,11 @@ lower_spines_pop <- pivot_wider(lower_spines_pop, names_from = eaten,
 # Replace NAs for 0 frequencies
 lower_spines_pop[is.na(lower_spines_pop)] = 0
 
+<<<<<<< HEAD
 ## Join lower spines by population with total lower spine frequency
+=======
+## Join lower spines by island with total lower spine frequency
+>>>>>>> Q1_PT_Traits_Eaten_Uneaten
 lower_spines_pop <- right_join(lower_spines_pop, 
                                   lower_spines_count_population,
                                   lower_spines_pop,
@@ -385,10 +389,19 @@ lower_spines_pop <- right_join(lower_spines_pop,
 
 
 # Calculate S estimates
+<<<<<<< HEAD
 lower_spines_island$S_lower_spine <- (lower_spines_island$freq_0 - lower_spine_island$freq_1)
 lower_spines_pop$S_lower_spine <- (lower_spines_pop$freq_0 - lower_spines_pop$freq_1)
 
 
+=======
+## Lower spine ####
+### S*estimates ####
+lower_spines_island$S_lower_spine <- (lower_spines_island$freq_0 - lower_spine_island$freq_1)
+lower_spines_pop$S_lower_spine <- (lower_spines_pop$freq_0 - lower_spines_pop$freq_1)
+
+
+>>>>>>> Q1_PT_Traits_Eaten_Uneaten
 #write_csv(lower_spines_island, "lower_spines_island.csv")
 #write_csv(lower_spines_pop, "lower_spines_pop.csv")
 
