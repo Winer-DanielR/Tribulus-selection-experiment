@@ -1,10 +1,9 @@
 # Q2 Data loading ####
+# This script was used once to create the total means per trait. After creating the datasheets,
+# they were exported as .csv tables, that included all the information to create the plots
+# See script 14.
+# Check if this is useful for the model testing of question 2.
 
-
-# These datasets show the trait mean of all mericarps and the mericarps that survived.
-# These means were estimated in script 07, from the point in time dataset.
-# The difference between these means is selection.
-# This plot compares the mean difference and creates a vector showing the direction and magnitude of selection
 
 # Load datasets where mean trait is found ####
 depth <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Point in time trait means/depth survival mean.csv")
