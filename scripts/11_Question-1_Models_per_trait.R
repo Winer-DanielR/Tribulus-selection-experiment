@@ -16,7 +16,6 @@
 # All of the covariates are random effects. For now this is the simplest model.
 
 length_m1 <- glmmTMB(length ~ eaten + 
-                    (1|year) +
                     (1|island) +
                     (1|island/population), #This is population nested with island
                   data = length,
@@ -24,7 +23,7 @@ length_m1 <- glmmTMB(length ~ eaten +
 
 ### Model diagnostics ####
 diagnostic(resid(length_m1)) # The untransformed data seem to work fine.
-
+testResiduals(length_m1)
 
 ### Results ####
 summary(length_m1)
