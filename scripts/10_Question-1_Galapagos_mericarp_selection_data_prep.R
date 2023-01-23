@@ -309,8 +309,7 @@ tip_distance_wozero <- dplyr::filter(tip_distance, !spine_tip_distance == 0)
 # 21 mericarps without upper spines.
 
 ## Lower spines ####
-## Lower spines is a binomial trait, I need to summarize this in another way to 
-## group them as shown in the other figures. ASK ANDREW.
+## Lower spines is a binomial trait
 lower_spines <- select(point_time, c(1:7), lower_spine, eaten)
 lower_spines <- na.omit(lower_spines)
 
