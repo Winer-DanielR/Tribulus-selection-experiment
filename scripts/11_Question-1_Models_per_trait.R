@@ -293,7 +293,7 @@ EM_lower <- emmeans(lower_spine_m1, ~ eaten, type = "response")
 plot(EM_lower, comparisons = T) + labs(title = "Mericarp Lower Spines")
 pwpp(EM_lower)
 
-### Spine position ####
+## Spine position ####
 ### Spine position is categorical
 spine_position_m1 <- glmmTMB(factor(spine_position) ~ eaten +
                             (1|island/population),
