@@ -72,14 +72,15 @@ spine_position <- na.omit(spine_position)
 histogram(length$length, breaks = 50)
 
 length_m1 <- glmmTMB(length ~ eaten + 
-                    #(1|island) + #Removed Island because it did not converged. Maybe too few groups?
                     (1|island/population), #This is population nested with island
                   data = length,
                   REML = F)
 
+# When islands are included we get a warning message for convergence problems.
+
 ### Model diagnostics ####
 # diagnostic(resid(length_m1)) # The untransformed data seem to work fine.
-# testResiduals(length_m1)
+testResiduals(length_m1)
 
 ### Results ####
 summary(length_m1)
@@ -93,90 +94,49 @@ plot(EM_length, comparisons = TRUE) + labs(title = "Mericarp Length")
 pwpp(EM_length)
 
 ## Width ####
-## 
 ## Trait distributions
-
 histogram(width$width, breaks = 50)
-# It seems there are some outliers
+# It seems there are some outliers, we could remove the ones larger than 6.
+width <- filter(width, !width > 6) # 10 mericarps removed
  
 width_m1 <- glmmTMB(width ~ eaten + 
-                    #(1|island) +
                     (1|island/population),
                   data = width,
                   REML = F)
 
-width_m2 <- glmmTMB(log(width) ~ eaten + 
-                   #(1|island) +
-                   (1|island/population), 
-                 data = width,
-                 REML = F)
-
-width_m3 <- glmmTMB(sqrt(width) ~ eaten + 
-                   #(1|island) +
-                   (1|island/population), 
-                 data = width,
-                 REML = F)
-
-
-
 ### Model diagnostics ####
 # diagnostic(resid(width_m1))
-# diagnostic(resid(width_m2))
-# diagnostic(resid(width_m3))
-# 
 # testResiduals(width_m1)
-# testResiduals(width_m2)
-# testResiduals(width_m3)
 
-# It seems there are a few outliers
-
-### Data adjustments ####
+### Width data adjustments ####
 # Check residual distributions.
 hist(resid(width_m1), breaks = 50) # It seems that mericarps with 5 mm of with are outliers
 
+# Using the residuals shows more outliers, so I can filter them further.
+# Include residuals on the data set.
 width$residuals <- resid(width_m1)
 
 # I filter residuals that are lower than -5 and larger than 5.
 width_filter <- filter(width, !residuals > 2)
 width_filter <- filter(width_filter, !residuals < -2)
+
 hist(width_filter$residuals, breaks = 50)
 
 width_m1 <- glmmTMB(width ~ eaten + 
-                      #(1|island) +
                       (1|island/population),
                     data = width_filter,
                     REML = F)
 
-# width_m2 <- glmmTMB(log(width) ~ eaten + 
-#                       (1|island) +
-#                       (1|island/population), 
-#                     data = width_filter,
-#                     REML = F)
-# 
-# width_m3 <- glmmTMB(sqrt(width) ~ eaten + 
-#                       (1|island) +
-#                       (1|island/population), 
-#                     data = width_filter,
-#                     REML = F)
-
-
-### RUN again with width_filter! ####
+# RUN again with width_filter!
 ### 
 ### Model diagnostics ####
-# diagnostic(resid(width_m1))
-# diagnostic(resid(width_m2))
-# diagnostic(resid(width_m3))
-
-# testResiduals(width_m1)
-# testResiduals(width_m2)
-# testResiduals(width_m3)
-
+ # diagnostic(resid(width_m1))
+ # testResiduals(width_m1)
 
 ### Results ####
 summary(width_m1)
 Anova(width_m1) # Not significant.
  
-
 ## Emmean: Width ####
 EM_width <- emmeans(width_m1, ~ eaten, type = "response")
 ### Emmean plot: Width ####
@@ -184,45 +144,27 @@ plot(EM_width, comparisons = T) + labs(title = "Mericarp Width")
 pwpp(EM_width)
 
 ## Depth ####
+# Check distribution
+histogram(depth$depth, breaks = 50)
+# It seems there are outliers above 8 mm that I could remove
+depth <- filter(depth, !depth > 8) # 7 mericarps removed
 
 depth_m1 <- glmmTMB(depth ~ eaten + 
-                   #(1|year) +
-                   #(1|island) +
                    (1|island/population),
                  data = depth,
                  REML = F)
-
-# Warning non-convergence problem.
-# If I remove Islands then it converges
-
-# depth_m2 <- glmmTMB(log(depth) ~ eaten + 
-#                       (1|year) +
-#                       (1|island) +
-#                       (1|island/population),
-#                     data = depth,
-#                     REML = F)
-# 
-# depth_m3 <- glmmTMB(sqrt(depth) ~ eaten + 
-#                       (1|year) +
-#                       (1|island) +
-#                       (1|island/population),
-#                     data = depth,
-#                     REML = F)
 
 #### Model Diagnostics ####
 hist(resid(depth_m1), breaks = 50)
 
 # Residual histograms
 diagnostic(resid(depth_m1))
-# diagnostic(resid(depth_m2))
-# diagnostic(resid(depth_m3))
- 
+
 # DHARMa
  testResiduals(depth_m1)
- # testResiduals(depth_m2)
- # testResiduals(depth_m3)
- 
+
 # Results
+summary(depth_m1)
 Anova(depth_m1)
 
 ## Emmeans estimates: Depth ####
@@ -230,101 +172,58 @@ EM_depth <- emmeans(depth_m1, ~ eaten)
 ### Emmeans plot: Depth ####
 plot(EM_depth, comparisons = T) + labs(title = "Mericarp Depth")
 pwpp(EM_depth)
-### Percentage difference ####
-((4.76/4.24 - 1)*100) # Mericarps ~ 12% deeper on islands
 
 ## Removed Zero longest spine ####
-# Then, I tried the models again. This time, removing the mericarps with
-# spine tip distance of 0.
-# This model did not converged well. There are some outliers.
-# Raw data looks the best
+# Check trait distributions
 histogram(longest_spine_wozero$longest_spine, breaks = 50)
-
+# It seems the distribution is not totally normal?
+# I need to transform it
 
 longest_spine_m1 <- glmmTMB(longest_spine ~ eaten +
-                                     #(1|year) +
-                                     (1|island) +
                                      (1|island/population),
                                      data=longest_spine_wozero,REML=F)
 
-
-# ANOVA type II test
-Anova(meri_tip_distance_m4)
-
 # Model Diagnostics
-# diagnostic(resid(meri_tip_distance_m4))
-# diagnostic(resid(meri_tip_distance_m5))
-# diagnostic(resid(meri_tip_distance_m6))
+ diagnostic(resid(longest_spine_m1))
+ # It seems that there is a difference in the way this trait was measured
 
-# The residual distribution showed some outliers. 
-# Check residual distributions after removing mericarps without spines.
-# I included the residual column into the dataset
-meri_tip_distance_wozero$residuals <- resid(meri_tip_distance_m4)
-# hist(resid(meri_tip_distance_m4), breaks = 20)
-# hist(meri_tip_distance_wozero$tip_distance, breaks = 20)
+### Longest spine data adjustments #### 
+ ggplot(longest_spine_wozero) +
+   aes(x = longest_spine, y = year) +
+   geom_boxplot(fill = "#112446") +
+   theme_minimal()
+# There is a difference between 2015 - 2016 to 2017 - 2019. 
+# I will filter 2015 - 2016 from the model
 
+ longest_spine_wozero <- filter(longest_spine_wozero, !year == "2015")
+ longest_spine_wozero <- filter(longest_spine_wozero, !year == "2016")
+ 
+# After removing these years, I check the distribution of the trait again
+
+ histogram(longest_spine_wozero$longest_spine, breaks = 50)
+# Now the distribution looks more normal
+# And run the model again
+  longest_spine_m1 <- glmmTMB(longest_spine ~ eaten +
+                               (1|island/population),
+                             data=longest_spine_wozero,REML=F)
+
+ # Model Diagnostics
+ diagnostic(resid(longest_spine_m1))
 # # DHARMa
-# testResiduals(meri_tip_distance_m1)
-# testResiduals(meri_tip_distance_m2)
-# testResiduals(meri_tip_distance_m3)
+ testResiduals(longest_spine_m1)
 
+# Results
+summary(longest_spine_m1)
+Anova(longest_spine_m1)
 
-# Based on the residual distributions and the trait distributions I filter the data
-
-##### Filter residuals (used in analysis) ####
-# I filter residuals that are lower than -5 and larger than 5.
-meri_tip_distance_wozero_filter <- filter(meri_tip_distance_wozero,
-                                          !residuals < -5)
-meri_tip_distance_wozero_filter <- filter(meri_tip_distance_wozero_filter,
-                                          !residuals > 5)
-
-# This removes specimen no.383
-
-# Create a new filtered dataset for spine tip distance
-# hist(meri_tip_distance_wozero_filter$residuals, breaks = 20)
-meri_tip_distance_wozero_filter <- filter(meri_tip_distance_wozero_filter, !is.na(residuals))
-
-# Ran the models with this filter data and raw data works best
-###### Raw data ####
-meri_tip_distance_m7 <- lmer(tip_distance ~ mainland_island +
-                                     year_collected +
-                               Herbarium +
-                                     (1|ID),
-                             na.action = na.exclude,
-                             data=meri_tip_distance_wozero_filter,REML=F)
-###### Log transformed data ####
-# meri_tip_distance_m8 <- lmer(log(tip_distance) ~ mainland_island +
-#                                      year_collected +
-#                                      (1|ID),
-#                              na.action = na.exclude,
-#                              data=meri_tip_distance_wozero_filter,REML=F)
-###### Squared-root data ####
-# meri_tip_distance_m9 <- lmer(sqrt(tip_distance) ~ mainland_island +
-#                                      year_collected +
-#                                      (1|ID),
-#                              na.action = na.exclude,
-#                              data=meri_tip_distance_wozero_filter,REML=F)
-
-
-# Diagnostic
-# diagnostic(resid(meri_tip_distance_m7))
-# diagnostic(resid(meri_tip_distance_m8))
-# diagnostic(resid(meri_tip_distance_m9))
-
-#Anova
-Anova(meri_tip_distance_m7)
-
-# DHARMa
-# testResiduals(meri_tip_distance_m7)
-
-## Emmeans estimates: Spine tip distance ####
+## Emmeans estimates: Longest spine ####
 # Zero filter data
-EM_tip_dist <- emmeans(meri_tip_distance_m7, ~ mainland_island)
+EM_long_spine <- emmeans(longest_spine_m1, ~ eaten)
 ### Emmeans plot: Spine tip distance ####
-plot(EM_tip_dist, comparisons = T) + labs(title = "Mericarp Tip distance")
-pwpp(EM_tip_dist)
-### Percentage difference ####
-((8.86/8.30 - 1)*100) # Mericarps ~ 6.66% more separated on islands
+plot(EM_long_spine, comparisons = T) + labs(title = "Longest Spine")
+pwpp(EM_long_spine)
+
+
 
 ## Lower spines ####
 # I tried to fit a glm
@@ -334,15 +233,20 @@ pwpp(EM_tip_dist)
 #                              data = meri_lower_spines, 
 #                              family = "binomial")
 
-meri_lower_spines_m1_glmm <- glmmTMB(factor(lower_spines) ~ mainland_island +
-                                       Herbarium +
-                                             (1|ID),
-                                     data = meri_lower_spines,
+lower_spine_m1 <- glmmTMB(factor(lower_spine) ~ eaten +
+                                       (1|island/population),
+                                     data = lower_spines,
                                      family = binomial)
+
+spine_position_m1 <- glmmTMB(factor(spine_position) ~ eaten +
+                            (1|island/population),
+                          data = spine_position,
+                          family = binomial(link = "logit"))
+
 # str(meri_lower_spines)
 ### ANOVA Type II test ####
 # Anova(meri_lower_spines_m1)
-Anova(meri_lower_spines_m1_glmm)
+Anova(lower_spine_m1)
 
 ### Model Diagnostics ####
 # # Residual histograms
