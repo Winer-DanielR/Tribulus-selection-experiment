@@ -38,4 +38,23 @@ width_pop <- width_pop %>% mutate_at(vars(island, population), list(factor))
 # Models ####
 # The structure of this model is to test the effect of mean trait values
 # and selection estimates.
+# mean trait value ~ mericarp selection
 ## Depth ####
+depth_m2 <- glmmTMB(mean_all ~ S_depth + 
+                      (1|island/population),
+                    data = depth_pop,
+                    na.action = na.exclude,
+                    REML = F)
+
+### Model Diagnostics ####
+# Residual histograms
+diagnostic(resid(depth_m2))
+# DHARMa
+testResiduals(depth_m2)
+# I am having issues with the diagnostics, I think is because of the number of 
+# observations. Perhaps I need to use individual trait values and a new column with selection estimates?
+# I need to check this with someone! 
+
+### Results ####
+summary(depth_m2)
+Anova(depth_m2)
