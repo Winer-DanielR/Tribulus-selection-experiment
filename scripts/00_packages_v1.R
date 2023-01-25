@@ -5,6 +5,7 @@
 
 # This script holds the packages used for analysis
 
+### Package script
 # Data preparation
 library(readr) #Reading datasets
 library(tidyverse) #Data manipulation/arrangement
@@ -24,8 +25,6 @@ library(lattice)
 library(Matrix)
 library(factoextra)
 library(optimx)
-library(glmmTMB)
-library (vegan)
 library(bbmle)
-library(DHARMa)
+library(vegan)
 
