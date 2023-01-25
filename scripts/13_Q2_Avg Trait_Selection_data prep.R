@@ -6,28 +6,28 @@
 
 
 # Load datasets where mean trait is found ####
-depth <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Point in time trait means/depth survival mean.csv")
-length <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Point in time trait means/length survival mean.csv")
-longest_spine <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Point in time trait means/longest spine survival mean.csv")
-spine_position <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Point in time trait means/spine position survival mean.csv")
-tip_distance <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Point in time trait means/tip distance survival mean.csv")
-width <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Point in time trait means/width survival mean.csv")
+depth <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Point in time means/depth survival mean.csv")
+length <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Point in time means/length survival mean.csv")
+longest_spine <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Point in time means/longest spine survival mean.csv")
+spine_position <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Point in time means/spine position survival mean.csv")
+tip_distance <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Point in time means/tip distance survival mean.csv")
+width <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Point in time means/width survival mean.csv")
 
 # Load datasets of Q1 where Selection estimates are found (uneaten - eaten) ####
-depth_island <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Q1 trait datasets/depth_means_island.csv")
-depth_pop <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Q1 trait datasets/depth_means_pop.csv")
-length_island <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Q1 trait datasets/length_means_island.csv")
-length_pop <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Q1 trait datasets/length_means_pop.csv")
-longest_spine_island <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Q1 trait datasets/longest_spine_means_island.csv")
-longest_spine_pop <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Q1 trait datasets/longest_spine_means_pop.csv")
-lower_spine_island <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Q1 trait datasets/lower_spines_island.csv")
-lower_spine_pop <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Q1 trait datasets/lower_spines_pop.csv")
-spine_position_island <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Q1 trait datasets/spine_position_island.csv")
-spine_position_pop <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Q1 trait datasets/spine_position_pop.csv")
-tip_distance_island <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Q1 trait datasets/spine_tip_distance_means_island.csv")
-tip_distance_pop <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Q1 trait datasets/spine_tip_distance_means_pop.csv")
-width_island <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Q1 trait datasets/width_means_island.csv")
-width_pop <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Q1 trait datasets/width_means_pop.csv")
+#depth_island <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Point in time means per year/depth_means_island.csv")
+depth_pop <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Point in time means per year/depth_means_pop_year.csv")
+#length_island <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Point in time means per year/length_means_island.csv")
+length_pop <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Point in time means per year/length_means_pop_year.csv")
+#longest_spine_island <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Point in time means per year/longest_spine_means_island.csv")
+longest_spine_pop <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Point in time means per year/longest_spine_means_pop_year.csv")
+#lower_spine_island <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Point in time means per year/lower_spines_island.csv")
+lower_spine_pop <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Point in time means per year/lower_spines_pop_year.csv")
+#spine_position_island <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Point in time means per year/spine_position_island.csv")
+spine_position_pop <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Point in time means per year/spine_position_pop_year.csv")
+#tip_distance_island <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Point in time means per year/spine_tip_distance_means_island.csv")
+tip_distance_pop <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Point in time means per year/spine_tip_distance_means_pop_year.csv")
+#width_island <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Point in time means per year/width_means_island.csv")
+width_pop <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Point in time means per year/width_means_pop_year.csv")
 
 # Data prepping ####
 # This is converting populations and islands into factors.
@@ -51,13 +51,13 @@ width_island <- width_island %>% mutate_at(vars(island), list(factor))
 
 
 ### Populations #####
-depth_pop <- depth_pop %>% mutate_at(vars(island, population), list(factor))
-length_pop <- length_pop %>% mutate_at(vars(island, population), list(factor))
-longest_spine_pop  <- longest_spine_pop %>% mutate_at(vars(island, population), list(factor))
-lower_spine_pop <- lower_spine_pop %>% mutate_at(vars(island, population, lower_spine), list(factor))
-spine_position_pop <- spine_position_pop %>% mutate_at(vars(island, population, spine_position), list(factor))
-tip_distance_pop <- tip_distance_pop %>% mutate_at(vars(island, population), list(factor))
-width_pop <- width_pop %>% mutate_at(vars(island, population), list(factor))
+depth_pop <- depth_pop %>% mutate_at(vars(year, island, population), list(factor))
+length_pop <- length_pop %>% mutate_at(vars(year, island, population), list(factor))
+longest_spine_pop  <- longest_spine_pop %>% mutate_at(vars(year, island, population), list(factor))
+lower_spine_pop <- lower_spine_pop %>% mutate_at(vars(year, island, population, lower_spine), list(factor))
+spine_position_pop <- spine_position_pop %>% mutate_at(vars(year, island, population, spine_position), list(factor))
+tip_distance_pop <- tip_distance_pop %>% mutate_at(vars(year, island, population), list(factor))
+width_pop <- width_pop %>% mutate_at(vars(year, island, population), list(factor))
 
 
 # Extract trait means and add them to the datasets ####
@@ -92,16 +92,16 @@ depth_island_mean <- depth_pivot %>% group_by(island) %>%
 depth_island <- right_join(depth_island, depth_island_mean,
                            depth_island, by = "island")
 
-depth_pop_mean <- depth_pivot %>% group_by(island, population) %>%
+depth_pop_mean <- depth_pivot %>% group_by(year, island, population) %>%
   summarize(mean_all = mean(all))
 
 depth_pop <- right_join(depth_pop, depth_pop_mean,
-                        depth_pop, by = c("island", "population"))
-
+                        depth_pop, by = c("year", "island", "population"))
+str(depth_pop)
 ### Export depth datasets ####
 ### I think is useful to export these datasets for future analysis.
  # write_csv(depth_island, "depth_island_Q2.csv")
- # write_csv(depth_pop, "depth_population_Q2.csv")
+ write_csv(depth_pop, "depth_mean_year.csv")
 # 
 
 
@@ -126,16 +126,16 @@ length_island_mean <- length_pivot %>% group_by(island) %>%
 length_island <- right_join(length_island, length_island_mean,
                            length_island, by = "island")
 
-length_pop_mean <- length_pivot %>% group_by(island, population) %>%
+length_pop_mean <- length_pivot %>% group_by(year, island, population) %>%
   summarize(mean_all = mean(all))
 
 length_pop <- right_join(length_pop, length_pop_mean,
-                        length_pop, by = c("island", "population"))
+                        length_pop, by = c("year", "island", "population"))
 
 ### Export length datasets ####
 ### I think is useful to export these datasets for future analysis.
 # write_csv(length_island, "length_island_Q2.csv")
-# write_csv(length_pop, "length_population_Q2.csv")
+# write_csv(length_pop, "length_mean_year.csv")
 # 
 # 
 # 
@@ -160,16 +160,16 @@ longest_spine_island_mean <- longest_spine_pivot %>% group_by(island) %>%
 longest_spine_island <- right_join(longest_spine_island, longest_spine_island_mean,
                             longest_spine_island, by = "island")
 
-longest_spine_pop_mean <- longest_spine_pivot %>% group_by(island, population) %>%
+longest_spine_pop_mean <- longest_spine_pivot %>% group_by(year, island, population) %>%
   summarize(mean_all = mean(all))
 
 longest_spine_pop <- right_join(longest_spine_pop, longest_spine_pop_mean,
-                         longest_spine_pop, by = c("island", "population"))
+                         longest_spine_pop, by = c( "year", "island", "population"))
 
 ### Export longest_spine datasets ####
 ### I think is useful to export these datasets for future analysis.
  # write_csv(longest_spine_island, "longest_spine_island_Q2.csv")
- # write_csv(longest_spine_pop, "longest_spine_population_Q2.csv")
+ # write_csv(longest_spine_pop, "longest_spine_mean_year.csv")
  # 
  # 
  # 
@@ -196,16 +196,16 @@ tip_distance_island_mean <- tip_distance_pivot %>% group_by(island) %>%
 tip_distance_island <- right_join(tip_distance_island, tip_distance_island_mean,
                                    tip_distance_island, by = "island")
 
-tip_distance_pop_mean <- tip_distance_pivot %>% group_by(island, population) %>%
+tip_distance_pop_mean <- tip_distance_pivot %>% group_by(year, island, population) %>%
   summarize(mean_all = mean(all))
 
 tip_distance_pop <- right_join(tip_distance_pop, tip_distance_pop_mean,
-                                tip_distance_pop, by = c("island", "population"))
+                                tip_distance_pop, by = c("year", "island", "population"))
 
 ### Export tip_distance datasets ####
 ### I think is useful to export these datasets for future analysis.
 # write_csv(tip_distance_island, "tip_distance_island_Q2.csv")
-# write_csv(tip_distance_pop, "tip_distance_population_Q2.csv")
+# write_csv(tip_distance_pop, "tip_distance_mean_year.csv")
 # 
 # 
 # 
@@ -232,16 +232,16 @@ width_island_mean <- width_pivot %>% group_by(island) %>%
 width_island <- right_join(width_island, width_island_mean,
                                   width_island, by = "island")
 
-width_pop_mean <- width_pivot %>% group_by(island, population) %>%
+width_pop_mean <- width_pivot %>% group_by(year, island, population) %>%
   summarize(mean_all = mean(all))
 
 width_pop <- right_join(width_pop, width_pop_mean,
-                               width_pop, by = c("island", "population"))
+                               width_pop, by = c("year", "island", "population"))
 
 ### Export width datasets ####
 ### I think is useful to export these datasets for future analysis.
 # write_csv(width_island, "width_island_Q2.csv")
-# write_csv(width_pop, "width_population_Q2.csv")
+# write_csv(width_pop, "width_mean_year.csv")
 
 # The remaining analysis is lower spine and spine position.
 # I think we can take the difference of frequencies vs the total proportion of 
