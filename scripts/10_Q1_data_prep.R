@@ -501,3 +501,39 @@ spine_position_pop$S_spine_position <- (spine_position_pop$freq_0 - spine_positi
 ## Spine position wihtout zero ####
 spine_position_wozero <- dplyr::filter(spine_position, !spine_position == 0)
 
+# Mean PCA scores ####
+# I think the way to do this is either use the individual PC
+# scores here and the mean values, because I would need the mean values anyway.
+# For the model for this question I can do it with the individual values or mean values
+# Here I am taking the mean values.
+
+# Import dataset
+pca <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/PCA/PCA_scores.csv")
+
+# Convert factors
+pca <- pca %>% mutate_at(vars(year, island, 
+                              population, lower_spine, 
+                              eaten), list(factor))
+str(pca)
+# Keep in mind that Size, Defense and Position are the transformed PC scores (*-1)
+
+## Datasets prep ####
+# Eaten, Uneaten
+# First I think I need to separate the PC axes that I am using
+# PC1, PC2 and PC3. These are now my trait values.
+
+pca_eaten_ind <- select(pca, year, island, population, mericarp, eaten,
+                        c(12:14, 18:20))
+# This selects the axis of interest and if they were eaten/uneaten.
+# Next is to separate them into values for eaten and uneaten mericarps
+
+pca_eaten_ind <- pivot_wider(pca_eaten_ind, names_from = eaten,
+                             values_from = c(6:11))
+
+# Replace NAs as 0 frequencies
+pca_eaten_ind[is.na(pca_eaten_ind)] = 0
+
+# Now we have the individual PC scores for eaten and uneaten mericarps for PCS
+# representing Size, Defense and Position.
+# This can be plotted technically
+
