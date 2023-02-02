@@ -23,7 +23,7 @@ point_time <- point_time %>% mutate_at(vars(year,
                                             germinated_position_6), list(factor))
 str(point_time)
 
-# Data preparation
+## Data preparation ####
 mericarp <- point_time  %>%
   select(year, island, population, mericarp, length, width, depth, 
          longest_spine, spine_position, lower_spine, eaten)  %>%
@@ -33,7 +33,7 @@ str(mericarp)
 
 # This removes all the NAs leaving only 3393 individuals from 2017 and 2018 where all traits were collected
 
-# PCA
+## PCA ####
 mericarp_pca <- prcomp(mericarp[,c(5:10)], scale=TRUE)
 summary(mericarp_pca)
 
@@ -44,31 +44,52 @@ fviz_eig(mericarp_pca)
 loadings <- mericarp_pca$rotation # "rotation" is what R calls the PCA loadings
 loadings <- as.data.frame(loadings)
 # I exported this for reference as a csv. To check which traits are better.
-# Same as the vector plots.
+# With the loadings, I was able to check that I could transform PC1 and PC3,
+# because their values are negative.
 
 # This is the PCA scores, used for the models later
 scores <- mericarp_pca$x # "x" is what R calls the species scores
 scores <- as.data.frame(scores)
 
 # Combine the scores and the mericarp dataset.
-# mericarp <- bind_cols(mericarp, scores)
+mericarp <- bind_cols(mericarp, scores)
 # I exported this dataset to use it for the later questions.
 
-#Extract PC
-Size<- (-1)*mericarp_pca$x[,1] #Why we change signs?
-Defense <- mericarp_pca$x[,2]
+#Extract and transform PCs
+Size <- (-1)*mericarp_pca$x[,1]
+Size <- as.data.frame(Size)
+#Why we change signs? I think changing the signs makes it more intuitive,
+#Larger mericarps are positive with this transformation.
 
+Defense <- mericarp_pca$x[,2]
+Defense <- as.data.frame(Defense)
+# This would be the same as PC2
+
+Position <- (-1)*mericarp_pca$x[,3]
+Position <- as.data.frame(Position)
+# I think we could transform the spine position PC3 as well.
+
+# Join the transformed PC scores into the mericarp dataset
 mericarp <- bind_cols(mericarp, Size)
 mericarp <- bind_cols(mericarp, Defense)
+mericarp <- bind_cols(mericarp, Position)
 
-mericarp <- rename(mericarp, size = ...20)
-mericarp <- rename(mericarp, defense = ...21)
+# Expport mericarp dataset for models
+#write_csv(mericarp, "PCA_scores.csv")
 
 var <- get_pca_var(mericarp_pca)
+# Perhaps this is used for the variance table?
+trait_contrib <- var$contrib
+trait_contrib <- as.data.frame(trait_contrib)
 
+# Exported thecontributions per trait as a table
+#write_csv(trait_contrib, "PCA_var_contrib.csv")
+
+## PCA plots ####
 fviz_pca_var(mericarp_pca, col.var = "contrib",
              gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
-             repel = T) # plot axes
+             repel = T,
+             axes = c(1,3)) # plot axes
 
 
 ### Individual PCA ####
@@ -86,17 +107,18 @@ fviz_pca_biplot(mericarp_pca, repel = T,
                 addEllipses = T
 )
 
-## Theme individual Biplot ####
-### Mainland island comparison ####
+### Theme individual Biplot ####
 biplot2 <- fviz_pca_biplot(mericarp_pca,
                            # Fill individuals by groups
-                           title = "Mericarps
+                           title = "PCA Point in Time
                            ",
-                           axes = c(1,2),
+                           axes = c(1,3),
                            geom.ind = "point",
                            pointshape = c(21),
-                           pointsize = 4,
-                           stroke = 0.5,
+                           #label = "none",
+                           #habillage = mericarp$island,
+                           pointsize = 3.2,
+                           stroke = 0.8,
                            fill.ind = mericarp$island,
                            col.ind = "black",
                            # Color variable by groups
@@ -108,7 +130,7 @@ biplot2 <- fviz_pca_biplot(mericarp_pca,
                            palette = c("#a95aa1", "#85c0f9", "#f5793a",  "#0f2080", "#009e73"),
                            
 ) + theme_transparent() + 
-  scale_color_manual(values = c("#a95aa1", "#85c0f9", "#f5793a",  "#0f2080", "#009e73")) +
+   scale_color_manual(values = c("#a95aa1", "#85c0f9", "#f5793a",  "#0f2080", "#009e73")) +
   # PCA theme, adds custom font and sizes that matches the other plots    
   theme(axis.line = element_line(linetype = "solid", size = 1.5), 
         axis.title = element_text(size = 14, face = "bold"), 
@@ -123,10 +145,17 @@ biplot2 <- fviz_pca_biplot(mericarp_pca,
 
 biplot2
 
-## Theme individual Variable plots ####
+biplot <- fviz_pca_biplot(mericarp_pca,
+                          habillage = mericarp$island,
+                          addEllipses = T,
+                          label = "none",
+                          ellipse.level = 0.95)
+
+### Theme individual Variable plots ####
 
 var2 <- fviz_pca_var(mericarp_pca,
                      col.var = "contrib",
+                     axes = c(2,3),
                      title = "Variables contribution
                            ",
                      gradient.cols = c("#f5793a", "#a95aa1", "#85c0f9", "#0f2080", "#009e73"),
@@ -148,22 +177,23 @@ var2 <- fviz_pca_var(mericarp_pca,
 var2
 
 
-# Models ####
+# Data preparation for  Models ####
 ## Question 1 ####
 
-mericarp_size <- glmmTMB(eaten ~ size + (1|island/population),
-                         REML = F,
-                         family = binomial(link = "logit"),
-                         data = mericarp)
 
-# Test residuals model using DHARMa
-testResiduals(mericarp_size)
-hist(resid(mericarp_size), breaks = 50)
-
-# Model summary
-summary(mericarp_size)
-Anova(mericarp_size, type = "3")
-
-plot(ggpredict(mericarp_size, terms = "size [all]",
-               allow.new.levels = T))
-
+# mericarp_size <- glmmTMB(eaten ~ size + (1|island/population),
+#                          REML = F,
+#                          family = binomial(link = "logit"),
+#                          data = mericarp)
+# 
+# # Test residuals model using DHARMa
+# testResiduals(mericarp_size)
+# hist(resid(mericarp_size), breaks = 50)
+# 
+# # Model summary
+# summary(mericarp_size)
+# Anova(mericarp_size, type = "3")
+# 
+# plot(ggpredict(mericarp_size, terms = "size [all]",
+#                allow.new.levels = T))
+# 
