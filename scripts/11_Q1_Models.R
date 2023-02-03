@@ -274,3 +274,55 @@ EM_spine_position <- emmeans(spine_position_m1, ~ eaten, type = "response")
 ### Emmeans plot: Lower spines ####
 plot(EM_spine_position, comparisons = T) + labs(title = "Spine Position")
 pwpp(EM_spine_position)
+
+# PCA models ####
+pca <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/PCA/PCA_scores.csv")
+pca_means <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/PCA/PCA_population.csv")
+pca_means <- rename(pca_means, island = island.x)
+
+## Data preparation ####
+# Changed variables to factors
+pca <- pca %>% mutate_at(vars(island, population, eaten), list(factor))
+str(pca)
+
+pca_means <- pca_means %>% mutate_at(vars(island, population), list(factor))
+str(pca_means)
+
+## Model Mericarp Size ####
+## It seems I could only plot the models using the individual mericarp scores
+## which is fine, but we need to consider this when plotting the mean values with
+## the model regression line.
+
+## With Size (Transformed Axis)
+mericarp_size <- glmmTMB(eaten ~ Size + (1|island/population),
+                          REML = F,
+                          family = binomial(link = "logit"),
+                          data = pca)
+ 
+## With PC1 (Original PC scores)
+mericarp_PC1 <- glmmTMB(eaten ~ PC1 + (1|island/population),
+                        REML = F,
+                        family = binomial(link = "logit"),
+                        data = pca)
+
+# Test residuals model using DHARMa
+testResiduals(mericarp_size)
+testResiduals(mericarp_PC1)
+
+hist(resid(mericarp_PC1), breaks = 50)
+hist(resid(mericarp_size), breaks = 50)
+
+# Model summary
+summary(mericarp_PC1)
+summary(mericarp_size)
+
+Anova(mericarp_PC1, type = "3")
+Anova(mericarp_size, type = "3")
+ 
+### Plot predictions ####
+### This plots are the ones that I need to use for the figure
+plot(ggpredict(mericarp_PC1, terms = "PC1 [all]",
+               allow.new.levels = T))
+
+plot(ggpredict(mericarp_size, terms = "Size [all]",
+                allow.new.levels = T))
