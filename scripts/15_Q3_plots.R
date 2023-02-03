@@ -40,6 +40,9 @@ width_pop <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tr
 lower_spine_pop <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Questions_1-3_trait_datasets/lower_spines_pop.csv")
 spine_position_pop <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Questions_1-3_trait_datasets/spine_position_pop.csv")
 
+## PCA Populations ####
+pca_means_Q3 <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/PCA/PCA_population.csv")
+pca_means_Q3 <- rename(pca_means_Q3, island = island.x)
 
 # Data preparation ####
 # Making char into factors (island, populations)
@@ -63,6 +66,9 @@ spine_position_pop <- spine_position_pop %>% mutate_at(vars(island, population, 
 tip_distance_pop <- tip_distance_pop %>% mutate_at(vars(island, population, finch_beak), list(factor))
 width_pop <- width_pop %>% mutate_at(vars(island, population, finch_beak), list(factor))
 
+### PCA populations ####
+pca_means_Q3 <- pca_means_Q3 %>% mutate_at(vars(island, population, finch_beak), list(factor))
+str(pca_means_Q3)
 
 # Plot theme and function ####
 ## Theme ####
@@ -90,32 +96,135 @@ plot_theme <-     theme(axis.line = element_line(linetype = "solid", size = 1),
 # This function is for the plots per trait grouped by pop.
 
 island_fig <- function(dataset, x, y, title, subtitle)
-{ggplot(dataset, aes(x = x, y = y, colour = island)) + #For the function to work the colors need to be defined here.
-    geom_point(shape = "circle", size = 3.5) + #Type of plot
-    scale_color_manual(
-      values = c("#D55E00",
-                          "#E69F00",
-                          "#009E73",
-                          "#0072B2",
-                          "#56B4E9",
-                          "#CC79A7",
-                          "#666666")) + # Set colors
-                            labs(
-                              x = "Bioclimate Variable",
-                              y = "Selection (Uneaten - Eaten)",
-                              title = title,
-                              subtitle = subtitle,
-                              color = "Islands"
-                            ) +
+{ggplot(dataset, aes(x = x, y = y, colour = island, shape = island, fill = island)) + #For the function to work the colors need to be defined here.
+    geom_point(size = 3.5, stroke = 1) + #Type of plot
+    scale_fill_manual(values = c("#D55E00",
+                                          "#E69F00",
+                                          "#009E73",
+                                          "#0072B2",
+                                          "#56B4E9",
+                                          "#CC79A7",
+                                          "#666666"), name = "Islands",
+                                          labels = c("Floreana",
+                                                     "Isabela",
+                                                     "San Cristobal",
+                                                     "Santa Cruz")) +
+    scale_color_manual(values = c("black", 
+                                         "black", 
+                                         "black", 
+                                         "black"),
+                                         name = "Islands",
+                       labels = c("Floreana",
+                                  "Isabela",
+                                  "San Cristobal",
+                                  "Santa Cruz")) + # Set colors
+    scale_shape_manual(values = c(21:24),
+                       name = "Islands",
+                       labels = c("Floreana",
+                                  "Isabela",
+                                  "San Cristobal",
+                                  "Santa Cruz")) +
+    labs(
+      x = "Bioclimate Variable",
+      y = "Selection (Uneaten - Eaten)",
+      title = title,
+      subtitle = subtitle,
+      #color = "Islands"
+      fill = "Islands"
+    ) +
     plot_theme +
-    #geom_smooth(method = "lm")
-    #scale_x_continuous(limits = c(0,NA)) +
-    #scale_y_continuous(limits = c(0,NA)) +
     geom_smooth(color = "black", size = 1, method = "lm",aes(group=1))
-    # + geom_abline(color = "black", size = 1) # Abline is a 1:1 line!
+  #geom_abline(color = "black", size = 1) # Abline is a 1:1 line!
 }
 
 # Plots ####
+## PCA ####
+### Size ####
+#### BIO1 ####
+pca_size_bio1 <- island_fig(pca_means_Q3,
+                       pca_means_Q3$Bio_1,
+                       pca_means_Q3$S_Size,
+                       "Mericarp Size (PC1) - Annual Temperature  ",
+                       " "
+)
+
+#### BIO4 ####
+pca_size_bio4 <- island_fig(pca_means_Q3,
+                       pca_means_Q3$Bio_4,
+                       pca_means_Q3$S_Size,
+                       "Temperature Seasonality  ",
+                       " "
+)
+
+#### BIO12 ####
+pca_size_bio12 <- island_fig(pca_means_Q3,
+                       pca_means_Q3$Bio_12,
+                       pca_means_Q3$S_Size,
+                       "Annual Precipitation  ",
+                       " "
+)
+
+#### BIO15 ####
+pca_size_bio15 <- island_fig(pca_means_Q3,
+                       pca_means_Q3$Bio_15,
+                       pca_means_Q3$S_Size,
+                       "Precipitation Seasonality  ",
+                       " "
+)
+
+#### Finch Beak ####
+pca_size_beak <- island_fig(pca_means_Q3,
+                             pca_means_Q3$finch_beak,
+                             pca_means_Q3$S_Size,
+                             "Finch Community  ",
+                             " "
+)
+
+### Combined PCA plots ####
+Q3_pca_size <- ggarrange(pca_size_bio1 + rremove("ylab") + rremove("xlab"),
+                         pca_size_bio4 + rremove("ylab") + rremove("xlab"),
+                         pca_size_bio12 + rremove("ylab") + rremove("xlab"),
+                         pca_size_bio15 + rremove("ylab") + rremove("xlab"),
+                         pca_size_beak + rremove("ylab") + rremove("xlab"),
+                         common.legend = T,
+                         legend = "right",
+                         labels = c("A", "B", "C",
+                                    "D", "E"),
+                         ncol = 3,
+                         nrow = 2)
+
+annotate_figure(Q3_pca_size, left = textGrob("Selection (Uneaten - Eaten)", 
+                                             rot = 90, vjust = 1, gp = gpar(cex = 1.1)),
+                bottom = textGrob("Bioclimate Variable", gp = gpar(cex = 1.1)))
+
+### Defense ####
+pca_defense <- island_fig(pca_means_Q2,
+                          pca_means_Q2$S_Defense,
+                          pca_means_Q2$Defense_mean,
+                          "Mericarp Defense (PC2)  ",
+                          " ")
+### Position ####
+pca_position <- island_fig(pca_means_Q2,
+                           pca_means_Q2$S_Position,
+                           pca_means_Q2$Position_mean,
+                           "Spine Position (PC3)  ",
+                           " ")
+
+### Combined PCA plots ####
+Q1_pca_plot <- ggarrange(pca_size + rremove("ylab") + rremove("xlab"),
+                         pca_defense + rremove("ylab") + rremove("xlab"),
+                         pca_position + rremove("ylab") + rremove("xlab"),
+                         common.legend = T,
+                         legend = "right",
+                         labels = c("A", "B", "C"),
+                         ncol = 3,
+                         nrow = 1)
+
+annotate_figure(Q1_pca_plot, left = textGrob("Mean Trait (PC Score)", 
+                                             rot = 90, vjust = 1, gp = gpar(cex = 1.1)),
+                bottom = textGrob("Selection (Uneaten - Eaten)", gp = gpar(cex = 1.1)))
+
+
 ## Lower Spine ####
 # Lower spine plots are based on their counts. They don't use the function above.
 
