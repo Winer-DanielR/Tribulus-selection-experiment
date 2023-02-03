@@ -134,14 +134,18 @@ pca_position <- island_fig(pca_means,
                            " ")
 
 ### Combined PCA plots ####
-Q1_pca_plot <- ggarrange(pca_size,
-                            pca_defense,
-                            pca_position,
+Q1_pca_plot <- ggarrange(pca_size + rremove("ylab") + rremove("xlab"),
+                            pca_defense + rremove("ylab") + rremove("xlab"),
+                            pca_position + rremove("ylab") + rremove("xlab"),
                             common.legend = T,
                             legend = "right",
                             labels = c("A", "B", "C"),
                             ncol = 3,
                             nrow = 1)
+
+annotate_figure(Q1_pca_plot, left = textGrob("Uneaten", 
+                                               rot = 90, vjust = 1, gp = gpar(cex = 1.1)),
+                bottom = textGrob("Eaten", gp = gpar(cex = 1.1)))
 
 #+ geom_smooth(color = "black", size = 1, method = "lm",aes(group=1))
 
