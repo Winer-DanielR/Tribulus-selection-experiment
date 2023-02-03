@@ -111,17 +111,39 @@ island_fig <- function(dataset, x, y, title, subtitle)
 
 # Plots ####
 ## PCA ####
+## These plots are the same as the indvidual plots, no model was fitted here
 ### Size ####
 pca_size <- island_fig(pca_means,
                        pca_means$Size_mean_1,
                        pca_means$Size_mean_0,
                          "Mericarp Size (PC1)  ",
                          " "
-) + 
-#### ggplot test ####
-#### 
+)
 
+### Defense ####
+pca_defense <- island_fig(pca_means,
+                          pca_means$Defense_mean_1,
+                          pca_means$Defense_mean_0,
+                          "Mericarp Defense (PC2)  ",
+                          " ")
+### Position ####
+pca_position <- island_fig(pca_means,
+                           pca_means$Position_mean_1,
+                           pca_means$Position_mean_0,
+                           "Spine Position (PC3)  ",
+                           " ")
 
+### Combined PCA plots ####
+Q1_pca_plot <- ggarrange(pca_size,
+                            pca_defense,
+                            pca_position,
+                            common.legend = T,
+                            legend = "right",
+                            labels = c("A", "B", "C"),
+                            ncol = 3,
+                            nrow = 1)
+
+#+ geom_smooth(color = "black", size = 1, method = "lm",aes(group=1))
 
 plot(ggpredict(mericarp_size, terms = "Size [all]",
                    allow.new.levels = T))
