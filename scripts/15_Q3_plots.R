@@ -11,16 +11,17 @@
 # The question is how does the environment effects mericarp selection. To do this I used the World Clim
 # bioclimate database and extract the climate variablesÑ
 # Annual Precipitation (BIO_1)
-# Seasonallity (Bio_4)
-# BIO_12
-# BIO_15
+# Temperature Seasonality (Bio_4)
+# Annual Precipitation BIO_12
+# Precipitation SeasonalityBIO_15
 # Finch Beak (The presence/absence of large beak finches on islands)
 # 
 # These variables were used in our previous paper of mericarp phenotypic divergence.
 # Since we are using the same locations I edited the database and added this information.
 # 
 # 1/19/2023: I've only updated the populations scripts for now. Later I need to add bioclimate variables to the island datasets.
-
+# 2/3/2023: Incorportated PC scores.
+# 
 # Data loading ####
 ## Islands ####
 # depth_island <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Questions_1-3_trait_datasets/depth_island.csv")
@@ -198,32 +199,125 @@ annotate_figure(Q3_pca_size, left = textGrob("Selection (Uneaten - Eaten)",
                 bottom = textGrob("Bioclimate Variable", gp = gpar(cex = 1.1)))
 
 ### Defense ####
-pca_defense <- island_fig(pca_means_Q2,
-                          pca_means_Q2$S_Defense,
-                          pca_means_Q2$Defense_mean,
-                          "Mericarp Defense (PC2)  ",
-                          " ")
-### Position ####
-pca_position <- island_fig(pca_means_Q2,
-                           pca_means_Q2$S_Position,
-                           pca_means_Q2$Position_mean,
-                           "Spine Position (PC3)  ",
-                           " ")
+
+#### BIO1 ####
+pca_Defense_bio1 <- island_fig(pca_means_Q3,
+                            pca_means_Q3$Bio_1,
+                            pca_means_Q3$S_Defense,
+                            "Mericarp Defense (PC2) - Annual Temperature  ",
+                            " "
+)
+
+#### BIO4 ####
+pca_Defense_bio4 <- island_fig(pca_means_Q3,
+                            pca_means_Q3$Bio_4,
+                            pca_means_Q3$S_Defense,
+                            "Temperature Seasonality  ",
+                            " "
+)
+
+#### BIO12 ####
+pca_Defense_bio12 <- island_fig(pca_means_Q3,
+                             pca_means_Q3$Bio_12,
+                             pca_means_Q3$S_Defense,
+                             "Annual Precipitation  ",
+                             " "
+)
+
+#### BIO15 ####
+pca_Defense_bio15 <- island_fig(pca_means_Q3,
+                             pca_means_Q3$Bio_15,
+                             pca_means_Q3$S_Defense,
+                             "Precipitation Seasonality  ",
+                             " "
+)
+
+#### Finch Beak ####
+pca_Defense_beak <- island_fig(pca_means_Q3,
+                            pca_means_Q3$finch_beak,
+                            pca_means_Q3$S_Defense,
+                            "Finch Community  ",
+                            " "
+)
 
 ### Combined PCA plots ####
-Q1_pca_plot <- ggarrange(pca_size + rremove("ylab") + rremove("xlab"),
-                         pca_defense + rremove("ylab") + rremove("xlab"),
-                         pca_position + rremove("ylab") + rremove("xlab"),
+Q3_pca_Defense <- ggarrange(pca_Defense_bio1 + rremove("ylab") + rremove("xlab"),
+                         pca_Defense_bio4 + rremove("ylab") + rremove("xlab"),
+                         pca_Defense_bio12 + rremove("ylab") + rremove("xlab"),
+                         pca_Defense_bio15 + rremove("ylab") + rremove("xlab"),
+                         pca_Defense_beak + rremove("ylab") + rremove("xlab"),
                          common.legend = T,
                          legend = "right",
-                         labels = c("A", "B", "C"),
+                         labels = c("A", "B", "C",
+                                    "D", "E"),
                          ncol = 3,
-                         nrow = 1)
+                         nrow = 2)
 
-annotate_figure(Q1_pca_plot, left = textGrob("Mean Trait (PC Score)", 
+annotate_figure(Q3_pca_Defense, left = textGrob("Selection (Uneaten - Eaten)", 
                                              rot = 90, vjust = 1, gp = gpar(cex = 1.1)),
-                bottom = textGrob("Selection (Uneaten - Eaten)", gp = gpar(cex = 1.1)))
+                bottom = textGrob("Bioclimate Variable", gp = gpar(cex = 1.1)))
 
+
+
+### Position ####
+
+
+#### BIO1 ####
+pca_Position_bio1 <- island_fig(pca_means_Q3,
+                               pca_means_Q3$Bio_1,
+                               pca_means_Q3$S_Position,
+                               "Mericarp Position (PC3) - Annual Temperature  ",
+                               " "
+)
+
+#### BIO4 ####
+pca_Position_bio4 <- island_fig(pca_means_Q3,
+                               pca_means_Q3$Bio_4,
+                               pca_means_Q3$S_Position,
+                               "Temperature Seasonality  ",
+                               " "
+)
+
+#### BIO12 ####
+pca_Position_bio12 <- island_fig(pca_means_Q3,
+                                pca_means_Q3$Bio_12,
+                                pca_means_Q3$S_Position,
+                                "Annual Precipitation  ",
+                                " "
+)
+
+#### BIO15 ####
+pca_Position_bio15 <- island_fig(pca_means_Q3,
+                                pca_means_Q3$Bio_15,
+                                pca_means_Q3$S_Position,
+                                "Precipitation Seasonality  ",
+                                " "
+)
+
+#### Finch Beak ####
+pca_Position_beak <- island_fig(pca_means_Q3,
+                               pca_means_Q3$finch_beak,
+                               pca_means_Q3$S_Position,
+                               "Finch Community  ",
+                               " "
+)
+
+### Combined PCA plots ####
+Q3_pca_Position <- ggarrange(pca_Position_bio1 + rremove("ylab") + rremove("xlab"),
+                            pca_Position_bio4 + rremove("ylab") + rremove("xlab"),
+                            pca_Position_bio12 + rremove("ylab") + rremove("xlab"),
+                            pca_Position_bio15 + rremove("ylab") + rremove("xlab"),
+                            pca_Position_beak + rremove("ylab") + rremove("xlab"),
+                            common.legend = T,
+                            legend = "right",
+                            labels = c("A", "B", "C",
+                                       "D", "E"),
+                            ncol = 3,
+                            nrow = 2)
+
+annotate_figure(Q3_pca_Position, left = textGrob("Selection (Uneaten - Eaten)", 
+                                                rot = 90, vjust = 1, gp = gpar(cex = 1.1)),
+                bottom = textGrob("Bioclimate Variable", gp = gpar(cex = 1.1)))
 
 ## Lower Spine ####
 # Lower spine plots are based on their counts. They don't use the function above.
