@@ -48,7 +48,6 @@ spine_position_island <- spine_position_island %>% mutate_at(vars(island, spine_
 tip_distance_island <- tip_distance_island %>% mutate_at(vars(island), list(factor))
 width_island <- width_island %>% mutate_at(vars(island), list(factor))
 
-
 ### Populations #####
 depth_pop <- depth_pop %>% mutate_at(vars(island, population), list(factor))
 length_pop <- length_pop %>% mutate_at(vars(island, population), list(factor))
@@ -86,24 +85,46 @@ plot_theme <-     theme(axis.line = element_line(linetype = "solid", size = 1),
 
 ## Functions ####
 # This function is for the plots per trait grouped by pop.
-
+# NOTE for ggplot stuff: Turns out that to use a single legend, the colors, shapes and fills need to have the
+# SAME labels. Also, if you want outlines in the shapes you need characters 21:25 (values)
+# and fill controls the inner colors and colour controls the outline!
+# 
 island_fig <- function(dataset, x, y, title, subtitle)
-  {ggplot(dataset, aes(x = x, y = y, colour = island)) + #For the function to work the colors need to be defined here.
-  geom_point(shape = "circle", size = 3.5) + #Type of plot
-  scale_color_manual(
-    values = c("#D55E00",
-               "#E69F00",
-               "#009E73",
-               "#0072B2",
-               "#56B4E9",
-               "#CC79A7",
-               "#666666")) + # Set colors
+  {ggplot(dataset, aes(x = x, y = y, colour = island, shape = island, fill = island)) + #For the function to work the colors need to be defined here.
+  geom_point(size = 3.5, stroke = 1) + #Type of plot
+    scale_fill_manual(values = c("#D55E00",
+                                 "#E69F00",
+                                 "#009E73",
+                                 "#0072B2",
+                                 "#56B4E9",
+                                 "#CC79A7",
+                                 "#666666"), name = "Islands",
+                                 labels = c("Floreana",
+                                            "Isabela",
+                                            "San Cristobal",
+                                            "Santa Cruz")) +
+  scale_color_manual(values = c("black", 
+                                "black", 
+                                "black", 
+                                "black"),
+               name = "Islands",
+    labels = c("Floreana",
+               "Isabela",
+               "San Cristobal",
+               "Santa Cruz")) + # Set colors
+  scale_shape_manual(values = c(21:24),
+                     name = "Islands",
+                     labels = c("Floreana",
+                                "Isabela",
+                                "San Cristobal",
+                                "Santa Cruz")) +
   labs(
     x = "Eaten",
     y = "Uneaten",
     title = title,
     subtitle = subtitle,
-    color = "Islands"
+    #color = "Islands"
+    fill = "Islands"
   ) +
   plot_theme +
   geom_abline(color = "black", size = 1) # Abline is a 1:1 line!
