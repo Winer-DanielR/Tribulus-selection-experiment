@@ -32,6 +32,9 @@ width_pop <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tr
 lower_spine_pop <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Questions_1-3_trait_datasets/lower_spines_pop.csv")
 spine_position_pop <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Questions_1-3_trait_datasets/spine_position_pop.csv")
 
+## PCA Populations ####
+pca_means_Q2 <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/PCA/PCA_population.csv")
+pca_means_Q2 <- rename(pca_means_Q2, island = island.x)
 
 # Data preparation ####
 # Making char into factors (island, populations)
@@ -55,6 +58,9 @@ spine_position_pop <- spine_position_pop %>% mutate_at(vars(island, population, 
 tip_distance_pop <- tip_distance_pop %>% mutate_at(vars(island, population), list(factor))
 width_pop <- width_pop %>% mutate_at(vars(island, population), list(factor))
 
+### PCA populations ####
+pca_means_Q2 <- pca_means_Q2 %>% mutate_at(vars(island, population), list(factor))
+str(pca_means_Q2)
 
 # Plot theme and function ####
 ## Theme ####
@@ -111,18 +117,58 @@ island_fig <- function(dataset, x, y, title, subtitle)
                                   "San Cristobal",
                                   "Santa Cruz")) +
     labs(
-      x = "Eaten",
-      y = "Uneaten",
+      x = "Selection (Uneaten - Eaten)",
+      y = "Mean trait (PC1)",
       title = title,
       subtitle = subtitle,
       #color = "Islands"
       fill = "Islands"
     ) +
     plot_theme +
-    geom_abline(color = "black", size = 1) # Abline is a 1:1 line!
+    geom_smooth(color = "black", size = 1, method = "lm",aes(group=1))
+    #geom_abline(color = "black", size = 1) # Abline is a 1:1 line!
 }
 
 # Plots ####
+## PCA ####
+## These plots are the same as the indvidual plots, no model was fitted here
+### Size ####
+pca_size <- island_fig(pca_means_Q2,
+                       pca_means_Q2$S_Size,
+                       pca_means_Q2$Size_mean,
+                       "Mericarp Size (PC1)  ",
+                       " "
+)
+
+### Defense ####
+pca_defense <- island_fig(pca_means_Q2,
+                          pca_means_Q2$S_Defense,
+                          pca_means_Q2$Defense_mean,
+                          "Mericarp Defense (PC2)  ",
+                          " ")
+### Position ####
+pca_position <- island_fig(pca_means_Q2,
+                           pca_means_Q2$S_Position,
+                           pca_means_Q2$Position_mean,
+                           "Spine Position (PC3)  ",
+                           " ")
+
+### Combined PCA plots ####
+Q1_pca_plot <- ggarrange(pca_size + rremove("ylab") + rremove("xlab"),
+                         pca_defense + rremove("ylab") + rremove("xlab"),
+                         pca_position + rremove("ylab") + rremove("xlab"),
+                         common.legend = T,
+                         legend = "right",
+                         labels = c("A", "B", "C"),
+                         ncol = 3,
+                         nrow = 1)
+
+annotate_figure(Q1_pca_plot, left = textGrob("Mean Trait (PC Score)", 
+                                             rot = 90, vjust = 1, gp = gpar(cex = 1.1)),
+                bottom = textGrob("Selection (Uneaten - Eaten)", gp = gpar(cex = 1.1)))
+
+
+
 ## Lower Spine ####
 # Lower spine plots are based on their counts. They don't use the function above.
 
