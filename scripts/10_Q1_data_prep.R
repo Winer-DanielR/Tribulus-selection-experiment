@@ -517,15 +517,59 @@ pca <- pca %>% mutate_at(vars(year, island,
 str(pca)
 # Keep in mind that Size, Defense and Position are the transformed PC scores (*-1)
 
-## Datasets prep ####
+## Dataset prep ####
 # Eaten, Uneaten
 # First I think I need to separate the PC axes that I am using
 # PC1, PC2 and PC3. These are now my trait values.
 
 pca_eaten_ind <- select(pca, year, island, population, mericarp, eaten,
                         c(12:14, 18:20))
-# This selects the axis of interest and if they were eaten/uneaten.
-# Next is to separate them into values for eaten and uneaten mericarps
+# This selects the axes of interest and if they were eaten/uneaten.
+# Next is to estimate the means and
+# separate them into values for eaten and uneaten mericarps
+
+### Group for mean estimates ####
+#### Group by island ####
+pca_eaten_ind <- group_by(pca_eaten_ind, island, eaten)
+
+pca_means_island <- pca_eaten_ind %>%  
+  summarise_each(funs(mean = mean,
+                      var = var,
+                      se = sd(.)/sqrt(n()),
+                      n = length,
+  ), c(4:9))
+
+
+# Pivot table
+## To compare eaten and uneaten mericarps
+pca_means_island <- pivot_wider(pca_means_island, names_from = eaten,
+                                   values_from = c(3:26))
+
+pca_means_island$S_PC1 <- (pca_means_island$PC1_mean_0 - 
+                           pca_means_island$PC1_mean_1)
+# I can estimate the difference of uneaten and eaten mericarps (selection) in this dataset.
+
+#### Group by island and population ####
+length <- group_by(length, island, population, eaten)
+
+length_means_pop <- length %>%  
+  summarise_each(funs(length_mean = mean,
+                      length_var = var,
+                      length_se = sd(.)/sqrt(n()),
+                      length_n = length,
+  ), length)
+
+#### Pivot table 
+## To compare eaten and uneaten mericarps
+length_means_pop <- pivot_wider(length_means_pop, names_from = eaten,
+                                values_from = c(4:7))
+
+length_means_pop$S_length <- (length_means_pop$length_mean_0 - 
+                                length_means_pop$length_mean_1)
+
+# write_csv(length_means_island, "length_means_island.csv")
+# write_csv(length_means_pop, "length_means_pop.csv")
+
 
 pca_eaten_ind <- pivot_wider(pca_eaten_ind, names_from = eaten,
                              values_from = c(6:11))
