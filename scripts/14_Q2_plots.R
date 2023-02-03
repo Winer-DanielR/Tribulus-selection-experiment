@@ -82,29 +82,44 @@ plot_theme <-     theme(axis.line = element_line(linetype = "solid", size = 1),
 # This function is for the plots per trait grouped by pop.
 
 island_fig <- function(dataset, x, y, title, subtitle)
-{ggplot(dataset, aes(x = x, y = y, colour = island)) + #For the function to work the colors need to be defined here.
-    geom_point(shape = "circle", size = 3.5) + #Type of plot
-    scale_color_manual(
-      values = c("#D55E00",
-                          "#E69F00",
-                          "#009E73",
-                          "#0072B2",
-                          "#56B4E9",
-                          "#CC79A7",
-                          "#666666")) + # Set colors
-                            labs(
-                              x = "Selection (Uneaten - Eaten)",
-                              y = "Mean Trait",
-                              title = title,
-                              subtitle = subtitle,
-                              color = "Islands"
-                            ) +
+{ggplot(dataset, aes(x = x, y = y, colour = island, shape = island, fill = island)) + #For the function to work the colors need to be defined here.
+    geom_point(size = 3.5, stroke = 1) + #Type of plot
+    scale_fill_manual(values = c("#D55E00",
+                                          "#E69F00",
+                                          "#009E73",
+                                          "#0072B2",
+                                          "#56B4E9",
+                                          "#CC79A7",
+                                          "#666666"), name = "Islands",
+                                          labels = c("Floreana",
+                                                     "Isabela",
+                                                     "San Cristobal",
+                                                     "Santa Cruz")) +
+    scale_color_manual(values = c("black", 
+                                         "black", 
+                                         "black", 
+                                         "black"),
+                                         name = "Islands",
+                       labels = c("Floreana",
+                                  "Isabela",
+                                  "San Cristobal",
+                                  "Santa Cruz")) + # Set colors
+    scale_shape_manual(values = c(21:24),
+                       name = "Islands",
+                       labels = c("Floreana",
+                                  "Isabela",
+                                  "San Cristobal",
+                                  "Santa Cruz")) +
+    labs(
+      x = "Eaten",
+      y = "Uneaten",
+      title = title,
+      subtitle = subtitle,
+      #color = "Islands"
+      fill = "Islands"
+    ) +
     plot_theme +
-    #geom_smooth(method = "lm")
-    #scale_x_continuous(limits = c(0,NA)) +
-    #scale_y_continuous(limits = c(0,NA)) +
-    geom_smooth(color = "black", size = 1, method = "lm",aes(group=1))
-    # + geom_abline(color = "black", size = 1) # Abline is a 1:1 line!
+    geom_abline(color = "black", size = 1) # Abline is a 1:1 line!
 }
 
 # Plots ####
