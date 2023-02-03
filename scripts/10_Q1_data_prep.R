@@ -627,8 +627,8 @@ pca_means_pop$S_Position <- (pca_means_pop$Position_mean_0 -
                                   pca_means_pop$Position_mean_1)
 
 # Join the datasets
-pca_means_pop <- left_join(pca_mean, pca_means_pop, by = "island")
+pca_means_pop <- left_join(pca_mean, pca_means_pop, by = c("island", "population"))
 
 # Export the tables 
-#write_csv(pca_means_pop, "PCA_population.csv")
+#write_csv(pca_means_pop, "PCA_population_NAs.csv")
 
