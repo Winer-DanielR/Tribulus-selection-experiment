@@ -528,8 +528,18 @@ pca_eaten_ind <- select(pca, year, island, population, mericarp, eaten,
 # Next is to estimate the means and
 # separate them into values for eaten and uneaten mericarps
 
-### Group for mean estimates ####
-#### Group by island ####
+# Group for mean estimates ####
+### Grouping the PC axes to take PC scores means by all eaten mericarps,
+### island and population within islands.
+
+## Group by island all mericarps mean ####
+## This is for estimating the average of the PC scores by island
+pca_eaten_ind <- group_by(pca_eaten_ind, island)
+
+pca_means <- pca_eaten_ind %>%
+  summarise_each(funs(mean = mean), c(5:10))
+
+## Group by island eaten####
 pca_eaten_ind <- group_by(pca_eaten_ind, island, eaten)
 
 pca_means_island <- pca_eaten_ind %>%  
@@ -545,39 +555,80 @@ pca_means_island <- pca_eaten_ind %>%
 pca_means_island <- pivot_wider(pca_means_island, names_from = eaten,
                                    values_from = c(3:26))
 
+### S estimates ####
 pca_means_island$S_PC1 <- (pca_means_island$PC1_mean_0 - 
                            pca_means_island$PC1_mean_1)
+
+pca_means_island$S_PC2 <- (pca_means_island$PC2_mean_0 - 
+                             pca_means_island$PC2_mean_1)
+
+pca_means_island$S_PC3 <- (pca_means_island$PC3_mean_0 - 
+                             pca_means_island$PC3_mean_1)
+
+pca_means_island$S_Size <- (pca_means_island$Size_mean_0 - 
+                             pca_means_island$Size_mean_1)
+
+pca_means_island$S_Defense <- (pca_means_island$Defense_mean_0 - 
+                             pca_means_island$Defense_mean_1)
+
+pca_means_island$S_Position <- (pca_means_island$Position_mean_0 - 
+                             pca_means_island$Position_mean_1)
+
 # I can estimate the difference of uneaten and eaten mericarps (selection) in this dataset.
 
-#### Group by island and population ####
-length <- group_by(length, island, population, eaten)
+# Join the two mean datasets
+pca_means_island <- left_join(pca_means, pca_means_island, by = "island")
 
-length_means_pop <- length %>%  
-  summarise_each(funs(length_mean = mean,
-                      length_var = var,
-                      length_se = sd(.)/sqrt(n()),
-                      length_n = length,
-  ), length)
+# Export this dataset for plots
+#write_csv(pca_means_island, "PCA_islands.csv")
+
+## Group by population ####
+# All mericarp means by population
+pca_eaten_ind <- group_by(pca_eaten_ind, island, population)
+
+pca_mean <- pca_eaten_ind %>%
+  summarise_each(funs(mean = mean), c(4:9))
+
+## Means by population eaten 
+pca_eaten_ind <- group_by(pca_eaten_ind, island, population, eaten)
+
+pca_means_pop <- pca_eaten_ind %>%  
+  summarise_each(funs(mean = mean,
+                      var = var,
+                      se = sd(.)/sqrt(n()),
+                      n = length,
+  ), c(3:8))
 
 #### Pivot table 
 ## To compare eaten and uneaten mericarps
-length_means_pop <- pivot_wider(length_means_pop, names_from = eaten,
-                                values_from = c(4:7))
-
-length_means_pop$S_length <- (length_means_pop$length_mean_0 - 
-                                length_means_pop$length_mean_1)
-
-# write_csv(length_means_island, "length_means_island.csv")
-# write_csv(length_means_pop, "length_means_pop.csv")
-
-
-pca_eaten_ind <- pivot_wider(pca_eaten_ind, names_from = eaten,
-                             values_from = c(6:11))
+pca_means_pop <- pivot_wider(pca_means_pop, names_from = eaten,
+                                values_from = c(4:27))
 
 # Replace NAs as 0 frequencies
-pca_eaten_ind[is.na(pca_eaten_ind)] = 0
+pca_means_pop[is.na(pca_means_pop)] = 0
 
-# Now we have the individual PC scores for eaten and uneaten mericarps for PCS
-# representing Size, Defense and Position.
-# This can be plotted technically
+### S estimates ####
+pca_means_pop$S_PC1 <- (pca_means_pop$PC1_mean_0 - 
+                             pca_means_pop$PC1_mean_1)
+
+pca_means_pop$S_PC2 <- (pca_means_pop$PC2_mean_0 - 
+                             pca_means_pop$PC2_mean_1)
+
+pca_means_pop$S_PC3 <- (pca_means_pop$PC3_mean_0 - 
+                             pca_means_pop$PC3_mean_1)
+
+pca_means_pop$S_Size <- (pca_means_pop$Size_mean_0 - 
+                              pca_means_pop$Size_mean_1)
+
+pca_means_pop$S_Defense <- (pca_means_pop$Defense_mean_0 - 
+                                 pca_means_pop$Defense_mean_1)
+
+pca_means_pop$S_Position <- (pca_means_pop$Position_mean_0 - 
+                                  pca_means_pop$Position_mean_1)
+
+# Join the datasets
+pca_means_pop <- left_join(pca_mean, pca_means_pop, by = "population")
+
+# Export the tables 
+#write_csv(pca_means_pop, "PCA_population.csv")
 
