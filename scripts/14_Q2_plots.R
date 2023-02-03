@@ -33,7 +33,7 @@ lower_spine_pop <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapt
 spine_position_pop <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Questions_1-3_trait_datasets/spine_position_pop.csv")
 
 ## PCA Populations ####
-pca_means_Q2 <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/PCA/PCA_population.csv")
+pca_means_Q2 <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/PCA/PCA_population_NAs.csv")
 pca_means_Q2 <- rename(pca_means_Q2, island = island.x)
 
 # Data preparation ####
@@ -61,6 +61,7 @@ width_pop <- width_pop %>% mutate_at(vars(island, population), list(factor))
 ### PCA populations ####
 pca_means_Q2 <- pca_means_Q2 %>% mutate_at(vars(island, population), list(factor))
 str(pca_means_Q2)
+pca_means_Q2 <- na.omit(pca_means_Q2)
 
 # Plot theme and function ####
 ## Theme ####
