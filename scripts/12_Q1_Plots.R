@@ -31,6 +31,10 @@ width_pop <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tr
 lower_spine_pop <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Questions_1-3_trait_datasets/lower_spines_pop.csv")
 spine_position_pop <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Questions_1-3_trait_datasets/spine_position_pop.csv")
 
+## PCA Populations ####
+pca_means <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/PCA/PCA_population.csv")
+pca_means <- rename(pca_means, island = island.x)
+
 
 # Data preparation ####
 # Making char into factors (island, populations)
@@ -54,6 +58,9 @@ spine_position_pop <- spine_position_pop %>% mutate_at(vars(island, population, 
 tip_distance_pop <- tip_distance_pop %>% mutate_at(vars(island, population), list(factor))
 width_pop <- width_pop %>% mutate_at(vars(island, population), list(factor))
 
+### PCA populations ####
+pca_means <- pca_means %>% mutate_at(vars(island, population), list(factor))
+str(pca_means)
 
 # Plot theme and function ####
 ## Theme ####
@@ -103,6 +110,30 @@ island_fig <- function(dataset, x, y, title, subtitle)
   }
 
 # Plots ####
+## PCA ####
+### Size ####
+pca_size <- island_fig(pca_means,
+                       pca_means$Size_mean_1,
+                       pca_means$Size_mean_0,
+                         "Mericarp Size (PC1)  ",
+                         " "
+) + 
+#### ggplot test ####
+#### 
+
+
+
+plot(ggpredict(mericarp_size, terms = "Size [all]",
+                   allow.new.levels = T))
+
+### PC1 ####
+pca_PC1 <- island_fig(pca_means,
+                       pca_means$PC1_mean_1,
+                       pca_means$PC1_mean_0,
+                       "PC1 (Untrasformed)  ",
+                       " "
+)
+
 ## Lower Spine ####
 # Lower spine plots are based on their counts. They don't use the function above.
 
