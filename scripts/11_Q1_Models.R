@@ -16,6 +16,12 @@ point_time <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. T
 point_time <- as_tibble(point_time)
 point_time
 
+# PCA dataset ####
+# Individual PC scores
+# This is the dataset for PCA scores of individual mericarps
+pca_ind <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/PCA/PCA_scores.csv")
+
+
 # Changed variables to factors
 point_time <- point_time %>% mutate_at(vars(year,
                                             island, population, lower_spine, 
@@ -30,9 +36,24 @@ point_time <- point_time %>% mutate_at(vars(year,
                                             germinated_position_4, germinated_position_5,
                                             germinated_position_6), list(factor))
 str(point_time)
+
+pca_ind <- pca_ind %>% mutate_at(vars(year,
+                                      island,
+                                      population,
+                                      lower_spine,
+                                      #eaten
+                                      ), list(factor))
+
+str(pca_ind)
+
 # Data preparation ####
 # Preparing datasets for univariate analysis.
 ## Select per traits to check and remove NAs
+
+## PCA ####
+pca_ind <- na.omit(pca_ind)
+summary(is.na(pca_ind)) # This tells you if there are NAs
+
 ## Length ####
 length <- select(point_time, c(1:8), eaten)
 length <- na.omit(length)
@@ -64,6 +85,40 @@ spine_position <- select(point_time, c(1:7), spine_position, eaten)
 spine_position <- na.omit(spine_position)
 
 # ======== Models ===========
+
+
+# PCA ####
+# The model itself is testing the effect of eaten mericarps
+# but I am not sure if this is the same model that we are 
+# reflecting in the plot for Question 1. Need to check with 
+# Andrew.
+
+# First lets start with Mericarp Size
+## Size ####
+histogram(pca_ind$Size, breaks = 50) # The distribution is normal.
+
+size <- glmmTMB(eaten ~ Size +
+                  (1|island/population), 
+                data = pca_ind,
+                family = binomial(link = "logit"),
+                REML = F)
+
+# Testing model assumptions with DHARMa
+testResiduals(size)
+diagnostic(resid(size)) # I am not sure how to interpret these outcomes, because
+
+# The effects of lower spines is reflected on the division of residuals.
+
+summary(size)
+Anova(size, type = "III")
+
+plot(predict(size))
+
+# This predicts the values based on the model, useful for plotting the
+# regression line. NEED to check.
+
+pca_ind$pred_model <- predict(size)
+
 
 ## Length ####
 # All of the covariates are random effects. For now this is the simplest model.
