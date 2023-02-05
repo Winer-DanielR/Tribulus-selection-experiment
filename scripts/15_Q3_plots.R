@@ -43,7 +43,7 @@ spine_position_pop <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Ch
 
 ## PCA Populations ####
 pca_means_Q3 <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/PCA/PCA_population_NAs.csv")
-pca_means_Q3 <- rename(pca_means_Q3, island = island.x)
+
 
 # Data preparation ####
 # Making char into factors (island, populations)
@@ -135,7 +135,7 @@ island_fig <- function(dataset, x, y, title, subtitle)
       fill = "Islands"
     ) +
     plot_theme +
-    geom_smooth(color = "black", size = 1, method = "lm",aes(group=1))
+    geom_smooth(color = "black", size = 1, method = "glm",aes(group=1))
   #geom_abline(color = "black", size = 1) # Abline is a 1:1 line!
 }
 
