@@ -20,7 +20,7 @@ point_time
 # Individual PC scores
 # This is the dataset for PCA scores of individual mericarps
 pca_ind <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/PCA/PCA_scores.csv")
-
+pca_means <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/PCA/PCA_population_NAs.csv")
 
 # Changed variables to factors
 point_time <- point_time %>% mutate_at(vars(year,
@@ -41,8 +41,15 @@ pca_ind <- pca_ind %>% mutate_at(vars(year,
                                       island,
                                       population,
                                       lower_spine,
-                                      #eaten
+                                      eaten
                                       ), list(factor))
+
+pca_means <- pca_means %>% mutate_at(vars(#year,
+                                      island,
+                                      population,
+                                      #lower_spine,
+                                      #eaten
+), list(factor))
 
 str(pca_ind)
 
@@ -52,6 +59,7 @@ str(pca_ind)
 
 ## PCA ####
 pca_ind <- na.omit(pca_ind)
+pca_means <- na.omit(pca_means)
 summary(is.na(pca_ind)) # This tells you if there are NAs
 
 ## Length ####
@@ -103,21 +111,99 @@ size <- glmmTMB(eaten ~ Size +
                 family = binomial(link = "logit"),
                 REML = F)
 
+size_mean <- glmmTMB(Size_mean_1 ~ Size_mean_0 +
+                  (1|island/population), 
+                data = pca_means,
+                #family = binomial(link = "logit"),
+                REML = F)
+
+
 # Testing model assumptions with DHARMa
 testResiduals(size)
+testResiduals(size_mean)
+
 diagnostic(resid(size)) # I am not sure how to interpret these outcomes, because
+diagnostic(resid(size_mean))
 
 # The effects of lower spines is reflected on the division of residuals.
 
 summary(size)
+summary(size_mean)
+
 Anova(size, type = "III")
+Anova(size_mean, type = "III")
 
-plot(predict(size))
 
-# This predicts the values based on the model, useful for plotting the
-# regression line. NEED to check.
+## Defense ####
+histogram(pca_ind$Defense, breaks = 50) # The distribution is normal.
 
-pca_ind$pred_model <- predict(size)
+Defense <- glmmTMB(eaten ~ Defense +
+                  (1|island/population), 
+                data = pca_ind,
+                family = binomial(link = "logit"),
+                REML = F)
+
+Defense_mean <- glmmTMB(Defense_mean_1 ~ Defense_mean_0 +
+                       (1|island/population), 
+                     data = pca_means,
+                     #family = binomial(link = "logit"),
+                     REML = F)
+
+
+# Testing model assumptions with DHARMa
+testResiduals(Defense)
+testResiduals(Defense_mean)
+
+diagnostic(resid(Defense)) # I am not sure how to interpret these outcomes, because
+diagnostic(resid(Defense_mean))
+
+# The effects of lower spines is reflected on the division of residuals.
+
+summary(Defense)
+summary(Defense_mean)
+
+Anova(Defense, type = "III")
+Anova(Defense_mean, type = "III")
+
+
+## Position ####
+histogram(pca_ind$Position, breaks = 50) # The distribution is normal.
+
+Position <- glmmTMB(eaten ~ Position +
+                     (1|island/population), 
+                   data = pca_ind,
+                   family = binomial(link = "logit"),
+                   REML = F)
+
+Position_mean <- glmmTMB(Position_mean_1 ~ Position_mean_0 +
+                          (1|island/population), 
+                        data = pca_means,
+                        #family = binomial(link = "logit"),
+                        REML = F)
+
+
+# Testing model assumptions with DHARMa
+testResiduals(Position)
+testResiduals(Position_mean)
+
+diagnostic(resid(Position)) # I am not sure how to interpret these outcomes, because
+diagnostic(resid(Position_mean))
+
+# The effects of lower spines is reflected on the division of residuals.
+
+summary(Position)
+summary(Position_mean)
+
+Anova(Position, type = "III")
+Anova(Position_mean, type = "III")
+
+
+
+
+
+
+
+
 
 
 ## Length ####
