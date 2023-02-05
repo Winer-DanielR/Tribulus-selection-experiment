@@ -8,6 +8,9 @@ width_pop <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tr
 lower_spine_pop <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Point in time means per year/lower_spines_year.csv")
 spine_position_pop <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Point in time means per year/spine_position_year.csv")
 
+## PCA Populations ####
+pca_means_Q3 <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/PCA/PCA_population_NAs.csv")
+
 
 # Data preparation ####
 # Making char into factors (island, populations)
@@ -21,10 +24,129 @@ spine_position_pop <- spine_position_pop %>% mutate_at(vars(island, population, 
 tip_distance_pop <- tip_distance_pop %>% mutate_at(vars(island, population, finch_beak), list(factor))
 width_pop <- width_pop %>% mutate_at(vars(island, population, finch_beak), list(factor))
 
+### PCA populations ####
+pca_means_Q3 <- pca_means_Q3 %>% mutate_at(vars(island, population, finch_beak), list(factor))
+str(pca_means_Q3)
+pca_means_Q3 <- na.omit(pca_means_Q3)
+
+
 # Models ####
 # The structure of this model is to test the effect of mean trait values
 # and selection estimates.
-# mean trait value ~ mericarp selection
+## Size ####
+sizeQ3 <- glmmTMB(S_Size ~ Bio_1 +
+                    Bio_4 +
+                    Bio_12 +
+                    Bio_15 +
+                    (1|island/population),
+                  data = pca_means_Q3,
+                  REML = F) 
+
+### Model Diagnostics ####
+# Residual histograms
+diagnostic(resid(sizeQ3))
+# DHARMa
+testResiduals(sizeQ3)
+
+### Results ####
+summary(sizeQ3)
+Anova(sizeQ3, type = "3")
+
+## Finch beak ####
+# I used this at the island level, it doesnt converge when populations are included
+size_beakQ3 <- glmmTMB(finch_beak ~ S_Size +
+                    (1|island),
+                  data = pca_means_Q3,
+                  family = binomial(link = "logit"),
+                  REML = F) 
+
+### Model Diagnostics ####
+# Residual histograms
+diagnostic(resid(size_beakQ3))
+# DHARMa
+testResiduals(size_beakQ3)
+
+### Results ####
+summary(size_beakQ3)
+Anova(size_beakQ3, type = "3")
+
+
+## Defense ####
+DefenseQ3 <- glmmTMB(S_Defense ~ Bio_1 +
+                    #Bio_4 + # Temperature seasonality removed
+                    Bio_12 +
+                    Bio_15 +
+                    (1|island/population),
+                  data = pca_means_Q3,
+                  REML = F) 
+
+### Model Diagnostics ####
+# Residual histograms
+diagnostic(resid(DefenseQ3))
+# DHARMa
+testResiduals(DefenseQ3)
+
+### Results ####
+summary(DefenseQ3)
+Anova(DefenseQ3, type = "3")
+
+## Finch beak ####
+# I used this at the island level, it doesnt converge when populations are included
+Defense_beakQ3 <- glmmTMB(finch_beak ~ S_Defense +
+                         (1|island),
+                       data = pca_means_Q3,
+                       family = binomial(link = "logit"),
+                       REML = F) 
+
+### Model Diagnostics ####
+# Residual histograms
+diagnostic(resid(Defense_beakQ3))
+# DHARMa
+testResiduals(Defense_beakQ3)
+
+### Results ####
+summary(Defense_beakQ3)
+Anova(Defense_beakQ3, type = "3")
+
+
+## Position ####
+PositionQ3 <- glmmTMB(S_Position ~ Bio_1 +
+                    Bio_4 +
+                    #Bio_12 + # Annual precipitation removed
+                    Bio_15 +
+                    (1|island/population),
+                  data = pca_means_Q3,
+                  REML = F) 
+
+### Model Diagnostics ####
+# Residual histograms
+diagnostic(resid(PositionQ3))
+# DHARMa
+testResiduals(PositionQ3)
+
+### Results ####
+summary(PositionQ3)
+Anova(PositionQ3, type = "3")
+
+## Finch beak ####
+# I used this at the island level, it doesnt converge when populations are included
+Position_beakQ3 <- glmmTMB(finch_beak ~ S_Position +
+                         (1|island),
+                       data = pca_means_Q3,
+                       family = binomial(link = "logit"),
+                       REML = F)
+
+
+### Model Diagnostics ####
+# Residual histograms
+diagnostic(resid(Position_beakQ3))
+# DHARMa
+testResiduals(Position_beakQ3)
+
+### Results ####
+summary(Position_beakQ3)
+Anova(Position_beakQ3, type = "3")
+ 
 ## Depth ####
 hist(depth_pop$S_depth, breaks = 10)
 depth_pop <- na.omit(depth_pop)
