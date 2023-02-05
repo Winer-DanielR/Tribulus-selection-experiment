@@ -32,9 +32,9 @@ lower_spine_pop <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapt
 spine_position_pop <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Questions_1-3_trait_datasets/spine_position_pop.csv")
 
 ## PCA Populations ####
-pca_means <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/PCA/PCA_population.csv")
-pca_means <- rename(pca_means, island = island.x)
+pca_means <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/PCA/PCA_population_NAs.csv")
 
+pca <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/PCA/PCA_scores.csv")
 
 # Data preparation ####
 # Making char into factors (island, populations)
@@ -127,7 +127,8 @@ island_fig <- function(dataset, x, y, title, subtitle)
     fill = "Islands"
   ) +
   plot_theme +
-  geom_abline(color = "black", size = 1) # Abline is a 1:1 line!
+    geom_smooth(color = "black", size = 1, method = "glm",aes(group=1)) 
+  #+ geom_abline(color = "black", size = 1) # Abline is a 1:1 line!
   }
 
 # Plots ####
@@ -140,6 +141,7 @@ pca_size <- island_fig(pca_means,
                          "Mericarp Size (PC1)  ",
                          " "
 )
+
 
 ### Defense ####
 pca_defense <- island_fig(pca_means,
