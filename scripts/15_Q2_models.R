@@ -31,6 +31,8 @@ width <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribul
 lower_spine <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Point in time means per year/lower_spines_year.csv")
 spine_position <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Point in time means per year/spine_position_year.csv")
 
+## PCA Populations ####
+pca_means_Q2 <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/PCA/PCA_population_NAs.csv")
 
 # Data preparation ####
 # Making char into factors (island, populations)
@@ -53,11 +55,90 @@ spine_position <- spine_position %>% mutate_at(vars(island, population, spine_po
 tip_distance <- tip_distance %>% mutate_at(vars(island, population), list(factor))
 width <- width %>% mutate_at(vars(island, population), list(factor))
 
+### PCA populations ####
+pca_means_Q2 <- pca_means_Q2 %>% mutate_at(vars(island, population), list(factor))
+str(pca_means_Q2)
+pca_means_Q2 <- na.omit(pca_means_Q2)
 
 # Models ####
 # The structure of this model is to test the effect of mean trait values
 # and selection estimates.
 # mean trait value ~ mericarp selection
+# 
+
+# PCA ####
+## Size ####
+## This is tricky because we are using the mean traits per population
+## to estimate the selection per population.
+hist(pca_means_Q2$Size_mean, breaks = 30)
+
+sizeQ2 <- glmmTMB(S_Size ~ Size_mean +
+                    (1|island/population),
+                  data = pca_means_Q2,
+                  REML = F)
+
+
+
+### Model Diagnostics ####
+# Residual histograms
+diagnostic(resid(sizeQ2))
+
+# DHARMa
+testResiduals(sizeQ2)
+
+### Results ####
+summary(sizeQ2)
+Anova(sizeQ2, type = "III")
+
+
+## Defense ####
+## This is tricky because we are using the mean traits per population
+## to estimate the selection per population.
+hist(pca_means_Q2$Defense_mean, breaks = 30)
+
+defenseQ2 <- glmmTMB(S_Defense ~ Defense_mean +
+                    (1|island/population),
+                  data = pca_means_Q2,
+                  REML = F)
+
+
+
+### Model Diagnostics ####
+# Residual histograms
+diagnostic(resid(defenseQ2))
+
+# DHARMa
+testResiduals(defenseQ2)
+
+### Results ####
+summary(defenseQ2)
+Anova(defenseQ2, type = "III")
+
+
+## Position ####
+## This is tricky because we are using the mean traits per population
+## to estimate the selection per population.
+hist(pca_means_Q2$Position_mean, breaks = 30)
+
+PositionQ2 <- glmmTMB(S_Position ~ Position_mean +
+                       (1|island/population),
+                     data = pca_means_Q2,
+                     REML = F)
+
+
+
+### Model Diagnostics ####
+# Residual histograms
+diagnostic(resid(PositionQ2))
+
+# DHARMa
+testResiduals(PositionQ2)
+
+### Results ####
+summary(PositionQ2)
+Anova(PositionQ2, type = "III")
+
+
 ## Depth ####
 # Remove NAs
 hist(depth$mean_all, breaks = 30)
