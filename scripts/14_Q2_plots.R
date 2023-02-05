@@ -34,7 +34,6 @@ spine_position_pop <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Ch
 
 ## PCA Populations ####
 pca_means_Q2 <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/PCA/PCA_population_NAs.csv")
-pca_means_Q2 <- rename(pca_means_Q2, island = island.x)
 
 # Data preparation ####
 # Making char into factors (island, populations)
@@ -118,15 +117,15 @@ island_fig <- function(dataset, x, y, title, subtitle)
                                   "San Cristobal",
                                   "Santa Cruz")) +
     labs(
-      x = "Selection (Uneaten - Eaten)",
-      y = "Mean trait (PC1)",
+      x = "Mean trait (PC Scores)",
+      y = "Selection (Uneaten - Eaten)",
       title = title,
       subtitle = subtitle,
       #color = "Islands"
       fill = "Islands"
     ) +
     plot_theme +
-    geom_smooth(color = "black", size = 1, method = "lm",aes(group=1))
+    geom_smooth(color = "black", size = 1, method = "glm",aes(group=1))
     #geom_abline(color = "black", size = 1) # Abline is a 1:1 line!
 }
 
@@ -135,27 +134,27 @@ island_fig <- function(dataset, x, y, title, subtitle)
 ## These plots are the same as the indvidual plots, no model was fitted here
 ### Size ####
 pca_size <- island_fig(pca_means_Q2,
-                       pca_means_Q2$S_Size,
                        pca_means_Q2$Size_mean,
+                       pca_means_Q2$S_Size,
                        "Mericarp Size (PC1)  ",
                        " "
-)
+) 
 
 ### Defense ####
 pca_defense <- island_fig(pca_means_Q2,
-                          pca_means_Q2$S_Defense,
                           pca_means_Q2$Defense_mean,
+                          pca_means_Q2$S_Defense,
                           "Mericarp Defense (PC2)  ",
                           " ")
 ### Position ####
 pca_position <- island_fig(pca_means_Q2,
-                           pca_means_Q2$S_Position,
                            pca_means_Q2$Position_mean,
+                           pca_means_Q2$S_Position,
                            "Spine Position (PC3)  ",
                            " ")
 
 ### Combined PCA plots ####
-Q1_pca_plot <- ggarrange(pca_size + rremove("ylab") + rremove("xlab"),
+Q2_pca_plot <- ggarrange(pca_size + rremove("ylab") + rremove("xlab"),
                          pca_defense + rremove("ylab") + rremove("xlab"),
                          pca_position + rremove("ylab") + rremove("xlab"),
                          common.legend = T,
@@ -164,9 +163,9 @@ Q1_pca_plot <- ggarrange(pca_size + rremove("ylab") + rremove("xlab"),
                          ncol = 3,
                          nrow = 1)
 
-annotate_figure(Q1_pca_plot, left = textGrob("Mean Trait (PC Score)", 
+annotate_figure(Q2_pca_plot, left = textGrob("Selection (Uneaten - Eaten)", 
                                              rot = 90, vjust = 1, gp = gpar(cex = 1.1)),
-                bottom = textGrob("Selection (Uneaten - Eaten)", gp = gpar(cex = 1.1)))
+                bottom = textGrob("Mean Trait (PC Scores)", gp = gpar(cex = 1.1)))
 
 
 
