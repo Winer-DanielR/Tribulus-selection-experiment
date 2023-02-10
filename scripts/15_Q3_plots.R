@@ -42,7 +42,7 @@ lower_spine_pop <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapt
 spine_position_pop <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Questions_1-3_trait_datasets/spine_position_pop.csv")
 
 ## PCA Populations ####
-pca_means_Q3 <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/PCA/PCA_population_NAs.csv")
+pca_means_Q3 <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/PCA/PCA_populations_bioclimate.csv")
 
 
 # Data preparation ####
@@ -142,27 +142,27 @@ island_fig <- function(dataset, x, y, title, subtitle)
 # Plots ####
 ## PCA ####
 ### Size ####
-#### BIO1 ####
+#### Bioclimate PC1 ####
 pca_size_bio1 <- island_fig(pca_means_Q3,
-                       pca_means_Q3$Bio_1,
+                       pca_means_Q3$PC1_bioclimate,
                        pca_means_Q3$S_Size,
-                       "Mericarp Size (PC1) - Annual Temperature  ",
+                       "Mericarp Size (PC1) - Bioclimate (PC1)  ",
                        " "
 )
 
-#### BIO4 ####
+#### Bioclimate PC2 ####
 pca_size_bio4 <- island_fig(pca_means_Q3,
-                       pca_means_Q3$Bio_4,
+                       pca_means_Q3$PC2_bioclimate,
                        pca_means_Q3$S_Size,
-                       "Temperature Seasonality  ",
+                       "Bioclimate (PC2)  ",
                        " "
 )
 
 #### BIO12 ####
 pca_size_bio12 <- island_fig(pca_means_Q3,
-                       pca_means_Q3$Bio_12,
+                       pca_means_Q3$PC3_bioclimate,
                        pca_means_Q3$S_Size,
-                       "Annual Precipitation  ",
+                       "Bioclimate (PC3)  ",
                        " "
 )
 
