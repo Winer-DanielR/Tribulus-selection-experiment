@@ -150,29 +150,29 @@ pca_size_bio1 <- island_fig(pca_means_Q3,
                        " "
 )
 
-#### Bioclimate PC2 ####
-pca_size_bio4 <- island_fig(pca_means_Q3,
-                       pca_means_Q3$PC2_bioclimate,
-                       pca_means_Q3$S_Size,
-                       "Bioclimate (PC2)  ",
-                       " "
-)
-
-#### BIO12 ####
-pca_size_bio12 <- island_fig(pca_means_Q3,
-                       pca_means_Q3$PC3_bioclimate,
-                       pca_means_Q3$S_Size,
-                       "Bioclimate (PC3)  ",
-                       " "
-)
-
-#### BIO15 ####
-pca_size_bio15 <- island_fig(pca_means_Q3,
-                       pca_means_Q3$Bio_15,
-                       pca_means_Q3$S_Size,
-                       "Precipitation Seasonality  ",
-                       " "
-)
+# #### Bioclimate PC2 ####
+# pca_size_bio4 <- island_fig(pca_means_Q3,
+#                        pca_means_Q3$PC2_bioclimate,
+#                        pca_means_Q3$S_Size,
+#                        "Bioclimate (PC2)  ",
+#                        " "
+# )
+# 
+# #### Bioclimate PC3 ####
+# pca_size_bio12 <- island_fig(pca_means_Q3,
+#                        pca_means_Q3$PC3_bioclimate,
+#                        pca_means_Q3$S_Size,
+#                        "Bioclimate (PC3)  ",
+#                        " "
+# )
+# 
+# #### BIO15 ####
+# pca_size_bio15 <- island_fig(pca_means_Q3,
+#                        pca_means_Q3$Bio_15,
+#                        pca_means_Q3$S_Size,
+#                        "Precipitation Seasonality  ",
+#                        " "
+# )
 
 #### Finch Beak ####
 pca_size_beak <- island_fig(pca_means_Q3,
@@ -184,16 +184,18 @@ pca_size_beak <- island_fig(pca_means_Q3,
 
 ### Combined PCA plots ####
 Q3_pca_size <- ggarrange(pca_size_bio1 + rremove("ylab") + rremove("xlab"),
-                         pca_size_bio4 + rremove("ylab") + rremove("xlab"),
-                         pca_size_bio12 + rremove("ylab") + rremove("xlab"),
-                         pca_size_bio15 + rremove("ylab") + rremove("xlab"),
+                         #pca_size_bio4 + rremove("ylab") + rremove("xlab"),
+                         #pca_size_bio12 + rremove("ylab") + rremove("xlab"),
+                         #pca_size_bio15 + rremove("ylab") + rremove("xlab"),
                          pca_size_beak + rremove("ylab") + rremove("xlab"),
                          common.legend = T,
                          legend = "right",
-                         labels = c("A", "B", "C",
-                                    "D", "E"),
-                         ncol = 3,
-                         nrow = 2)
+                         labels = c("A", "B" 
+                                    #"C",
+                                    #"D", "E"
+                                    ),
+                         ncol = 2,
+                         nrow = 1)
 
 annotate_figure(Q3_pca_size, left = textGrob("Selection (Uneaten - Eaten)", 
                                              rot = 90, vjust = 1, gp = gpar(cex = 1.1)),
@@ -203,35 +205,35 @@ annotate_figure(Q3_pca_size, left = textGrob("Selection (Uneaten - Eaten)",
 
 #### BIO1 ####
 pca_Defense_bio1 <- island_fig(pca_means_Q3,
-                            pca_means_Q3$Bio_1,
+                            pca_means_Q3$PC1_bioclimate,
                             pca_means_Q3$S_Defense,
-                            "Mericarp Defense (PC2) - Annual Temperature  ",
+                            "Mericarp Defense (PC2) - Bioclimate (PC1)  ",
                             " "
 )
 
-#### BIO4 ####
-pca_Defense_bio4 <- island_fig(pca_means_Q3,
-                            pca_means_Q3$Bio_4,
-                            pca_means_Q3$S_Defense,
-                            "Temperature Seasonality  ",
-                            " "
-)
-
-#### BIO12 ####
-pca_Defense_bio12 <- island_fig(pca_means_Q3,
-                             pca_means_Q3$Bio_12,
-                             pca_means_Q3$S_Defense,
-                             "Annual Precipitation  ",
-                             " "
-)
-
-#### BIO15 ####
-pca_Defense_bio15 <- island_fig(pca_means_Q3,
-                             pca_means_Q3$Bio_15,
-                             pca_means_Q3$S_Defense,
-                             "Precipitation Seasonality  ",
-                             " "
-)
+# #### BIO4 ####
+# pca_Defense_bio4 <- island_fig(pca_means_Q3,
+#                             pca_means_Q3$Bio_4,
+#                             pca_means_Q3$S_Defense,
+#                             "Temperature Seasonality  ",
+#                             " "
+# )
+# 
+# #### BIO12 ####
+# pca_Defense_bio12 <- island_fig(pca_means_Q3,
+#                              pca_means_Q3$Bio_12,
+#                              pca_means_Q3$S_Defense,
+#                              "Annual Precipitation  ",
+#                              " "
+# )
+# 
+# #### BIO15 ####
+# pca_Defense_bio15 <- island_fig(pca_means_Q3,
+#                              pca_means_Q3$Bio_15,
+#                              pca_means_Q3$S_Defense,
+#                              "Precipitation Seasonality  ",
+#                              " "
+# )
 
 #### Finch Beak ####
 pca_Defense_beak <- island_fig(pca_means_Q3,
@@ -243,16 +245,20 @@ pca_Defense_beak <- island_fig(pca_means_Q3,
 
 ### Combined PCA plots ####
 Q3_pca_Defense <- ggarrange(pca_Defense_bio1 + rremove("ylab") + rremove("xlab"),
-                         pca_Defense_bio4 + rremove("ylab") + rremove("xlab"),
-                         pca_Defense_bio12 + rremove("ylab") + rremove("xlab"),
-                         pca_Defense_bio15 + rremove("ylab") + rremove("xlab"),
+                         #pca_Defense_bio4 + rremove("ylab") + rremove("xlab"),
+                         #pca_Defense_bio12 + rremove("ylab") + rremove("xlab"),
+                         #pca_Defense_bio15 + rremove("ylab") + rremove("xlab"),
                          pca_Defense_beak + rremove("ylab") + rremove("xlab"),
                          common.legend = T,
                          legend = "right",
-                         labels = c("A", "B", "C",
-                                    "D", "E"),
-                         ncol = 3,
-                         nrow = 2)
+                         labels = c("A", 
+                                    "B" 
+                                    #"C",
+                                    #"D", 
+                                    #"E"
+                                    ),
+                         ncol = 2,
+                         nrow = 1)
 
 annotate_figure(Q3_pca_Defense, left = textGrob("Selection (Uneaten - Eaten)", 
                                              rot = 90, vjust = 1, gp = gpar(cex = 1.1)),
