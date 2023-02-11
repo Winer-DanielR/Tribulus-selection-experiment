@@ -7,13 +7,13 @@ env <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus
 env <- as_tibble(env)
 
 ### PCA populations ####
-env <- env %>% mutate_at(vars(island, population, finch_beak), list(factor))
+env <- env %>% mutate_at(vars(island, population), list(factor))
 str(env)
 env <- na.omit(env)
 
 ## Data preparation ####
 bioclimate <- env  %>%
-  select(island, population, Bio_1, Bio_4, Bio_12, Bio_15)  %>%
+  select(island, population, Bio_1, Bio_4, Bio_12, Bio_15, finch_beak)  %>%
   drop_na()
 
 str(bioclimate)
@@ -21,7 +21,7 @@ str(bioclimate)
 # This removes all the NAs leaving only 3393 individuals from 2017 and 2018 where all traits were collected
 
 ## PCA ####
-bioclimate_pca <- prcomp(bioclimate[,c(3:6)], scale=TRUE)
+bioclimate_pca <- prcomp(bioclimate[,c(3:7)], scale=TRUE)
 summary(bioclimate_pca)
 
 # Eigenvalues
@@ -31,7 +31,7 @@ fviz_eig(bioclimate_pca)
 loadings <- bioclimate_pca$rotation # "rotation" is what R calls the PCA loadings
 loadings <- as.data.frame(loadings)
 
-# write_csv(loadings, "PCA_bioclimate_loadings.csv")
+#write_csv(loadings, "PCA_bioclimate_loadings.csv")
 # I exported this for reference as a csv.
 
 # This is the PCA scores, used for the models later
@@ -40,10 +40,26 @@ scores <- as.data.frame(scores)
 
 # Combine the scores and the mericarp dataset.
 bioclimate <- bind_cols(bioclimate, scores)
-# I exported this dataset to use it for the later questions.
 
-# Expport mericarp dataset for models
-# write_csv(bioclimate, "PCA_bioclimate_scores.csv")
+bioclimate <- rename(bioclimate,
+                     PC1_bioclimate = PC1,
+                     PC2_bioclimate = PC2,
+                     PC3_bioclimate = PC3,
+                     PC4_bioclimate = PC4,
+                     PC5_bioclimate = PC5)
+
+# I need to join both datasets. The PCA bioclimates and the population mericarps
+
+bioclimate_pcs <- select(bioclimate,
+                         PC1_bioclimate,
+                         PC2_bioclimate,
+                         PC3_bioclimate,
+                         PC4_bioclimate,
+                         PC5_bioclimate)
+
+env <- bind_cols(env, bioclimate_pcs)
+
+#write_csv(env, "PCA_populations_bioclimate.csv")
 
 var <- get_pca_var(bioclimate_pca)
 # Perhaps this is used for the variance table?
@@ -51,13 +67,13 @@ trait_contrib <- var$contrib
 trait_contrib <- as.data.frame(trait_contrib)
 
 # Exported thecontributions per trait as a table
-# write_csv(trait_contrib, "PCA_bioclimate_contrib.csv")
+#write_csv(trait_contrib, "PCA_bioclimate_contrib.csv")
 
 ## PCA plots ####
 fviz_pca_var(bioclimate_pca, col.var = "contrib",
              gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
              repel = T,
-             axes = c(1,2)) # plot axes
+             axes = c(2,3)) # plot axes
 
 
 ### Individual PCA ####
