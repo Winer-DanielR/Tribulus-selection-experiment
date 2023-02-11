@@ -45,7 +45,8 @@ pca_means_Q3 <- na.omit(pca_means_Q3)
 sizeQ3 <- glmmTMB(S_Size ~ PC1_bioclimate +
                     PC2_bioclimate +
                     PC3_bioclimate +
-                    finch_beak +
+                    PC4_bioclimate +
+                    PC5_bioclimate +
                     (1|island/population),
                   data = pca_means_Q3,
                   REML = F) 
@@ -60,25 +61,6 @@ testResiduals(sizeQ3)
 summary(sizeQ3)
 Anova(sizeQ3, type = "3")
 
-# ## Finch beak ####
-# # I used this at the island level, it doesnt converge when populations are included
-# size_beakQ3 <- glmmTMB(finch_beak ~ S_Size +
-#                     (1|island),
-#                   data = pca_means_Q3,
-#                   family = binomial(link = "logit"),
-#                   REML = F) 
-
-# ### Model Diagnostics ####
-# # Residual histograms
-# diagnostic(resid(size_beakQ3))
-# # DHARMa
-# testResiduals(size_beakQ3)
-# 
-# ### Results ####
-# summary(size_beakQ3)
-# Anova(size_beakQ3, type = "3")
-
-
 ## Defense ####
 # DefenseQ3 <- glmmTMB(S_Defense ~ Bio_1 +
 #                     #Bio_4 + # Temperature seasonality removed
@@ -91,7 +73,8 @@ Anova(sizeQ3, type = "3")
 DefenseQ3 <- glmmTMB(S_Defense ~ PC1_bioclimate +
                        PC2_bioclimate +
                        PC3_bioclimate +
-                       finch_beak +
+                       PC4_bioclimate +
+                       PC5_bioclimate +
                        (1|island/population),
                      data = pca_means_Q3,
                      REML = F)
@@ -106,25 +89,6 @@ testResiduals(DefenseQ3)
 summary(DefenseQ3)
 Anova(DefenseQ3, type = "3")
 
-# ## Finch beak ####
-# # I used this at the island level, it doesnt converge when populations are included
-# Defense_beakQ3 <- glmmTMB(finch_beak ~ S_Defense +
-#                          (1|island),
-#                        data = pca_means_Q3,
-#                        family = binomial(link = "logit"),
-#                        REML = F) 
-# 
-# ### Model Diagnostics ####
-# # Residual histograms
-# diagnostic(resid(Defense_beakQ3))
-# # DHARMa
-# testResiduals(Defense_beakQ3)
-# 
-# ### Results ####
-# summary(Defense_beakQ3)
-# Anova(Defense_beakQ3, type = "3")
-
-
 ## Position ####
 # PositionQ3 <- glmmTMB(S_Position ~ Bio_1 +
 #                     Bio_4 +
@@ -137,7 +101,8 @@ Anova(DefenseQ3, type = "3")
 PositionQ3 <- glmmTMB(S_Position ~ PC1_bioclimate +
                         PC2_bioclimate +
                         PC3_bioclimate +
-                        finch_beak +
+                        PC4_bioclimate +
+                        PC5_bioclimate +
                         (1|island/population),
                       data = pca_means_Q3,
                       REML = F)
@@ -153,25 +118,6 @@ testResiduals(PositionQ3)
 summary(PositionQ3)
 Anova(PositionQ3, type = "3")
 
-# ## Finch beak ####
-# # I used this at the island level, it doesnt converge when populations are included
-# Position_beakQ3 <- glmmTMB(finch_beak ~ S_Position +
-#                          (1|island),
-#                        data = pca_means_Q3,
-#                        family = binomial(link = "logit"),
-#                        REML = F)
-# 
-# 
-# ### Model Diagnostics ####
-# # Residual histograms
-# diagnostic(resid(Position_beakQ3))
-# # DHARMa
-# testResiduals(Position_beakQ3)
-# 
-# ### Results ####
-# summary(Position_beakQ3)
-# Anova(Position_beakQ3, type = "3")
- 
 ## Depth ####
 hist(depth_pop$S_depth, breaks = 10)
 depth_pop <- na.omit(depth_pop)
