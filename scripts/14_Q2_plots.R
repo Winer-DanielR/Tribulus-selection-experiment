@@ -89,6 +89,7 @@ plot_theme <-     theme(axis.line = element_line(linetype = "solid", size = 1),
 
 island_fig <- function(dataset, x, y, title, subtitle)
 {ggplot(dataset, aes(x = x, y = y, colour = island, shape = island, fill = island)) + #For the function to work the colors need to be defined here.
+    geom_smooth(color = "black", size = 1, method = "glm",aes(group=1)) +
     geom_point(size = 3.5, stroke = 1) + #Type of plot
     scale_fill_manual(values = c("#D55E00",
                                           "#E69F00",
@@ -124,8 +125,8 @@ island_fig <- function(dataset, x, y, title, subtitle)
       #color = "Islands"
       fill = "Islands"
     ) +
-    plot_theme +
-    geom_smooth(color = "black", size = 1, method = "glm",aes(group=1))
+    plot_theme
+    
     #geom_abline(color = "black", size = 1) # Abline is a 1:1 line!
 }
 
