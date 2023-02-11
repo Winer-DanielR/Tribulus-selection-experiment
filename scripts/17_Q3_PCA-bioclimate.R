@@ -134,7 +134,7 @@ biplot2
 
 var2 <- fviz_pca_var(bioclimate_pca,
                      col.var = "contrib",
-                     axes = c(1,2),
+                     axes = c(1,5),
                      arrowsize = 0.8,
                      title = "Variables contribution
                            ",
