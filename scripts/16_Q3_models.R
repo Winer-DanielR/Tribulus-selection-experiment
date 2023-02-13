@@ -46,7 +46,7 @@ sizeQ3 <- glmmTMB(S_Size ~ PC1_bioclimate +
                     PC2_bioclimate +
                     PC3_bioclimate +
                     PC4_bioclimate +
-                    PC5_bioclimate +
+                    finch_beak +
                     (1|island/population),
                   data = pca_means_Q3,
                   REML = F) 
@@ -74,7 +74,7 @@ DefenseQ3 <- glmmTMB(S_Defense ~ PC1_bioclimate +
                        PC2_bioclimate +
                        PC3_bioclimate +
                        PC4_bioclimate +
-                       PC5_bioclimate +
+                       finch_beak +
                        (1|island/population),
                      data = pca_means_Q3,
                      REML = F)
@@ -102,7 +102,7 @@ PositionQ3 <- glmmTMB(S_Position ~ PC1_bioclimate +
                         PC2_bioclimate +
                         PC3_bioclimate +
                         PC4_bioclimate +
-                        PC5_bioclimate +
+                        finch_beak +
                         (1|island/population),
                       data = pca_means_Q3,
                       REML = F)

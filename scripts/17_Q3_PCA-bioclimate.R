@@ -13,7 +13,9 @@ env <- na.omit(env)
 
 ## Data preparation ####
 bioclimate <- env  %>%
-  select(island, population, Bio_1, Bio_4, Bio_12, Bio_15, finch_beak)  %>%
+  select(island, population, Bio_1, Bio_4, Bio_12, Bio_15
+         #, finch_beak
+         )  %>%
   drop_na()
 
 str(bioclimate)
@@ -21,7 +23,7 @@ str(bioclimate)
 # This removes all the NAs leaving only 3393 individuals from 2017 and 2018 where all traits were collected
 
 ## PCA ####
-bioclimate_pca <- prcomp(bioclimate[,c(3:7)], scale=TRUE)
+bioclimate_pca <- prcomp(bioclimate[,c(3:6)], scale=TRUE)
 summary(bioclimate_pca)
 
 # Eigenvalues
@@ -45,8 +47,9 @@ bioclimate <- rename(bioclimate,
                      PC1_bioclimate = PC1,
                      PC2_bioclimate = PC2,
                      PC3_bioclimate = PC3,
-                     PC4_bioclimate = PC4,
-                     PC5_bioclimate = PC5)
+                     PC4_bioclimate = PC4
+                     #PC5_bioclimate = PC5
+                     )
 
 # I need to join both datasets. The PCA bioclimates and the population mericarps
 
@@ -54,8 +57,9 @@ bioclimate_pcs <- select(bioclimate,
                          PC1_bioclimate,
                          PC2_bioclimate,
                          PC3_bioclimate,
-                         PC4_bioclimate,
-                         PC5_bioclimate)
+                         PC4_bioclimate
+                         #PC5_bioclimate
+                         )
 
 env <- bind_cols(env, bioclimate_pcs)
 
@@ -73,8 +77,7 @@ trait_contrib <- as.data.frame(trait_contrib)
 fviz_pca_var(bioclimate_pca, col.var = "contrib",
              gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
              repel = T,
-             axes = c(2,3)) # plot axes
-
+             axes = c(1,2)) # plot axes
 
 ### Individual PCA ####
 # It uses mericarp_NA as habillage because lower spines there is a factor.
@@ -134,7 +137,7 @@ biplot2
 
 var2 <- fviz_pca_var(bioclimate_pca,
                      col.var = "contrib",
-                     axes = c(1,5),
+                     axes = c(1,2),
                      arrowsize = 0.8,
                      title = "Variables contribution
                            ",
@@ -157,20 +160,7 @@ var2 <- fviz_pca_var(bioclimate_pca,
 var2
 
 # I need to join both datasets. The PCA bioclimates and the population mericarps
-# 
-bioclimate <- rename(bioclimate,
-                     PC1_bioclimate = PC1,
-                     PC2_bioclimate = PC2,
-                     PC3_bioclimate = PC3,
-                     PC4_bioclimate = PC4)
 
-bioclimate_pcs <- select(bioclimate,
-                         PC1_bioclimate,
-                         PC2_bioclimate,
-                         PC3_bioclimate,
-                         PC4_bioclimate)
-
-env <- bind_cols(env, bioclimate_pcs)
 
 #write_csv(env, "PCA_populations_bioclimate.csv")
 

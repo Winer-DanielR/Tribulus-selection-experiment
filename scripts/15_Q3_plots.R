@@ -144,7 +144,7 @@ island_fig <- function(dataset, x, y, title, subtitle)
 ### Size ####
 
 pca_size_bio1 <- island_fig(pca_means_Q3,
-                       pca_means_Q3$PC1_bioclimate,
+                       pca_means_Q3$finch_beak,
                        pca_means_Q3$S_Size,
                        "Mericarp Size (PC1) ",
                        " "
@@ -153,7 +153,7 @@ pca_size_bio1 <- island_fig(pca_means_Q3,
 ### Defense ####
 
 pca_Defense_bio1 <- island_fig(pca_means_Q3,
-                               pca_means_Q3$PC1_bioclimate,
+                               pca_means_Q3$finch_beak,
                                pca_means_Q3$S_Defense,
                                "Mericarp Defense (PC2) ",
                                " "
@@ -161,7 +161,7 @@ pca_Defense_bio1 <- island_fig(pca_means_Q3,
 
 ### Position ####
 pca_Position_bio1 <- island_fig(pca_means_Q3,
-                                pca_means_Q3$PC1_bioclimate,
+                                pca_means_Q3$finch_beak,
                                 pca_means_Q3$S_Position,
                                 "Mericarp Position (PC3)  ",
                                 " "
