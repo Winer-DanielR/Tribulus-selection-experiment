@@ -76,7 +76,16 @@ Mark_recapture$year <- format(as.Date(Mark_recapture$date, format = "%d/%m/%Y"),
 
 #write_csv(Mark_recapture, "Mark_recapture_dataset.csv")
 
+# Starting dataset ####
 Mark_recapture <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Raw/Mark_recapture_dataset.csv")
+
+hist(Mark_recapture$length, breaks = 50)
+hist(Mark_recapture$width, breaks = 50) # There is a measurement error!
+hist(Mark_recapture$depth, breaks = 50)
+# There is an individual error, I need to correct it. On width.
+
+Mark_recapture[669,11] = 3.12
+
 
 
 ## Data preparation for PCA ####
@@ -85,10 +94,12 @@ Mark_recapture <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapte
 ## One, were we include size, spine and position but this removes
 ## all the no spine treatments.
 ## 
-## Two, another dataset were we only select size traits and lower spines,
+## Two, another dataset where we only select size traits and lower spines,
 ## ## this one includes all treatments of the experiment but wont include
 ## spine treatments like longest spine or spine position 
 ## 
+## Three, another dataset where I only use size traits. This is because those are
+## the only ones that all mericarps have and we can include most of the individuals
 
 summary(is.na(Mark_recapture))
 
@@ -99,6 +110,14 @@ MR_all_traits <- Mark_recapture  %>%
          spine_position, lower_spine, Present, Eaten_Birds, Eaten_Insects)  %>%
   drop_na()
 
+
+hist(MR_all_traits$length, breaks = 50)
+hist(MR_all_traits$width, breaks = 50)
+hist(MR_all_traits$depth, breaks = 50)
+
+# This dataset uses all the measured mericarp traits. However, it excludes most
+# of the treatments. In fact, it only includes all spines and upper spines only.
+# 
 # I realized that we did not measured lower spines for the no spine treatment
 # for Isabela and Santa Cruz in 2019. This reduces the number of lower spines individuals for all
 # treatments.
@@ -116,6 +135,11 @@ MR_all_treatments <- Mark_recapture  %>%
 
 # This dataset has 1989 observations and drops Isabela and Santa Cruz from 2019
 
+hist(MR_all_treatments$length, breaks = 50)
+hist(MR_all_treatments$width, breaks = 50)
+hist(MR_all_treatments$depth, breaks = 50)
+
+
 MR_all_size <- Mark_recapture  %>%
   select(year, island, treatment, size, color, mark_position,
          length, width, depth, #longest_spine, 
@@ -128,6 +152,9 @@ MR_all_size <- Mark_recapture  %>%
 # for some reason there are no measurements of size in floreana for a couple of mericarps used.
 # I really cannot recall why we did this. But this removes 10 mericarps.
 
+hist(MR_all_size$length, breaks = 50)
+hist(MR_all_size$width, breaks = 50)
+hist(MR_all_size$depth, breaks = 50)
 
 ## PCA ####
 ### All traits ####
@@ -158,6 +185,13 @@ loadings_treatments <- as.data.frame(loadings_treatments)
 loadings_size <- MR_all_size_pca$rotation # "rotation" is what R calls the PCA loadings
 loadings_size <- as.data.frame(loadings_size)
 
+# Export loadings
+
+# write_csv(loadings_traits, "Trait_PCA_Mark_Recapture.csv")
+# write_csv(loadings_treatments, "Treatments_PCA_Mark_Recapture.csv")
+# write_csv(loadings_size, "Size_PCA_Mark_Recapture.csv")
+
+
 # This is the PCA scores, used for the models later
 scores_traits <- MR_all_traits_pca$x # "x" is what R calls the species scores
 scores_traits <- as.data.frame(scores_traits)
@@ -175,28 +209,6 @@ MR_all_size <- bind_cols(MR_all_size, scores_size)
 
 # I exported this dataset to use it for the later questions.
 
-#Extract and transform PCs
-Size <- (-1)*MR_all_traits_pca$x[,1]
-Size <- as.data.frame(Size)
-#Why we change signs? I think changing the signs makes it more intuitive,
-#Larger mericarps are positive with this transformation.
-
-Defense <- MR_all_traits_pca$x[,2]
-Defense <- as.data.frame(Defense)
-# This would be the same as PC2
-
-Position <- (-1)*MR_all_traits_pca$x[,3]
-Position <- as.data.frame(Position)
-# I think we could transform the spine position PC3 as well.
-
-# Join the transformed PC scores into the mericarp dataset
-mericarp <- bind_cols(mericarp, Size)
-mericarp <- bind_cols(mericarp, Defense)
-mericarp <- bind_cols(mericarp, Position)
-
-# Expport mericarp dataset for models
-#write_csv(mericarp, "PCA_scores.csv")
-
 var1 <- get_pca_var(MR_all_traits_pca)
 var2 <- get_pca_var(MR_all_treatments_pca)
 var3 <- get_pca_var(MR_all_size_pca)
@@ -212,14 +224,55 @@ trait_contrib3 <- var3$contrib
 trait_contrib3 <- as.data.frame(trait_contrib3)
 
 # Exported thecontributions per trait as a table
-#write_csv(trait_contrib, "PCA_var_contrib.csv")
+
+# write_csv(trait_contrib1, "Trait_contrib_Mark_Recapture.csv")
+# write_csv(trait_contrib2, "Treatments_contrib_Mark_Recapture.csv")
+# write_csv(trait_contrib3, "Size_contrib_Mark_Recapture.csv")
 
 ## PCA plots ####
 fviz_pca_var(MR_all_traits_pca, col.var = "contrib",
              gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
              repel = T,
-             axes = c(1,3)) # plot axes
+             axes = c(1,2)) # plot axes
 
+# It seems that PC1 is Size and PC2 is Defense AND Position
+
+fviz_pca_var(MR_all_treatments_pca, col.var = "contrib",
+             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+             repel = T,
+             axes = c(1,2)) # plot axes
+
+# It seems that PC1 is Size and PC2 is lower spines
+
+fviz_pca_var(MR_all_size_pca, col.var = "contrib",
+             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+             repel = T,
+             axes = c(1,2)) # plot axes
+
+# In this case, PC1 is size but PC2 is length-width and depth is PC3.
+# For the size PCA I think that PC1 is enough
+
+## Extract and transform PCs ####
+# Size <- (-1)*MR_all_size_pca$x[,1]
+# Size <- as.data.frame(Size)
+# #Why we change signs? I think changing the signs makes it more intuitive,
+# #Larger mericarps are positive with this transformation.
+# 
+# Defense <- MR_all_size_pca$x[,2]
+# Defense <- as.data.frame(Defense)
+# # This would be the same as PC2
+# 
+# # In this case for all mericarps it seems that PC1 and PC2 are enough.
+# 
+# # Join the transformed PC scores into the mericarp dataset
+# MR_all_size <- bind_cols(MR_all_size, Size)
+# MR_all_size <- bind_cols(MR_all_treatments, Defense)
+
+
+# Expport mericarp dataset for models
+# write_csv(MR_all_traits, "Traits_MR_PCA_scores.csv")
+# write_csv(MR_all_treatments, "Treatments_MR_PCA_scores.csv")
+# write_csv(MR_all_size, "Size_MR_PCA_scores.csv")
 
 ### Individual PCA ####
 # It uses mericarp_NA as habillage because lower spines there is a factor.
@@ -229,9 +282,9 @@ fviz_pca_ind(MR_all_traits_pca, repel = T, geom = c("point"), habillage = MR_all
              select.ind = list(name = NULL, cos2 = NULL, contrib = NULL),
              gradient.cols = NULL)
 
-fviz_pca_biplot(MR_all_traits_pca, repel = T,
+fviz_pca_biplot(MR_all_size_pca, repel = T,
                 geom = c("point"),
-                habillage = MR_all_traits$size,
+                habillage = MR_all_size$size,
                 col.var = "black",
                 addEllipses = T
 )
@@ -245,7 +298,7 @@ fviz_pca_ind(MR_all_treatments_pca, repel = T, geom = c("point"), habillage = MR
 
 fviz_pca_biplot(MR_all_treatments_pca, repel = T,
                 geom = c("point"),
-                habillage = MR_all_treatments$treatment,
+                habillage = MR_all_treatments$island,
                 col.var = "black",
                 addEllipses = T
 )
