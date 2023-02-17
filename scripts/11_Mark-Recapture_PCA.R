@@ -273,10 +273,21 @@ fviz_pca_var(MR_all_size_pca, col.var = "contrib",
 # write_csv(MR_all_traits, "Traits_MR_PCA_scores.csv")
 # write_csv(MR_all_treatments, "Treatments_MR_PCA_scores.csv")
 # write_csv(MR_all_size, "Size_MR_PCA_scores.csv")
+# 
+
+# Based on the meeting:
+# Just use the size PCA for now. 
+# Create a new column with year and size together
+
+# New year-size column ####
+
+MR_all_size$year_size <- paste(MR_all_size$year,
+                               MR_all_size$size,
+                               sep = "_")
 
 ### Individual PCA ####
 # It uses mericarp_NA as habillage because lower spines there is a factor.
-fviz_pca_ind(MR_all_traits_pca, repel = T, geom = c("point"), habillage = MR_all_traits$size, palette = NULL,
+fviz_pca_ind(MR_all_traits_pca, repel = T, geom = c("point"), habillage = MR_all_traits$year, palette = NULL,
              addEllipses = T, col.ind = "blue", col.ind.sup = "darkblue",
              alpha.ind = 1, shape.ind = 19, col.quali.var = "black",
              select.ind = list(name = NULL, cos2 = NULL, contrib = NULL),
@@ -284,7 +295,7 @@ fviz_pca_ind(MR_all_traits_pca, repel = T, geom = c("point"), habillage = MR_all
 
 fviz_pca_biplot(MR_all_size_pca, repel = T,
                 geom = c("point"),
-                habillage = MR_all_size$size,
+                habillage = MR_all_size$treatment,
                 col.var = "black",
                 addEllipses = T
 )
@@ -298,44 +309,44 @@ fviz_pca_ind(MR_all_treatments_pca, repel = T, geom = c("point"), habillage = MR
 
 fviz_pca_biplot(MR_all_treatments_pca, repel = T,
                 geom = c("point"),
-                habillage = MR_all_treatments$island,
+                habillage = MR_all_treatments$treatment,
                 col.var = "black",
                 addEllipses = T
 )
 
 
-fviz_pca_ind(MR_all_size_pca, repel = T, geom = c("point"), habillage = MR_all_size$size, palette = NULL,
+fviz_pca_ind(MR_all_size_pca, repel = T, geom = c("point"), habillage = MR_all_size$year_size, palette = NULL,
              addEllipses = T, col.ind = "blue", col.ind.sup = "darkblue",
              alpha.ind = 1, shape.ind = 19, col.quali.var = "black",
              select.ind = list(name = NULL, cos2 = NULL, contrib = NULL),
              gradient.cols = NULL)
 
-fviz_pca_biplot(MR_all_traits_pca, repel = T,
+fviz_pca_biplot(MR_all_size_pca, repel = T,
                 geom = c("point"),
-                habillage = MR_all_traits$size,
+                habillage = MR_all_size$year_size,
                 col.var = "black",
                 addEllipses = T
 )
 
 ### Theme individual Biplot ####
-biplot2 <- fviz_pca_biplot(mericarp_pca,
+biplot2 <- fviz_pca_biplot(MR_all_size_pca,
                            # Fill individuals by groups
-                           title = "PCA Point in Time
+                           title = "PCA Mark Recapture
                            ",
-                           axes = c(1,3),
+                           axes = c(1,2),
                            geom.ind = "point",
                            pointshape = c(21),
                            #label = "none",
                            #habillage = mericarp$island,
-                           pointsize = 3.2,
-                           stroke = 0.8,
-                           fill.ind = mericarp$island,
+                           pointsize = 4,
+                           stroke = 0.9,
+                           fill.ind = MR_all_size$year_size,
                            col.ind = "black",
                            # Color variable by groups
-                           legend.title = "Islands",
+                           legend.title = "Year and Size",
                            repel = T,
                            col.var = "black", 
-                           labelsize = 5,
+                           labelsize = 4,
                            addEllipses = T,
                            palette = c("#a95aa1", "#85c0f9", "#f5793a",  "#0f2080", "#009e73"),
                            
@@ -350,22 +361,16 @@ biplot2 <- fviz_pca_biplot(mericarp_pca,
         text = element_text(family = "Noto Sans"),
         legend.text = element_text(size = 12, face = "bold"), 
         legend.title = element_text(size = 14, face = "bold"),
-        legend.position = "bottom",
+        legend.position = "right",
         legend.background = element_rect(fill = NA, size = 0))
 
 biplot2
 
-biplot <- fviz_pca_biplot(mericarp_pca,
-                          habillage = mericarp$island,
-                          addEllipses = T,
-                          label = "none",
-                          ellipse.level = 0.95)
-
 ### Theme individual Variable plots ####
 
-var2 <- fviz_pca_var(mericarp_pca,
+var2 <- fviz_pca_var(MR_all_size_pca,
                      col.var = "contrib",
-                     axes = c(2,3),
+                     axes = c(1,2),
                      title = "Variables contribution
                            ",
                      gradient.cols = c("#f5793a", "#a95aa1", "#85c0f9", "#0f2080", "#009e73"),
@@ -386,24 +391,3 @@ var2 <- fviz_pca_var(mericarp_pca,
         legend.background = element_rect(fill = NA, size = 0))
 var2
 
-
-# Data preparation for  Models ####
-## Question 1 ####
-
-
-# mericarp_size <- glmmTMB(eaten ~ size + (1|island/population),
-#                          REML = F,
-#                          family = binomial(link = "logit"),
-#                          data = mericarp)
-# 
-# # Test residuals model using DHARMa
-# testResiduals(mericarp_size)
-# hist(resid(mericarp_size), breaks = 50)
-# 
-# # Model summary
-# summary(mericarp_size)
-# Anova(mericarp_size, type = "3")
-# 
-# plot(ggpredict(mericarp_size, terms = "size [all]",
-#                allow.new.levels = T))
-# 
