@@ -127,55 +127,61 @@ Cruz_present$Presence <- ifelse(Cruz_present$Present == "1","Present","Missing")
 Floreana_present %>%
   filter(!(time %in% c("0", "4"))) %>%
   ggplot() +
-  aes(x = treatment, y = freq_present, fill = time) +
-  geom_col() +
+  aes(x = treatment, y = freq_present, fill = Presence) +
+  geom_col(position = position_dodge()
+    ) +
+  #geom_text(aes(label = paste(freq_present, "%")), vjust = -0.25) +
   scale_fill_brewer(palette = "Dark2", direction = 1) +
   labs(
-    x = "Treatments",
+    x = "Size and Treatment",
     y = "Frequency %",
-    title = "Floreana Present Mericarps",
-    fill = "Time"
+    title = "Floreana",
+    subtitle = "Joined times 1, 2 and 3",
+    fill = "Mericarps"
   ) +
   theme_minimal() +
-  facet_grid(vars(size), vars(Presence))
+  facet_wrap(~size, strip.position = "bottom", scales = "free_x") +
+  theme(panel.spacing = unit(0, "lines"),
+        strip.background = element_blank(),
+        strip.placement = "outside")
 
 ## Isabela ####
 
 Isabela_present %>%
   filter(!(time %in% c("0", "4"))) %>%
   ggplot() +
-  aes(x = treatment, y = freq_present, fill = time) +
-  geom_col() +
+  aes(x = treatment, y = freq_present, fill = Presence) +
+  geom_col(position = position_dodge()) +
   scale_fill_brewer(palette = "Dark2", direction = 1) +
   labs(
-    x = "Treatments",
+    x = "Size and Treatment",
     y = "Frequency %",
-    title = "Isabela Cruz Present Mericarps",
-    fill = "Time"
+    title = "Isabela",
+    fill = "Mericarps"
   ) +
   theme_minimal() +
-  facet_grid(vars(size), vars(Presence))
+  facet_wrap(~size, strip.position = "bottom", scales = "free_x") +
+  theme(panel.spacing = unit(0, "lines"),
+        strip.background = element_blank(),
+        strip.placement = "outside")
 
 ## Santa Cruz ####
 
 Cruz_present %>%
   filter(!(time %in% c("0", "4"))) %>%
   ggplot() +
-  aes(x = treatment, y = freq_present, fill = time) +
-  geom_col() +
+  aes(x = treatment, y = freq_present, fill = Presence) +
+  geom_col(position = position_dodge()) +
   scale_fill_brewer(palette = "Dark2", direction = 1) +
   labs(
-    x = "Treatments",
+    x = "Size and Treatments",
     y = "Frequency %",
-    title = "Santa Cruz Present Mericarps",
-    fill = "Time"
+    title = "Santa Cruz",
+    fill = "Mericarps"
   ) +
   theme_minimal() +
-  facet_grid(vars(size), vars(Presence))
+  facet_wrap(~size, strip.position = "bottom", scales = "free_x") +
+  theme(panel.spacing = unit(0, "lines"),
+        strip.background = element_blank(),
+        strip.placement = "outside")
 
-ggpplot(data = Cruz_present,
-        aes(x = treatment,
-            y = freq_present,
-            fill = time)) +
-  geom_bar(stat = "identiy", width = 1) +
-  geom_text(aes(label = ))
