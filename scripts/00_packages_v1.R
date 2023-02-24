@@ -8,7 +8,6 @@
 # Data preparation
 library(readr) #Reading datasets
 library(tidyverse) #Data manipulation/arrangement
-library(ggplot2)
 library(ggrepel)
 library(ggpubr)
 library(grid)
@@ -29,4 +28,4 @@ library (vegan)
 library(bbmle)
 library(DHARMa)
 library(ggeffects)
-
+library(ggtern)
