@@ -6,6 +6,26 @@
 # Isabela cuadrado amarillo
 # Santa Cruz triangulo azul
 # NO hay verde.
+# 
+
+# Check if this works with the ternary plots
+plot_theme <-     theme(axis.line = element_line(linetype = "solid", size = 1), 
+                        axis.title = element_text(size = 14, 
+                                                  face = "bold"
+                        ),
+                        axis.text = element_text(size = 12, face = "bold"), 
+                        axis.text.x = element_text(size = 12), 
+                        plot.title = element_text(size = 16, face = "bold", hjust = 0),
+                        text = element_text(family = "Noto Sans"),
+                        legend.text = element_text(size = 11), 
+                        legend.title = element_text(size = 12, face = "bold"),
+                        legend.position = "right",
+                        #panel.background = element_rect(fill = NA),
+                        legend.background = element_rect(fill = NA, size = 0),
+                        strip.text = element_text(size = 10, face = "bold"),
+                        strip.background = element_blank(),
+                        panel.spacing = unit(1, "cm")
+)
 
 ## Floreana ####
 Floreana_tern <- ggtern(data = Floreana_ternary_pivot,
@@ -37,7 +57,7 @@ Floreana_tern <- ggtern(data = Floreana_ternary_pivot,
                      labels = c("Large All Spines",
                                 "Large No Spines",
                                 "Small All Spines",
-                                "Small No Spines"))
+                                "Small No Spines")) + plot_theme
 
 
 # Floreana_tern + limit_tern(0.5,1,0.5) # Zoom on times 0, 1
@@ -49,20 +69,14 @@ Floreana_tern + theme_zoom_R(0.4) # Time 2, 3
 # Floreana plots per categories works best.
 
 ## Isabela ####
-### Filter categories ####
-Isabela_ternary_filter <- filter(Isabela_ternary_pivot, !(Categories %in% c("Large_Lower_spines",
-                                                                            "Large_No_spines",
-                                                                            "Small_Lower_spines",
-                                                                            "Small_No_spines")))
-
-
-Isabela_tern_filter <- ggtern(data = Isabela_ternary_filter,
-                              aes(Uneaten_freq,
-                                  Eaten_freq,
-                                  Missing_freq, fill = Categories,
-                                  shape = Categories,
-                                  color = Categories
-                              )) +
+### All  and no spines spines ####
+Isabela_tern <- ggtern(data = Isabela_all_spines_pivot,
+                        aes(Uneaten_freq,
+                            Eaten_freq,
+                            Missing_freq, fill = Categories,
+                            shape = Categories,
+                            color = Categories
+                        )) +
   geom_line(aes(group = Categories, color = Categories)) +
   geom_point(size = 5) + labs(title = "Isabela") +
   geom_text(aes(label = time), size = 2.5, colour = "black", fontface = "bold") +
@@ -85,14 +99,13 @@ Isabela_tern_filter <- ggtern(data = Isabela_ternary_filter,
                      labels = c("Large All Spines",
                                 "Large No Spines",
                                 "Small All Spines",
-                                "Small No Spines"))
+                                "Small No Spines")) + plot_theme
 
+Isabela_tern + theme_zoom_L(0.5) # Time 0, 1
+Isabela_tern + theme_zoom_R(0.3) # Time 2, 3
 
-Isabela_tern_filter + theme_zoom_L(0.5) # Time 0, 1
-Isabela_tern_filter + theme_zoom_R(0.5) # Time 2, 3
-
-### All categories #####
-Isabela_tern <- ggtern(data = Isabela_ternary_pivot,
+### Lower and Upper spines #####
+Isabela_tern_2 <- ggtern(data = Isabela_lower_spines_pivot,
                        aes(Uneaten_freq,
                            Eaten_freq,
                            Missing_freq, fill = Categories,
@@ -100,59 +113,166 @@ Isabela_tern <- ggtern(data = Isabela_ternary_pivot,
                            color = Categories
                        )) +
   geom_line(aes(group = Categories, color = Categories)) +
-  geom_point(size = 2) + labs(title = "Isabela") +
+  geom_point(size = 5) + labs(title = "Isabela 2") +
+  geom_text(aes(label = time), size = 2.5, colour = "black", fontface = "bold") +
   xlab("Uneaten") +
   ylab("Eaten") +
   zlab("Missing") + theme_showarrows() +
-  scale_fill_manual(values = c("#D55E00",
-                                        "#004D40",
-                                        "#E69F00",
-                                        "#666666",
-                                        "#009E73",
-                                        "#56B4E9",
-                                        "#0072B2",
-                                        "#CC79A7"
-                                        
-  ), name = "Categories",
-  labels = c("Large All Spines",
-             "Large Lower Spines",
-             "Large No Spines",
-             "Large Upper Spines",
-             "Small All Spines",
-             "Small Lower Spines",
-             "Small No Spines",
-             "Small Upper Spines")) +
-  scale_color_manual(values = c("#D55E00",
-                                         "#004D40",
-                                         "#E69F00",
-                                         "#666666",
-                                         "#009E73",
-                                         "#56B4E9",
-                                         "#0072B2",
-                                         "#CC79A7"
-  ),
-  name = "Categories",
-  labels = c("Large All Spines",
-             "Large Lower Spines",
-             "Large No Spines",
-             "Large Upper Spines",
-             "Small All Spines",
-             "Small Lower Spines",
-             "Small No Spines",
-             "Small Upper Spines")) + # Set colors
-  scale_shape_manual(values = c(3, 4, 8, 21:25),
+  scale_fill_manual(values = c("#f5793a", "#a95aa1", "#85c0f9", "#009e73", "#0f2080"), name = "Categories",
+                    labels = c("Large Lower Spines",
+                               "Large Upper Spines",
+                               "Small Lower Spines",
+                               "Small Upper Spines")) +
+  scale_color_manual(values = c("#f5793a", "#a95aa1", "#85c0f9", "#009e73", "#0f2080"),
+                     name = "Categories",
+                     labels = c("Large Lower Spines",
+                                "Large Upper Spines",
+                                "Small Lower Spines",
+                                "Small Upper Spines")) + # Set colors
+  scale_shape_manual(values = c(21:24),
+                     name = "Categories",
+                     labels = c("Large Lower Spines",
+                                "Large Upper Spines",
+                                "Small Lower Spines",
+                                "Small Upper Spines")) + plot_theme
+
+Isabela_tern_2 + theme_zoom_L(0.4) # Time 0, 1
+Isabela_tern_2 + theme_zoom_R(0.55) # Time 2, 3
+
+
+# Isabela_tern <- ggtern(data = Isabela_ternary_pivot,
+#                        aes(Uneaten_freq,
+#                            Eaten_freq,
+#                            Missing_freq, fill = Categories,
+#                            shape = Categories,
+#                            color = Categories
+#                        )) +
+#   geom_line(aes(group = Categories, color = Categories)) +
+#   geom_point(size = 2) + labs(title = "Isabela") +
+#   xlab("Uneaten") +
+#   ylab("Eaten") +
+#   zlab("Missing") + theme_showarrows() +
+#   scale_fill_manual(values = c("#D55E00",
+#                                         "#004D40",
+#                                         "#E69F00",
+#                                         "#666666",
+#                                         "#009E73",
+#                                         "#56B4E9",
+#                                         "#0072B2",
+#                                         "#CC79A7"
+#                                         
+#   ), name = "Categories",
+#   labels = c("Large All Spines",
+#              "Large Lower Spines",
+#              "Large No Spines",
+#              "Large Upper Spines",
+#              "Small All Spines",
+#              "Small Lower Spines",
+#              "Small No Spines",
+#              "Small Upper Spines")) +
+#   scale_color_manual(values = c("#D55E00",
+#                                          "#004D40",
+#                                          "#E69F00",
+#                                          "#666666",
+#                                          "#009E73",
+#                                          "#56B4E9",
+#                                          "#0072B2",
+#                                          "#CC79A7"
+#   ),
+#   name = "Categories",
+#   labels = c("Large All Spines",
+#              "Large Lower Spines",
+#              "Large No Spines",
+#              "Large Upper Spines",
+#              "Small All Spines",
+#              "Small Lower Spines",
+#              "Small No Spines",
+#              "Small Upper Spines")) + # Set colors
+#   scale_shape_manual(values = c(3, 4, 8, 21:25),
+#                      name = "Categories",
+#                      labels = c("Large All Spines",
+#                                 "Large Lower Spines",
+#                                 "Large No Spines",
+#                                 "Large Upper Spines",
+#                                 "Small All Spines",
+#                                 "Small Lower Spines",
+#                                 "Small No Spines",
+#                                 "Small Upper Spines"))
+# 
+# 
+# Isabela_tern + theme_zoom_R(1)
+
+
+## Santa Cruz ####
+### All  and no spines spines ####
+Cruz_tern <- ggtern(data = Cruz_all_spines_pivot,
+                       aes(Uneaten_freq,
+                           Eaten_freq,
+                           Missing_freq, fill = Categories,
+                           shape = Categories,
+                           color = Categories
+                       )) +
+  geom_line(aes(group = Categories, color = Categories)) +
+  geom_point(size = 5) + labs(title = "Santa Cruz") +
+  geom_text(aes(label = time), size = 2.5, colour = "black", fontface = "bold") +
+  xlab("Uneaten") +
+  ylab("Eaten") +
+  zlab("Missing") + theme_showarrows() +
+  scale_fill_manual(values = c("#f5793a", "#a95aa1", "#85c0f9", "#009e73", "#0f2080"), name = "Categories",
+                    labels = c("Large All Spines",
+                               "Large No Spines",
+                               "Small All Spines",
+                               "Small No Spines")) +
+  scale_color_manual(values = c("#f5793a", "#a95aa1", "#85c0f9", "#009e73", "#0f2080"),
                      name = "Categories",
                      labels = c("Large All Spines",
-                                "Large Lower Spines",
                                 "Large No Spines",
-                                "Large Upper Spines",
                                 "Small All Spines",
+                                "Small No Spines")) + # Set colors
+  scale_shape_manual(values = c(21:24),
+                     name = "Categories",
+                     labels = c("Large All Spines",
+                                "Large No Spines",
+                                "Small All Spines",
+                                "Small No Spines")) + plot_theme
+
+### Lower and Upper spines #####
+Cruz_tern_2 <- ggtern(data = Cruz_lower_spines_pivot,
+                         aes(Uneaten_freq,
+                             Eaten_freq,
+                             Missing_freq, fill = Categories,
+                             shape = Categories,
+                             color = Categories
+                         )) +
+  geom_line(aes(group = Categories, color = Categories)) +
+  geom_point(size = 5) + labs(title = "Santa Cruz 2") +
+  geom_text(aes(label = time), size = 2.5, colour = "black", fontface = "bold") +
+  xlab("Uneaten") +
+  ylab("Eaten") +
+  zlab("Missing") + theme_showarrows() +
+  scale_fill_manual(values = c("#f5793a", "#a95aa1", "#85c0f9", "#009e73", "#0f2080"), name = "Categories",
+                    labels = c("Large Lower Spines",
+                               "Large Upper Spines",
+                               "Small Lower Spines",
+                               "Small Upper Spines")) +
+  scale_color_manual(values = c("#f5793a", "#a95aa1", "#85c0f9", "#009e73", "#0f2080"),
+                     name = "Categories",
+                     labels = c("Large Lower Spines",
+                                "Large Upper Spines",
                                 "Small Lower Spines",
-                                "Small No Spines",
-                                "Small Upper Spines"))
+                                "Small Upper Spines")) + # Set colors
+  scale_shape_manual(values = c(21:24),
+                     name = "Categories",
+                     labels = c("Large Lower Spines",
+                                "Large Upper Spines",
+                                "Small Lower Spines",
+                                "Small Upper Spines")) + plot_theme
+
+Cruz_tern_2 + theme_zoom_L(0.6) # Time 0, 1
+Cruz_tern_2 + theme_zoom_R(0.4) # Time 2, 3
 
 
-Isabela_tern + theme_zoom_R(1)
+
 
 
 # Category Ternary Plot ####
