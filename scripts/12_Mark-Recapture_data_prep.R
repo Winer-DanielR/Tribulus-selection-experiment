@@ -144,7 +144,6 @@ str(Isabela_MR)
 str(Cruz_MR)
 # Transform treatments into factors
 
-
 # Counting and estimating frequencies ####
 # For the ternary plot I need to group counts into the categories.
 # They need to add up to 100, across time.
