@@ -63,7 +63,7 @@ Floreana_tern <- ggtern(data = Floreana_ternary_pivot,
 # Floreana_tern + limit_tern(0.5,1,0.5) # Zoom on times 0, 1
 # Floreana_tern + limit_tern(0.5,0.5,1) # Zoom on times 2,3,4
 
-Floreana_tern + theme_zoom_L(0.5) # Time 0, 1
+Floreana_tern + theme_zoom_L(0.6) # Time 0, 1
 Floreana_tern + theme_zoom_R(0.4) # Time 2, 3
 
 # Floreana plots per categories works best.
@@ -102,7 +102,7 @@ Isabela_tern <- ggtern(data = Isabela_all_spines_pivot,
                                 "Small No Spines")) + plot_theme
 
 Isabela_tern + theme_zoom_L(0.5) # Time 0, 1
-Isabela_tern + theme_zoom_R(0.3) # Time 2, 3
+Isabela_tern + theme_zoom_R(0.5) # Time 2, 3
 
 ### Lower and Upper spines #####
 Isabela_tern_2 <- ggtern(data = Isabela_lower_spines_pivot,
@@ -136,7 +136,7 @@ Isabela_tern_2 <- ggtern(data = Isabela_lower_spines_pivot,
                                 "Small Lower Spines",
                                 "Small Upper Spines")) + plot_theme
 
-Isabela_tern_2 + theme_zoom_L(0.4) # Time 0, 1
+Isabela_tern_2 + theme_zoom_L(0.45) # Time 0, 1
 Isabela_tern_2 + theme_zoom_R(0.55) # Time 2, 3
 
 
