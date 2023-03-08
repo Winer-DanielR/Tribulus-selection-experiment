@@ -306,14 +306,14 @@ Large_all_tern <- ggtern(data = Island_ternary_large_all,
                              shape = Island,
                              color = Island
                          )) +
-  geom_line(aes(group = Island, color = Island), linewidth = 1.2) +
-  geom_point(size = 3) + labs(title = "Large All Spines Mericarps") +
+  geom_line(aes(group = Island, color = Island)) +
+  geom_point(size = 5) + labs(title = "Large All Spines") +
+  geom_text(aes(label = time), size = 2.5, colour = "black", fontface = "bold") +
   xlab("Uneaten") +
   ylab("Eaten") +
   zlab("Missing") + theme_showarrows() +
   scale_fill_manual(values = c("#D55E00",
                                         "#E69F00",
-                                        "#009E73",
                                         "#0072B2",
                                         "#56B4E9",
                                         "#CC79A7",
@@ -324,7 +324,6 @@ Large_all_tern <- ggtern(data = Island_ternary_large_all,
                                         )) +
   scale_color_manual(values = c("#D55E00",
                                          "#E69F00",
-                                         "#009E73",
                                          "#0072B2",
                                          "#56B4E9",
                                          "#CC79A7",
@@ -334,16 +333,70 @@ Large_all_tern <- ggtern(data = Island_ternary_large_all,
                                 "Isabela",
                                 "Santa Cruz"
                      )) + # Set colors
-  scale_shape_manual(values = c(21:24),
+  scale_shape_manual(values = c(21,22,24),
                      name = "Islands",
                      labels = c("Floreana",
                                 "Isabela",
-                                "Santa Cruz"))
+                                "Santa Cruz")) + plot_theme
 
 
-Large_all_tern + theme_zoom_L(0.5)
 
-## Large NO spines ####
+## Small All spines ####
+Island_ternary_small_all <- filter(Island_ternary, !(Categories %in% c("Large_Lower_spines",
+                                                                      "Large_All_spines",
+                                                                      "Large_Upper_spines",
+                                                                      "Large_No_spines",
+                                                                      #"Small_All_spines",
+                                                                      "Small_Upper_spines",
+                                                                      "Small_Lower_spines",
+                                                                      "Small_No_spines")))
+
+
+ 
+
+Small_all_tern <- ggtern(data = Island_ternary_small_all,
+                         aes(Uneaten_freq,
+                             Eaten_freq,
+                             Missing_freq, fill = Island,
+                             shape = Island,
+                             color = Island
+                         )) +
+  geom_line(aes(group = Island, color = Island)) +
+  geom_point(size = 4, stroke = 1) + labs(title = "Small All Spines") +
+  geom_text(aes(label = time), size = 2.5, colour = "black", fontface = "bold") +
+  xlab("Uneaten") +
+  ylab("Eaten") +
+  zlab("Missing") + theme_showarrows() +
+  scale_fill_manual(values = c("#D55E00",
+                                        "#E69F00",
+                                        "#0072B2",
+                                        "#56B4E9",
+                                        "#CC79A7",
+                                        "#666666"), name = "Islands",
+                                        labels = c("Floreana",
+                                                   "Isabela",
+                                                   "Santa Cruz"
+                                        )) +
+  scale_color_manual(values = c("#D55E00",
+                                         "#E69F00",
+                                         "#0072B2",
+                                         "#56B4E9",
+                                         "#CC79A7",
+                                         "#666666"),
+                                       name = "Islands",
+                     labels = c("Floreana",
+                                "Isabela",
+                                "Santa Cruz"
+                     )) + # Set colors
+  scale_shape_manual(values = c(21,22,24),
+                     name = "Islands",
+                     labels = c("Floreana",
+                                "Isabela",
+                                "Santa Cruz")) + plot_theme
+
+
+
+## Large No Spines ####
 Island_ternary_large_no <- filter(Island_ternary, !(Categories %in% c("Large_Lower_spines",
                                                                       "Large_All_spines",
                                                                       "Large_Upper_spines",
@@ -354,6 +407,8 @@ Island_ternary_large_no <- filter(Island_ternary, !(Categories %in% c("Large_Low
                                                                       "Small_No_spines")))
 
 
+
+
 Large_no_tern <- ggtern(data = Island_ternary_large_no,
                         aes(Uneaten_freq,
                             Eaten_freq,
@@ -361,14 +416,14 @@ Large_no_tern <- ggtern(data = Island_ternary_large_no,
                             shape = Island,
                             color = Island
                         )) +
-  geom_line(aes(group = Island, color = Island), linewidth = 1.2) +
-  geom_point(size = 3) + labs(title = "Large No Spines Mericarps") +
+  geom_line(aes(group = Island, color = Island)) +
+  geom_point(size = 4, stroke = 1) + labs(title = "Large No Spines") +
+  geom_text(aes(label = time), size = 2.5, colour = "black", fontface = "bold") +
   xlab("Uneaten") +
   ylab("Eaten") +
   zlab("Missing") + theme_showarrows() +
   scale_fill_manual(values = c("#D55E00",
                                         "#E69F00",
-                                        "#009E73",
                                         "#0072B2",
                                         "#56B4E9",
                                         "#CC79A7",
@@ -379,7 +434,6 @@ Large_no_tern <- ggtern(data = Island_ternary_large_no,
                                         )) +
   scale_color_manual(values = c("#D55E00",
                                          "#E69F00",
-                                         "#009E73",
                                          "#0072B2",
                                          "#56B4E9",
                                          "#CC79A7",
@@ -389,11 +443,283 @@ Large_no_tern <- ggtern(data = Island_ternary_large_no,
                                 "Isabela",
                                 "Santa Cruz"
                      )) + # Set colors
-  scale_shape_manual(values = c(21:24),
+  scale_shape_manual(values = c(21,22,24),
                      name = "Islands",
                      labels = c("Floreana",
                                 "Isabela",
-                                "Santa Cruz"))
+                                "Santa Cruz")) + plot_theme
 
-Large_no_tern + theme_zoom_L(0.5)
-Large_no_tern + theme_zoom_R(0.5)
+
+
+## Small No spines ####
+Island_ternary_small_no <- filter(Island_ternary, !(Categories %in% c("Large_Lower_spines",
+                                                                       "Large_All_spines",
+                                                                       "Large_Upper_spines",
+                                                                       "Large_No_spines",
+                                                                       "Small_All_spines",
+                                                                       "Small_Upper_spines",
+                                                                       "Small_Lower_spines"
+                                                                       #"Small_No_spines"
+                                                                       )))
+
+
+
+
+Small_no_tern <- ggtern(data = Island_ternary_small_no,
+                         aes(Uneaten_freq,
+                             Eaten_freq,
+                             Missing_freq, fill = Island,
+                             shape = Island,
+                             color = Island
+                         )) +
+  geom_line(aes(group = Island, color = Island)) +
+  geom_point(size = 4, stroke = 1) + labs(title = "Small No Spines") +
+  geom_text(aes(label = time), size = 2.5, colour = "black", fontface = "bold") +
+  xlab("Uneaten") +
+  ylab("Eaten") +
+  zlab("Missing") + theme_showarrows() +
+  scale_fill_manual(values = c("#D55E00",
+                                        "#E69F00",
+                                        "#0072B2",
+                                        "#56B4E9",
+                                        "#CC79A7",
+                                        "#666666"), name = "Islands",
+                                        labels = c("Floreana",
+                                                   "Isabela",
+                                                   "Santa Cruz"
+                                        )) +
+  scale_color_manual(values = c("#D55E00",
+                                         "#E69F00",
+                                         "#0072B2",
+                                         "#56B4E9",
+                                         "#CC79A7",
+                                         "#666666"),
+                                         name = "Islands",
+                     labels = c("Floreana",
+                                "Isabela",
+                                "Santa Cruz"
+                     )) + # Set colors
+  scale_shape_manual(values = c(21,22,24),
+                     name = "Islands",
+                     labels = c("Floreana",
+                                "Isabela",
+                                "Santa Cruz")) + plot_theme
+
+
+## Large Upper spines ####
+Island_ternary_large_upper <- filter(Island_ternary, !(Categories %in% c("Large_Lower_spines",
+                                                                      "Large_All_spines",
+                                                                      #"Large_Upper_spines",
+                                                                      "Large_No_spines",
+                                                                      "Small_All_spines",
+                                                                      "Small_Upper_spines",
+                                                                      "Small_Lower_spines",
+                                                                      "Small_No_spines"
+)))
+
+
+
+
+Large_upper_tern <- ggtern(data = Island_ternary_large_upper,
+                        aes(Uneaten_freq,
+                            Eaten_freq,
+                            Missing_freq, fill = Island,
+                            shape = Island,
+                            color = Island
+                        )) +
+  geom_line(aes(group = Island, color = Island)) +
+  geom_point(size = 4, stroke = 1) + labs(title = "Large Upper Spines") +
+  geom_text(aes(label = time), size = 2.5, colour = "black", fontface = "bold") +
+  xlab("Uneaten") +
+  ylab("Eaten") +
+  zlab("Missing") + theme_showarrows() +
+  scale_fill_manual(values = c("#D55E00",
+                                        "#E69F00",
+                                        "#0072B2",
+                                        "#56B4E9",
+                                        "#CC79A7",
+                                        "#666666"), name = "Islands",
+                                        labels = c("Floreana",
+                                                   "Isabela",
+                                                   "Santa Cruz"
+                                        )) +
+  scale_color_manual(values = c("#D55E00",
+                                         "#E69F00",
+                                         "#0072B2",
+                                         "#56B4E9",
+                                         "#CC79A7",
+                                         "#666666"),
+                                         name = "Islands",
+                     labels = c("Floreana",
+                                "Isabela",
+                                "Santa Cruz"
+                     )) + # Set colors
+  scale_shape_manual(values = c(21,22,24),
+                     name = "Islands",
+                     labels = c("Floreana",
+                                "Isabela",
+                                "Santa Cruz")) + plot_theme
+
+## Small Upper spines ####
+Island_ternary_small_upper <- filter(Island_ternary, !(Categories %in% c("Large_Lower_spines",
+                                                                         "Large_All_spines",
+                                                                         "Large_Upper_spines",
+                                                                         "Large_No_spines",
+                                                                         "Small_All_spines",
+                                                                         #"Small_Upper_spines",
+                                                                         "Small_Lower_spines",
+                                                                         "Small_No_spines"
+)))
+
+
+
+
+Small_upper_tern <- ggtern(data = Island_ternary_small_upper,
+                           aes(Uneaten_freq,
+                               Eaten_freq,
+                               Missing_freq, fill = Island,
+                               shape = Island,
+                               color = Island
+                           )) +
+  geom_line(aes(group = Island, color = Island)) +
+  geom_point(size = 4, stroke = 1) + labs(title = "Small Upper Spines") +
+  geom_text(aes(label = time), size = 2.5, colour = "black", fontface = "bold") +
+  xlab("Uneaten") +
+  ylab("Eaten") +
+  zlab("Missing") + theme_showarrows() +
+  scale_fill_manual(values = c("#D55E00",
+                                        "#E69F00",
+                                        "#0072B2",
+                                        "#56B4E9",
+                                        "#CC79A7",
+                                        "#666666"), name = "Islands",
+                                        labels = c("Floreana",
+                                                   "Isabela",
+                                                   "Santa Cruz"
+                                        )) +
+  scale_color_manual(values = c("#D55E00",
+                                         "#E69F00",
+                                         "#0072B2",
+                                         "#56B4E9",
+                                         "#CC79A7",
+                                         "#666666"),
+                                         name = "Islands",
+                     labels = c("Floreana",
+                                "Isabela",
+                                "Santa Cruz"
+                     )) + # Set colors
+  scale_shape_manual(values = c(21,22,24),
+                     name = "Islands",
+                     labels = c("Floreana",
+                                "Isabela",
+                                "Santa Cruz")) + plot_theme
+
+
+## Large Lower spines ####
+Island_ternary_large_lower <- filter(Island_ternary, !(Categories %in% c(#"Large_Lower_spines",
+                                                                         "Large_All_spines",
+                                                                         "Large_Upper_spines",
+                                                                         "Large_No_spines",
+                                                                         "Small_All_spines",
+                                                                         "Small_Upper_spines",
+                                                                         "Small_Lower_spines",
+                                                                         "Small_No_spines"
+)))
+
+
+
+
+Large_lower_tern <- ggtern(data = Island_ternary_large_lower,
+                           aes(Uneaten_freq,
+                               Eaten_freq,
+                               Missing_freq, fill = Island,
+                               shape = Island,
+                               color = Island
+                           )) +
+  geom_line(aes(group = Island, color = Island)) +
+  geom_point(size = 4, stroke = 1) + labs(title = "Large Lower Spines") +
+  geom_text(aes(label = time), size = 2.5, colour = "black", fontface = "bold") +
+  xlab("Uneaten") +
+  ylab("Eaten") +
+  zlab("Missing") + theme_showarrows() +
+  scale_fill_manual(values = c("#D55E00",
+                                        "#E69F00",
+                                        "#0072B2",
+                                        "#56B4E9",
+                                        "#CC79A7",
+                                        "#666666"), name = "Islands",
+                                        labels = c("Floreana",
+                                                   "Isabela",
+                                                   "Santa Cruz"
+                                        )) +
+  scale_color_manual(values = c("#D55E00",
+                                         "#E69F00",
+                                         "#0072B2",
+                                         "#56B4E9",
+                                         "#CC79A7",
+                                         "#666666"),
+                                         name = "Islands",
+                     labels = c("Floreana",
+                                "Isabela",
+                                "Santa Cruz"
+                     )) + # Set colors
+  scale_shape_manual(values = c(21,22,24),
+                     name = "Islands",
+                     labels = c("Floreana",
+                                "Isabela",
+                                "Santa Cruz")) + plot_theme
+
+
+## Small Lower spines ####
+Island_ternary_small_lower <- filter(Island_ternary, !(Categories %in% c("Large_Lower_spines",
+  "Large_All_spines",
+  "Large_Upper_spines",
+  "Large_No_spines",
+  "Small_All_spines",
+  "Small_Upper_spines",
+  #"Small_Lower_spines",
+  "Small_No_spines"
+)))
+
+
+
+
+Small_lower_tern <- ggtern(data = Island_ternary_small_lower,
+                           aes(Uneaten_freq,
+                               Eaten_freq,
+                               Missing_freq, fill = Island,
+                               shape = Island,
+                               color = Island
+                           )) +
+  geom_line(aes(group = Island, color = Island)) +
+  geom_point(size = 4, stroke = 1) + labs(title = "Small Lower Spines") +
+  geom_text(aes(label = time), size = 2.5, colour = "black", fontface = "bold") +
+  xlab("Uneaten") +
+  ylab("Eaten") +
+  zlab("Missing") + theme_showarrows() +
+  scale_fill_manual(values = c("#D55E00",
+                                        "#E69F00",
+                                        "#0072B2",
+                                        "#56B4E9",
+                                        "#CC79A7",
+                                        "#666666"), name = "Islands",
+                                        labels = c("Floreana",
+                                                   "Isabela",
+                                                   "Santa Cruz"
+                                        )) +
+  scale_color_manual(values = c("#D55E00",
+                                         "#E69F00",
+                                         "#0072B2",
+                                         "#56B4E9",
+                                         "#CC79A7",
+                                         "#666666"),
+                                         name = "Islands",
+                     labels = c("Floreana",
+                                "Isabela",
+                                "Santa Cruz"
+                     )) + # Set colors
+  scale_shape_manual(values = c(21,22,24),
+                     name = "Islands",
+                     labels = c("Floreana",
+                                "Isabela",
+                                "Santa Cruz")) + plot_theme
