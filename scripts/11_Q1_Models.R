@@ -25,7 +25,7 @@ pca_means <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tr
 # Changed variables to factors
 point_time <- point_time %>% mutate_at(vars(year,
                                             island, population, lower_spine, 
-                                            spine_position, 
+                                            #spine_position, 
                                             eaten, eaten_insects,
                                             `year island`, year_pop,
                                             seed_position_1, seed_position_2,
@@ -88,7 +88,7 @@ tip_distance_wozero <- dplyr::filter(tip_distance, !spine_tip_distance == 0)
 ## Lower spines is a binomial trait
 lower_spines <- select(point_time, c(1:7), lower_spine, eaten)
 lower_spines <- na.omit(lower_spines)
-## Spine position (as factor) ####
+## Spine position ####
 spine_position <- select(point_time, c(1:7), spine_position, eaten)
 spine_position <- na.omit(spine_position)
 
@@ -230,8 +230,8 @@ Anova(length_m1) # It seems is significant.
 
 # ### Emmeans: Length ####
 # EM_length <- emmeans(length_m1, ~ length)
-# 
-# #### Emmean plot: Length ####
+
+# # #### Emmean plot: Length ####
 # plot(EM_length, comparisons = TRUE) + labs(title = "Mericarp Length")
 # pwpp(EM_length)
 
@@ -308,7 +308,7 @@ depth_m1 <- glmmTMB(eaten ~ depth +
 
 # Results
 summary(depth_m1)
-Anova(depth_m1)
+Anova(depth_m1, type = "III")
 
 # ## Emmeans estimates: Depth ####
 # EM_depth <- emmeans(depth_m1, ~ eaten)
@@ -319,6 +319,7 @@ Anova(depth_m1)
 ## Longest spine - Removed 0 ####
 # Check trait distributions
 histogram(longest_spine_wozero$longest_spine, breaks = 50)
+hist(longest_spine_wozero$longest_spine, breaks = 50)
 # It seems the distribution is not totally normal?
 # I need to transform it
 
@@ -396,7 +397,7 @@ Anova(lower_spine_m1)
 
 ## Spine position ####
 ### Spine position is categorical
-spine_position_m1 <- glmmTMB(eaten ~ factor(spine_position) +
+spine_position_m1 <- glmmTMB(eaten ~ spine_position +
                             (1|island/population),
                           data = spine_position,
                           family = binomial(link = "logit"))
@@ -407,7 +408,7 @@ testResiduals(spine_position_m1)
 
 ### Results ####
 summary(spine_position_m1)
-Anova(spine_position_m1, type = "III", contrasts=list(topic=contr.sum, sys=contr.sum))
+Anova(spine_position_m1)
 
 ## Emmeans estimates: Lower spines ####
 #Glmm
