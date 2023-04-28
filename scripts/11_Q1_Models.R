@@ -278,7 +278,7 @@ width_m1 <- glmmTMB(eaten ~ width +
 
 ### Results ####
 summary(width_m1)
-Anova(width_m1) # Not significant.
+Anova(width_m1) 
  
 # ## Emmean: Width ####
 # EM_width <- emmeans(width_m1, ~ eaten, type = "response")
