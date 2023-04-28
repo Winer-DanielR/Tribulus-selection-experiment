@@ -51,7 +51,7 @@ depth <- depth %>% mutate_at(vars(island, population), list(factor))
 length <- length %>% mutate_at(vars(island, population), list(factor))
 longest_spine  <- longest_spine %>% mutate_at(vars(island, population), list(factor))
 lower_spine <- lower_spine %>% mutate_at(vars(island, population, lower_spine), list(factor))
-spine_position <- spine_position %>% mutate_at(vars(island, population, spine_position), list(factor))
+spine_position <- spine_position %>% mutate_at(vars(island, population), list(factor))
 tip_distance <- tip_distance %>% mutate_at(vars(island, population), list(factor))
 width <- width %>% mutate_at(vars(island, population), list(factor))
 
@@ -144,13 +144,13 @@ Anova(PositionQ2, type = "III")
 hist(depth$mean_all, breaks = 30)
 depth_pop <- na.omit(depth_pop)
 
-depth_m2 <- glmmTMB(mean_all ~ S_depth + 
+depth_m2 <- glmmTMB(S_depth ~ mean_all + 
                       (1|island/population),
                     data = depth_pop,
                     REML = F)
 # I am not sure if this makes sense using this database because each 
 # observation is for a population, there are not various population obs
-depth_m3 <- glmmTMB(mean_all ~ S_depth + 
+depth_m3 <- glmmTMB(S_depth ~ mean_all + 
                       (1|island/population),
                     data = depth,
                     REML = F)
@@ -165,8 +165,8 @@ testResiduals(depth_m3)
 ### Results ####
 summary(depth_m2)
 summary(depth_m3)
-Anova(depth_m2)
-Anova(depth_m3)
+Anova(depth_m2, type = "III")
+Anova(depth_m3, type = "III")
 
 # I think is better to use the year dataset because there is at least 3-5 observations per population in this case
 # this justifies using the island nested in population model
@@ -175,7 +175,7 @@ Anova(depth_m3)
 ## Length ####
 hist(length$mean_all, breaks = 30)
 
-length_m2 <- glmmTMB(mean_all ~ S_length + 
+length_m2 <- glmmTMB(S_length ~ mean_all  + 
                       (1|island/population),
                     data = length,
                     REML = F)
@@ -191,7 +191,7 @@ hist(resid(length_m2), breaks = 50)
 
 ### Results ####
 summary(length_m2)
-Anova(length_m2)
+Anova(length_m2, type = "III")
 
 ## Longest spine ####
 
@@ -211,7 +211,7 @@ longest_spine_filter <- filter(longest_spine, !year == "2015")
 longest_spine_filter <- filter(longest_spine_filter, !year == "2016")
 
 ### Filter model ####
-longest_spine_m3 <- glmmTMB(mean_all ~ S_longest_spine + 
+longest_spine_m3 <- glmmTMB(S_longest_spine  ~ mean_all  + 
                               (1|island/population),
                             data = longest_spine_filter,
                             REML = F)
@@ -223,10 +223,10 @@ testResiduals(longest_spine_m3)
 
 ### Results ####
 summary(longest_spine_m3)
-Anova(longest_spine_m3)
+Anova(longest_spine_m3, type = "III")
 
 ## Lower spines ####
-lower_spine_m2 <- glmmTMB(freq_all ~ S_lower_spine + 
+lower_spine_m2 <- glmmTMB( S_lower_spine ~ freq_all + 
                        (1|island/population),
                      data = lower_spine,
                      REML = F)
@@ -243,13 +243,13 @@ testResiduals(lower_spine_m2)
 
 ### Results ####
 summary(lower_spine_m2)
-Anova(lower_spine_m2)
+Anova(lower_spine_m2, type = "III")
 
 ## Spine Position ####
 hist(spine_position$freq_all, breaks = 30)
 # I think this is a poisson distribution?
 #
-spine_position_m2 <- glmmTMB(freq_all ~ S_spine_position + 
+spine_position_m2 <- glmmTMB(S_spine_position ~ freq_all  + 
                             (1|island/population),
                           data = spine_position,
                           REML = F)
@@ -273,7 +273,7 @@ Anova(spine_position_m2)
 ## Tip distance ####
 hist(tip_distance$mean_all, breaks = 30)
 
-tip_distance_m2 <- glmmTMB(mean_all ~ S_spine_tip_distance + 
+tip_distance_m2 <- glmmTMB(S_spine_tip_distance ~ mean_all + 
                        (1|island/population),
                      data = tip_distance,
                      REML = F)
@@ -287,14 +287,20 @@ testResiduals(tip_distance_m2)
 
 ### Results ####
 summary(tip_distance_m2)
-Anova(tip_distance_m2)
+Anova(tip_distance_m2, type = "III")
 
 ## Width ####
 hist(width$mean_all, breaks = 30)
+width_filter <- filter(width, !(mean_all >= 3.8))
 
-width_m2 <- glmmTMB(mean_all ~ S_width + 
+hist(width_filter$mean_all, breaks = 30)
+
+# With regular dataset there is a convergence problem with tme model. 
+# I filter out potential outliers
+
+width_m2 <- glmmTMB(S_width ~ mean_all + 
                        (1|island/population),
-                     data = width,
+                     data = width_filter,
                      REML = F)
 
 ### Model Diagnostics ####
