@@ -29,7 +29,7 @@ point_time
 # Changed variables to factors
 point_time <- point_time %>% mutate_at(vars(year,
                                       island, population, lower_spine, 
-                                      spine_position, 
+                                      #spine_position, 
                                       eaten, eaten_insects,
                                       `year island`, year_pop,
                                       seed_position_1, seed_position_2,
@@ -401,47 +401,50 @@ lower_spines_pop$S_lower_spine <- (lower_spines_pop$freq_0 - lower_spines_pop$fr
 #write_csv(lower_spines_pop, "lower_spines_pop.csv")
 
 
-## Spine position (as factor) ####
+## Spine position ####
 spine_position <- select(point_time, c(1:7), spine_position, eaten)
 spine_position <- na.omit(spine_position)
 
-
-#Extract the frequencies of total spine position by island
-spine_position <- group_by(spine_position, island)
-spine_position_count_island <- dplyr::count(spine_position, spine_position)
-spine_position_count_island <- spine_position_count_island %>%  
-  group_by(island) %>% mutate(freq_all = n/sum(n))
-
-# Extract the frequencies of total spine position by population
-spine_position <- group_by(spine_position, island, population)
-spine_position_count_population <- dplyr::count(spine_position, spine_position)
-spine_position_count_population <- spine_position_count_population %>%  
-  group_by(population) %>% mutate(freq_all = n/sum(n))
-
-
-
-### Group for mean estimates ####
-#### Group by island ####
-spine_position <- group_by(spine_position, island, eaten)
-
-# If is a factor use the count function to count the frequency of mericarps
-# with a determined angle.
+# #Extract the frequencies of total spine position by island
+# spine_position <- group_by(spine_position, island)
+# spine_position_count_island <- dplyr::count(spine_position, spine_position)
+# spine_position_count_island <- spine_position_count_island %>%  
+#   group_by(island) %>% mutate(freq_all = n/sum(n))
 # 
-spine_position_island <- dplyr::count(spine_position, spine_position)
-
-
-spine_position_island <- spine_position_island %>%  
-  group_by(island) %>% mutate(freq = n/sum(n))
-# Sum of all mericarps frequencies per island and the frequency of positions
+# # Extract the frequencies of total spine position by population
+# spine_position <- group_by(spine_position, island, population)
+# spine_position_count_population <- dplyr::count(spine_position, spine_position)
+# spine_position_count_population <- spine_position_count_population %>%  
+#   group_by(population) %>% mutate(freq_all = n/sum(n))
+# 
+# 
+# 
+# ### Group for mean estimates ####
+# #### Group by island ####
+# spine_position <- group_by(spine_position, island, eaten)
+# 
+# # If is a factor use the count function to count the frequency of mericarps
+# # with a determined angle.
+# # 
+# spine_position_island <- dplyr::count(spine_position, spine_position)
+# 
+# 
+# spine_position_island <- spine_position_island %>%  
+#   group_by(island) %>% mutate(freq = n/sum(n))
+# # Sum of all mericarps frequencies per island and the frequency of positions
 
 
 # If is a continuous variable use this summary function
-# spine_position_means_island <- spine_position %>%  
-#   summarise_each(funs(spine_position_mean = mean,
-#                       spine_position_var = var,
-#                       spine_position_se = sd(.)/sqrt(n()),
-#                       spine_position_n = length,
-#   ), spine_position)
+### Group for mean estimates ####
+#### Group by year and population ####
+spine_position <- group_by(spine_position, island, population, year, eaten)
+
+spine_position_island <- spine_position %>%
+  summarise_each(funs(spine_position_mean = mean,
+                      spine_position_var = var,
+                      spine_position_se = sd(.)/sqrt(n()),
+                      spine_position_n = length,
+  ), spine_position)
 
 
 ## Pivot table
@@ -449,57 +452,39 @@ spine_position_island <- spine_position_island %>%
 ## 
 
 spine_position_island <- pivot_wider(spine_position_island, names_from = eaten,
-                                               values_from = c(4,5))
+                                               values_from = c(5:8))
 
 # Replace NAs for 0s
 spine_position_island[is.na(spine_position_island)] = 0
 
 
-## Join lower spines by island with total lower spine frequency
-spine_position_island <- right_join(spine_position_island, 
-                                  spine_position_count_island,
-                                  spine_position_island,
-                                  by = c("island", "spine_position"))
+spine_position_island$S_spine_position <- (spine_position_island$spine_position_mean_0 -
+                                             spine_position_island$spine_position_mean_1)
 
 
-# spine_position_means_island <- pivot_wider(spine_position_means_island, names_from = eaten,
-#                                                values_from = c(3:6))
-# 
-# spine_position_means_island$S_spine_position <- (spine_position_means_island$spine_position_mean_0 - 
-#                                                            spine_position_means_island$spine_position_mean_1)
-
-
-#### Group by population ####
+#### Group by island and population ####
 spine_position <- group_by(spine_position, island, population, eaten)
 
-spine_position_pop <- dplyr::count(spine_position, spine_position)
+spine_position_means_pop <- spine_position %>%  
+  summarise_each(funs(spine_position_mean = mean,
+                      spine_position_var = var,
+                      spine_position_se = sd(.)/sqrt(n()),
+                      spine_position_n = length,
+  ), spine_position)
 
-# Frequencies estimations. Per population
-spine_position_pop <- spine_position_pop %>%  
-  group_by(island, population) %>% mutate(freq = n/sum(n))
-
-## Pivot table
+#### Pivot table 
 ## To compare eaten and uneaten mericarps
-spine_position_pop <- pivot_wider(spine_position_pop, names_from = eaten,
-                                            values_from = c(5,6))
+spine_position_means_pop <- pivot_wider(spine_position_means_pop, names_from = eaten,
+                                values_from = c(4:7))
+# Replace NAs for 0s
+spine_position_means_pop[is.na(spine_position_means_pop)] = 0
 
-# Replace NAs as 0 frequencies
-spine_position_pop[is.na(spine_position_pop)] = 0
-
-## Join lower spines by population with total lower spine frequency
-spine_position_pop <- right_join(spine_position_pop, 
-                               spine_position_count_population,
-                               spine_position_pop,
-                               by = c("island", "population","spine_position"))
+spine_position_means_pop$S_length <- (spine_position_means_pop$spine_position_mean_0 - 
+                                        spine_position_means_pop$spine_position_mean_1)
 
 
-# Calculate S estimates
-spine_position_island$S_spine_position <- (spine_position_island$freq_0 - spine_position_island$freq_1)
-spine_position_pop$S_spine_position <- (spine_position_pop$freq_0 - spine_position_pop$freq_1)
-
-
-## Spine position wihtout zero ####
-spine_position_wozero <- dplyr::filter(spine_position, !spine_position == 0)
+# write_csv(spine_position_island, "spine_position_island.csv")
+# write_csv(spine_position_means_pop, "spine_position_means_pop.csv")
 
 # Mean PCA scores ####
 # I think the way to do this is either use the individual PC
