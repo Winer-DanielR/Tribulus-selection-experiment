@@ -246,15 +246,21 @@ summary(lower_spine_m2)
 Anova(lower_spine_m2, type = "III")
 
 ## Spine Position ####
-hist(spine_position$freq_all, breaks = 30)
+hist(spine_position$mean_all, breaks = 30)
 # I think this is a poisson distribution?
 #
-spine_position_m2 <- glmmTMB(S_spine_position ~ freq_all  + 
+spine_position_m2 <- glmmTMB(S_spine_position ~ mean_all  + 
                             (1|island/population),
                           data = spine_position,
                           REML = F)
 
-#
+
+# Filter outliers
+hist(resid(spine_position_m2), breaks = 30)
+spine_position$resid <- resid(spine_position_m2)
+
+spine_position <- filter(spine_position, !resid >= 29)
+# 4 samples removed
 
 ### Model Diagnostics ####
 # Residual histograms
@@ -268,7 +274,7 @@ testResiduals(spine_position_m2)
 
 ### Results ####
 summary(spine_position_m2)
-Anova(spine_position_m2)
+Anova(spine_position_m2, type = "III")
 
 ## Tip distance ####
 hist(tip_distance$mean_all, breaks = 30)
@@ -314,4 +320,4 @@ hist(resid(width_m2), breaks = 50)
 
 ### Results ####
 summary(width_m2)
-Anova(width_m2)
+Anova(width_m2, type = "III")
