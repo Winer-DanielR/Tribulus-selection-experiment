@@ -35,3 +35,55 @@ eaten_Q4 <- glmmTMB(Eaten_freq ~ Categories + time + (1|Island),
                     REML = F)
 
 ## Model diagnostics ####
+# Residual histograms
+diagnostic(resid(eaten_Q4))
+
+
+# DHARMa
+testResiduals(eaten_Q4)
+
+
+### Results ####
+summary(eaten_Q4)
+
+Anova(eaten_Q4)
+
+## Uneaten mericarps ####
+
+uneaten_Q4 <- glmmTMB(Uneaten_freq ~ Categories + time + (1|Island),
+                    data = MR_ternary_filter,
+                    REML = F)
+
+## Model diagnostics ####
+# Residual histograms
+diagnostic(resid(uneaten_Q4))
+
+
+# DHARMa
+testResiduals(uneaten_Q4)
+
+
+### Results ####
+summary(uneaten_Q4)
+
+Anova(uneaten_Q4)
+
+## Missing mericarps ####
+
+Missing_Q4 <- glmmTMB(Missing_freq ~ Categories + time + (1|Island),
+                      data = MR_ternary_filter,
+                      REML = F)
+
+## Model diagnostics ####
+# Residual histograms
+diagnostic(resid(Missing_Q4))
+
+
+# DHARMa
+testResiduals(Missing_Q4)
+
+
+### Results ####
+summary(Missing_Q4)
+
+Anova(Missing_Q4)
