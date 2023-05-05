@@ -36,11 +36,101 @@ Cruz_MR <- bind_rows(Cruz_2018, Cruz_2019)
 
 # Data preparation ####
 # Select columns for analysis
-Floreana_MR <- select(Floreana_MR, c(2:10, 18:21))
-Isabela_MR <- select(Isabela_MR, c(2:10, 18:21))
-Cruz_MR <- select(Cruz_MR, c(2:10, 18:21))
+Floreana_MR <- select(Floreana_MR, c(2:3, 5:10, 18:20))
+Isabela_MR <- select(Isabela_MR, c(2:3, 5:10, 18:20))
+Cruz_MR <- select(Cruz_MR, c(2:3, 5:10, 18:20))
 # This selects the columns needed for the plot
+# 
+# Filter times out for model analysis. Time 0 are almost absolute values, so I will only use times 1-3 for the analysis.
+Floreana_MR <- filter(Floreana_MR, !time == "0")
+#Floreana_MR <- filter(Floreana_MR, !time == "4")
 
+Isabela_MR <- filter(Isabela_MR, !time == "0")
+#Isabela_MR <- filter(Isabela_MR, !time == "4")
+
+Cruz_MR <- filter(Cruz_MR, !time == "0")
+#Cruz_MR <- filter(Cruz_MR, !time == "4")
+
+# For the model I will filter all mericarps and only used present and uneaten ones.
+# This means that present mericarps and with a 0 value on the eaten column.
+
+Floreana_MR <- filter(Floreana_MR, Present == "1")
+Floreana_MR <- filter(Floreana_MR, Eaten_Birds == "0")
+
+Isabela_MR <- filter(Isabela_MR, Present == "1")
+Isabela_MR <- filter(Isabela_MR, Eaten_Birds == "0")
+
+Cruz_MR <- filter(Cruz_MR, Present == "1")
+Cruz_MR <- filter(Cruz_MR, Eaten_Birds == "0")
+
+# Data prepartation Floreana: ####
+
+# This will create a new column for the categories
+Floreana_MR$Categories <- paste(Floreana_MR$size, Floreana_MR$treatment, sep = "_")
+Floreana_MR$Categories <- sub(" ", "_", Floreana_MR$Categories)
+
+# Now I have to pivot the columns for each time passed, so I will create the life span score based on the added
+# present values.
+Floreana_survival <- group_by(Floreana_MR, mericarp, year)
+Floreana_survival <- pivot_wider(Floreana_survival, names_from = time, values_from = c(Present))
+# I needed to turn the categorical variables into factors before merging everything by individual mericarp number.
+
+# This will replace NAs into 0
+Floreana_survival$`1`[is.na(Floreana_survival$`1`)] <- 0
+Floreana_survival$`2`[is.na(Floreana_survival$`2`)] <- 0
+Floreana_survival$`3`[is.na(Floreana_survival$`3`)] <- 0
+Floreana_survival$`4`[is.na(Floreana_survival$`4`)] <- 0
+
+Floreana_survival$Life_span <- rowSums(Floreana_survival[, c(11:13)],na.rm = T)
+
+#write_csv(Floreana_survival, "Floreana_life_span.csv")
+
+# Data prepartation Isabela: ####
+
+# This will create a new column for the categories
+Isabela_MR$Categories <- paste(Isabela_MR$size, Isabela_MR$treatment, sep = "_")
+Isabela_MR$Categories <- sub(" ", "_", Isabela_MR$Categories)
+
+# Now I have to pivot the columns for each time passed, so I will create the life span score based on the added
+# present values.
+Isabela_survival <- group_by(Isabela_MR, mericarp, year)
+Isabela_survival <- pivot_wider(Isabela_survival, names_from = time, values_from = c(Present))
+# I needed to turn the categorical variables into factors before merging everything by individual mericarp number.
+
+# This will replace NAs into 0
+Isabela_survival$`1`[is.na(Isabela_survival$`1`)] <- 0
+Isabela_survival$`2`[is.na(Isabela_survival$`2`)] <- 0
+Isabela_survival$`3`[is.na(Isabela_survival$`3`)] <- 0
+Isabela_survival$`4`[is.na(Isabela_survival$`4`)] <- 0
+
+Isabela_survival$Life_span <- rowSums(Isabela_survival[, c(11:13)],na.rm = T)
+
+#write_csv(Isabela_survival, "Isabela_life_span.csv")
+
+# Data prepartation Cruz: ####
+
+# This will create a new column for the categories
+Cruz_MR$Categories <- paste(Cruz_MR$size, Cruz_MR$treatment, sep = "_")
+Cruz_MR$Categories <- sub(" ", "_", Cruz_MR$Categories)
+
+# Now I have to pivot the columns for each time passed, so I will create the life span score based on the added
+# present values.
+Cruz_survival <- group_by(Cruz_MR, mericarp, year)
+Cruz_survival <- pivot_wider(Cruz_survival, names_from = time, values_from = c(Present))
+# I needed to turn the categorical variables into factors before merging everything by individual mericarp number.
+
+# This will replace NAs into 0
+Cruz_survival$`1`[is.na(Cruz_survival$`1`)] <- 0
+Cruz_survival$`2`[is.na(Cruz_survival$`2`)] <- 0
+Cruz_survival$`3`[is.na(Cruz_survival$`3`)] <- 0
+Cruz_survival$`4`[is.na(Cruz_survival$`4`)] <- 0
+
+Cruz_survival$Life_span <- rowSums(Cruz_survival[, c(11:13)],na.rm = T)
+
+#write_csv(Cruz_survival, "Cruz_life_span.csv")
+
+# Survival days were added later using the raw datasets.
+ 
 # Create the Survival column ####
 # Survival is a new column where we put together the three possible outputs of
 # the experiment: Present-uneaten, present-eaten, missing mericarps.
@@ -53,44 +143,43 @@ Cruz_MR <- select(Cruz_MR, c(2:10, 18:21))
 ## Floreana ####
 ## I am creating two columns one for Bird survival and one for insect survival
 ## I would like to explore insect predation even if is only a few mericarps.
-
-Floreana_MR$Bird_Survival <- (Floreana_MR$Present + Floreana_MR$Eaten_Birds)
-Floreana_MR$Insect_Survival <- (Floreana_MR$Present + Floreana_MR$Eaten_Insects)
-
-# This creates two new columns that adds the values of Present and Eaten columns
-# This means that:
-# 2s are present eaten mericarps
-# 1s are present uneaten 
-# 0s are missing mericarps.
-
-Floreana_MR$Bird_Survival[is.na(Floreana_MR$Bird_Survival)] <- 0
-Floreana_MR$Insect_Survival[is.na(Floreana_MR$Insect_Survival)] <- 0
+# 
+# Floreana_MR$Bird_Survival <- (Floreana_MR$Present + Floreana_MR$Eaten_Birds)
+# Floreana_MR$Insect_Survival <- (Floreana_MR$Present + Floreana_MR$Eaten_Insects)
+# 
+# # This creates two new columns that adds the values of Present and Eaten columns
+# # This means that:
+# # 2s are present eaten mericarps
+# # 1s are present uneaten 
+# # 0s are missing mericarps.
+# 
+# Floreana_MR$Bird_Survival[is.na(Floreana_MR$Bird_Survival)] <- 0
+# Floreana_MR$Insect_Survival[is.na(Floreana_MR$Insect_Survival)] <- 0
 
 # This transforms NAs into 0s for the new survival columns
 
-Floreana_MR$Categories <- paste(Floreana_MR$size, Floreana_MR$treatment, sep = "_")
-Floreana_MR$Categories <- sub(" ", "_", Floreana_MR$Categories)
-
+# Floreana_MR$Categories <- paste(Floreana_MR$size, Floreana_MR$treatment, sep = "_")
+# Floreana_MR$Categories <- sub(" ", "_", Floreana_MR$Categories)
 
 # This creates a new column that combines size and treatments
 
 ## Isabela ####
-Isabela_MR$Bird_Survival <- (Isabela_MR$Present + Isabela_MR$Eaten_Birds)
-Isabela_MR$Insect_Survival <- (Isabela_MR$Present + Isabela_MR$Eaten_Insects)
-
-Isabela_MR$Bird_Survival[is.na(Isabela_MR$Bird_Survival)] <- 0
-Isabela_MR$Insect_Survival[is.na(Isabela_MR$Insect_Survival)] <- 0
+# Isabela_MR$Bird_Survival <- (Isabela_MR$Present + Isabela_MR$Eaten_Birds)
+# Isabela_MR$Insect_Survival <- (Isabela_MR$Present + Isabela_MR$Eaten_Insects)
+# 
+# Isabela_MR$Bird_Survival[is.na(Isabela_MR$Bird_Survival)] <- 0
+# Isabela_MR$Insect_Survival[is.na(Isabela_MR$Insect_Survival)] <- 0
 
 Isabela_MR$Categories <- paste(Isabela_MR$size, Isabela_MR$treatment, sep = "_")
 Isabela_MR$Categories <- sub(" ", "_", Isabela_MR$Categories)
 
 
 ## Santa Cruz ####
-Cruz_MR$Bird_Survival <- (Cruz_MR$Present + Cruz_MR$Eaten_Birds)
-Cruz_MR$Insect_Survival <- (Cruz_MR$Present + Cruz_MR$Eaten_Insects)
-
-Cruz_MR$Bird_Survival[is.na(Cruz_MR$Bird_Survival)] <- 0
-Cruz_MR$Insect_Survival[is.na(Cruz_MR$Insect_Survival)] <- 0
+# Cruz_MR$Bird_Survival <- (Cruz_MR$Present + Cruz_MR$Eaten_Birds)
+# Cruz_MR$Insect_Survival <- (Cruz_MR$Present + Cruz_MR$Eaten_Insects)
+# 
+# Cruz_MR$Bird_Survival[is.na(Cruz_MR$Bird_Survival)] <- 0
+# Cruz_MR$Insect_Survival[is.na(Cruz_MR$Insect_Survival)] <- 0
 
 Cruz_MR$Categories <- paste(Cruz_MR$size, Cruz_MR$treatment, sep = "_")
 Cruz_MR$Categories <- sub(" ", "_", Cruz_MR$Categories)
