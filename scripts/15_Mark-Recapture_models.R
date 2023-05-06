@@ -9,16 +9,29 @@
 # Loading ternary dataset ####
 MR_ternary <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Question 4/Island_ternary_dataset.csv")
 
+MR_survival <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Question 4/MR_survival.csv")
+
+
 # Data preparation ####
 # Categories <- factor
 # Time <- factor
 # Island <- factor
 
+
 str(MR_ternary)
+str(MR_survival)
 
 MR_ternary <- MR_ternary %>% mutate_at(vars(time,
                                               Categories,
                                               Island), list(factor))
+
+MR_survival <- MR_survival %>% mutate_at(vars(island,
+                                              treatment,
+                                              size,
+                                              color,
+                                              mark_position,
+                                              plate,
+                                              Categories), list(factor))
 
 # The model structure using this dataset would be to predict the eaten, uneaten and missing mericarp frequency
 # based on categories, time, and island as a random factor. 
@@ -28,6 +41,48 @@ MR_ternary_filter <- filter(MR_ternary, !time == "0")
 MR_ternary_filter <- filter(MR_ternary_filter, !time == "4")
 
 # Models ####
+
+## Survival models ####
+
+Days_survivedQ4 <- glmmTMB(Days_survived ~ Categories + color +
+                         (1|plate/island),
+                       data = MR_survival,
+                       REML = F)
+
+## Model diagnostics ####
+# Residual histograms
+diagnostic(resid(life_spanQ4))
+hist(resid(life_spanQ4), breaks = 30)
+
+# DHARMa
+testResiduals(life_spanQ4)
+
+
+### Results ####
+summary(life_spanQ4)
+
+Anova(life_spanQ4)
+
+
+life_spanQ4 <- glmmTMB(Life_span ~ Categories + color +
+                         (1|plate/island),
+                       data = MR_survival,
+                       REML = F)
+
+## Model diagnostics ####
+# Residual histograms
+diagnostic(resid(life_spanQ4))
+hist(resid(life_spanQ4), breaks = 30)
+
+# DHARMa
+testResiduals(life_spanQ4)
+
+
+### Results ####
+summary(life_spanQ4)
+
+Anova(life_spanQ4)
+
 ## Eaten mericarps ####
 
 eaten_Q4 <- glmmTMB(Eaten_freq ~ Categories + time + (1|Island),
