@@ -103,7 +103,7 @@ Isabela_survival$`2`[is.na(Isabela_survival$`2`)] <- 0
 Isabela_survival$`3`[is.na(Isabela_survival$`3`)] <- 0
 Isabela_survival$`4`[is.na(Isabela_survival$`4`)] <- 0
 
-Isabela_survival$Life_span <- rowSums(Isabela_survival[, c(11:13)],na.rm = T)
+Isabela_survival$Life_span <- rowSums(Isabela_survival[, c(11:14)],na.rm = T)
 
 #write_csv(Isabela_survival, "Isabela_life_span.csv")
 
@@ -125,7 +125,7 @@ Cruz_survival$`2`[is.na(Cruz_survival$`2`)] <- 0
 Cruz_survival$`3`[is.na(Cruz_survival$`3`)] <- 0
 Cruz_survival$`4`[is.na(Cruz_survival$`4`)] <- 0
 
-Cruz_survival$Life_span <- rowSums(Cruz_survival[, c(11:13)],na.rm = T)
+Cruz_survival$Life_span <- rowSums(Cruz_survival[, c(11:14)],na.rm = T)
 
 #write_csv(Cruz_survival, "Cruz_life_span.csv")
 
