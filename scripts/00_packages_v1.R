@@ -29,4 +29,4 @@ library(bbmle)
 library(DHARMa)
 library(ggeffects)
 library(ggtern)
-
+library(afex)
