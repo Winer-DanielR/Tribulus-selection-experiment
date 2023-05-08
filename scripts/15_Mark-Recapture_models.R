@@ -8,6 +8,8 @@
 
 # Loading ternary dataset ####
 MR_ternary <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Question 4/Island_ternary_dataset.csv")
+# I am testing now the dataset with estimated days of survival. I am using now,
+# survived mericarps per categories and the days they survived which are within each time measured.
 
 MR_survival <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Question 4/MR_survival.csv")
 
@@ -16,7 +18,6 @@ MR_survival <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. 
 # Categories <- factor
 # Time <- factor
 # Island <- factor
-
 
 str(MR_ternary)
 str(MR_survival)
@@ -40,6 +41,8 @@ MR_survival <- MR_survival %>% mutate_at(vars(island,
 MR_ternary_filter <- filter(MR_ternary, !time == "0")
 MR_ternary_filter <- filter(MR_ternary_filter, !time == "4")
 
+# This is not used for the survival data and model
+
 # Models ####
 
 ## Survival models ####
@@ -51,94 +54,94 @@ Days_survivedQ4 <- glmmTMB(Days_survived ~ Categories + color +
 
 ## Model diagnostics ####
 # Residual histograms
-diagnostic(resid(life_spanQ4))
-hist(resid(life_spanQ4), breaks = 30)
+hist(resid(Days_survivedQ4), breaks = 50)
+
+diagnostic(resid(Days_survivedQ4))
 
 # DHARMa
-testResiduals(life_spanQ4)
-
-
-### Results ####
-summary(life_spanQ4)
-
-Anova(life_spanQ4)
-
-
-life_spanQ4 <- glmmTMB(Life_span ~ Categories + color +
-                         (1|plate/island),
-                       data = MR_survival,
-                       REML = F)
-
-## Model diagnostics ####
-# Residual histograms
-diagnostic(resid(life_spanQ4))
-hist(resid(life_spanQ4), breaks = 30)
-
-# DHARMa
-testResiduals(life_spanQ4)
-
+testResiduals(Days_survivedQ4)
 
 ### Results ####
-summary(life_spanQ4)
+summary(Days_survivedQ4)
 
-Anova(life_spanQ4)
+Anova(Days_survivedQ4)
 
-## Eaten mericarps ####
+# ANOVA with afex package aov_ez function
+#aov_ez(id = "island", dv = "Days_survived", within = "Categories", na.rm = T, data = MR_survival, fun_aggregate = mean)
 
-eaten_Q4 <- glmmTMB(Eaten_freq ~ Categories + time + (1|Island),
+EM_Survived <- emmeans::emmeans(Days_survivedQ4, ~ Categories)
+
+plot(EM_Survived, comparisons = T)
+emmip(Days_survivedQ4, Categories ~ Categories, CIs = TRUE)
+
+
+# ## Eaten mericarps ####
+# 
+eaten_Q4 <- glmmTMB(n_eaten ~ Categories + time + (1|Island),
                     data = MR_ternary_filter,
-                    REML = F)
-
-## Model diagnostics ####
-# Residual histograms
+                    REML = F,
+                    family = "poisson")
+# 
+# ## Model diagnostics ####
+# # Residual histograms
 diagnostic(resid(eaten_Q4))
-
-
-# DHARMa
+# 
+# 
+# # DHARMa
 testResiduals(eaten_Q4)
 
+# ### Results ####
+ summary(eaten_Q4)
+# 
+ Anova(eaten_Q4)
 
-### Results ####
-summary(eaten_Q4)
+EM_eatenQ4 <- emmeans(eaten_Q4, ~ Categories, type="response") 
+plot(EM_eatenQ4, comparisons = T)  
 
-Anova(eaten_Q4)
-
-## Uneaten mericarps ####
-
-uneaten_Q4 <- glmmTMB(Uneaten_freq ~ Categories + time + (1|Island),
+# ## Uneaten mericarps ####
+# 
+uneaten_Q4 <- glmmTMB(n_uneaten ~ Categories + time + (1|Island),
                     data = MR_ternary_filter,
-                    REML = F)
-
-## Model diagnostics ####
-# Residual histograms
+                    REML = F,
+                    family = "poisson")
+# 
+# ## Model diagnostics ####
+# # Residual histograms
 diagnostic(resid(uneaten_Q4))
-
-
-# DHARMa
+# 
+# 
+# # DHARMa
 testResiduals(uneaten_Q4)
-
-
-### Results ####
+# 
+# 
+# ### Results ####
 summary(uneaten_Q4)
-
+# 
 Anova(uneaten_Q4)
 
-## Missing mericarps ####
+EM_uneatenQ4 <- emmeans(uneaten_Q4, ~ Categories, type="response") 
+plot(EM_uneatenQ4, comparisons = T)  
 
-Missing_Q4 <- glmmTMB(Missing_freq ~ Categories + time + (1|Island),
+# ## Missing mericarps ####
+# 
+Missing_Q4 <- glmmTMB(n_missing ~ Categories + time + (1|Island),
                       data = MR_ternary_filter,
-                      REML = F)
-
-## Model diagnostics ####
-# Residual histograms
+                      REML = F,
+                      family = "poisson")
+# 
+# ## Model diagnostics ####
+# # Residual histograms
 diagnostic(resid(Missing_Q4))
-
-
-# DHARMa
+# 
+# 
+# # DHARMa
 testResiduals(Missing_Q4)
-
-
-### Results ####
+# 
+# 
+# ### Results ####
 summary(Missing_Q4)
 
 Anova(Missing_Q4)
+
+EM_missingQ4 <- emmeans(Missing_Q4, ~ Categories, type="response") 
+plot(EM_missingQ4, comparisons = T)  
