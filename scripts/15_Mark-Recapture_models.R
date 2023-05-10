@@ -206,8 +206,8 @@ diagnostic(resid(eaten_Q4))
 # 
  Anova(eaten_Q4)
 
-EM_eatenQ4 <- emmeans(eaten_Q4, ~ Categories|Island, type="response") 
-emmip(EM_eatenQ4, ~ Categories, CIs = TRUE)
+EM_eatenQ4 <- emmeans(eaten_Q4, ~ time|Categories, type="response") 
+emmip(EM_eatenQ4, ~ time|Categories, CIs = TRUE)
 
 #### Missing mericarps ####
 # Check if Island in this model should be random. I don't think so.
@@ -276,8 +276,8 @@ summary(eaten_Q4_filter)
 # 
 Anova(eaten_Q4_filter)
 
-EM_eatenQ4_filter <- emmeans(eaten_Q4_filter, ~ Categories|Island, type="response") 
-emmip(eaten_Q4_filter, ~ Categories, CIs = TRUE)
+EM_eatenQ4_filter <- emmeans(eaten_Q4_filter, ~ time|Categories, type="response") 
+emmip(eaten_Q4_filter, ~ time|Categories, CIs = TRUE)
 
 #### Missing mericarps ####
 # Check if Island in this model should be random. I don't think so.
