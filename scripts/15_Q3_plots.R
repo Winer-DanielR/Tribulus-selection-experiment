@@ -150,6 +150,45 @@ pca_size_bio1 <- island_fig(pca_means_Q3,
                        " "
 )
 
+pca_mean_size <- ggplot(pca_means_Q3, aes(x = PC1_bioclimate, y = Size_mean, colour = island, shape = island, fill = island)) + #For the function to work the colors need to be defined here.
+  geom_smooth(color = "black", size = 1, method = "glm",aes(group=1)) +
+  geom_point(size = 3.5, stroke = 1) + #Type of plot
+  scale_fill_manual(values = c("#D55E00",
+                               "#E69F00",
+                               "#009E73",
+                               "#0072B2",
+                               "#56B4E9",
+                               "#CC79A7",
+                               "#666666"), name = "Islands",
+                    labels = c("Floreana",
+                               "Isabela",
+                               "San Cristobal",
+                               "Santa Cruz")) +
+  scale_color_manual(values = c("black", 
+                                "black", 
+                                "black", 
+                                "black"),
+                     name = "Islands",
+                     labels = c("Floreana",
+                                "Isabela",
+                                "San Cristobal",
+                                "Santa Cruz")) + # Set colors
+  scale_shape_manual(values = c(21:24),
+                     name = "Islands",
+                     labels = c("Floreana",
+                                "Isabela",
+                                "San Cristobal",
+                                "Santa Cruz")) +
+  labs(
+    x = "Bioclimate Variable PC1",
+    y = "Mean trait value",
+    title = "Mean Mericarp Size",
+    subtitle = " ",
+    #color = "Islands"
+    fill = "Islands"
+  ) +
+  plot_theme 
+
 ### Defense ####
 
 pca_Defense_bio1 <- island_fig(pca_means_Q3,
@@ -159,6 +198,46 @@ pca_Defense_bio1 <- island_fig(pca_means_Q3,
                                " "
 )
 
+
+pca_mean_defense <- ggplot(pca_means_Q3, aes(x = PC1_bioclimate, y = Defense_mean, colour = island, shape = island, fill = island)) + #For the function to work the colors need to be defined here.
+  geom_smooth(color = "black", size = 1, method = "glm",aes(group=1)) +
+  geom_point(size = 3.5, stroke = 1) + #Type of plot
+  scale_fill_manual(values = c("#D55E00",
+                               "#E69F00",
+                               "#009E73",
+                               "#0072B2",
+                               "#56B4E9",
+                               "#CC79A7",
+                               "#666666"), name = "Islands",
+                    labels = c("Floreana",
+                               "Isabela",
+                               "San Cristobal",
+                               "Santa Cruz")) +
+  scale_color_manual(values = c("black", 
+                                "black", 
+                                "black", 
+                                "black"),
+                     name = "Islands",
+                     labels = c("Floreana",
+                                "Isabela",
+                                "San Cristobal",
+                                "Santa Cruz")) + # Set colors
+  scale_shape_manual(values = c(21:24),
+                     name = "Islands",
+                     labels = c("Floreana",
+                                "Isabela",
+                                "San Cristobal",
+                                "Santa Cruz")) +
+  labs(
+    x = "Bioclimate Variable PC1",
+    y = "Mean trait value",
+    title = "Mean Mericarp Defense",
+    subtitle = " ",
+    #color = "Islands"
+    fill = "Islands"
+  ) +
+  plot_theme 
+
 ### Position ####
 pca_Position_bio1 <- island_fig(pca_means_Q3,
                                 pca_means_Q3$finch_beak,
@@ -167,11 +246,49 @@ pca_Position_bio1 <- island_fig(pca_means_Q3,
                                 " "
 )
 
+pca_mean_position <- ggplot(pca_means_Q3, aes(x = PC1_bioclimate, y = Position_mean, colour = island, shape = island, fill = island)) + #For the function to work the colors need to be defined here.
+  geom_smooth(color = "black", size = 1, method = "glm",aes(group=1)) +
+  geom_point(size = 3.5, stroke = 1) + #Type of plot
+  scale_fill_manual(values = c("#D55E00",
+                               "#E69F00",
+                               "#009E73",
+                               "#0072B2",
+                               "#56B4E9",
+                               "#CC79A7",
+                               "#666666"), name = "Islands",
+                    labels = c("Floreana",
+                               "Isabela",
+                               "San Cristobal",
+                               "Santa Cruz")) +
+  scale_color_manual(values = c("black", 
+                                "black", 
+                                "black", 
+                                "black"),
+                     name = "Islands",
+                     labels = c("Floreana",
+                                "Isabela",
+                                "San Cristobal",
+                                "Santa Cruz")) + # Set colors
+  scale_shape_manual(values = c(21:24),
+                     name = "Islands",
+                     labels = c("Floreana",
+                                "Isabela",
+                                "San Cristobal",
+                                "Santa Cruz")) +
+  labs(
+    x = "Bioclimate Variable PC1",
+    y = "Mean trait value",
+    title = "Mean Mericarp Spine Position",
+    subtitle = " ",
+    #color = "Islands"
+    fill = "Islands"
+  ) +
+  plot_theme 
 
 ### Combined PCA plots ####
-Q3_pca_size <- ggarrange(pca_size_bio1 + rremove("ylab") + rremove("xlab"),
-                         pca_Defense_bio1 + rremove("ylab") + rremove("xlab"),
-                         pca_Position_bio1 + rremove("ylab") + rremove("xlab"),
+Q3_pca_size <- ggarrange(pca_mean_size + rremove("ylab") + rremove("xlab"),
+                         pca_mean_defense + rremove("ylab") + rremove("xlab"),
+                         pca_mean_position + rremove("ylab") + rremove("xlab"),
                          #pca_size_bio4 + rremove("ylab") + rremove("xlab"),
                          #pca_size_bio12 + rremove("ylab") + rremove("xlab"),
                          #pca_size_bio15 + rremove("ylab") + rremove("xlab"),
