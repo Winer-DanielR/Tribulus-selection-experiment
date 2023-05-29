@@ -69,6 +69,9 @@ Anova(S_sizeQ3, type = "3")
 summary(Size_meanQ3)
 Anova(Size_meanQ3, type = "3")
 
+r.squaredGLMM(S_sizeQ3)
+r.squaredGLMM(Size_meanQ3)
+
 ## Defense ####
 S_DefenseQ3 <- glmmTMB(S_Defense ~ PC1_bioclimate +
                        PC2_bioclimate +
@@ -107,6 +110,9 @@ summary(Mean_DefenseQ3)
 Anova(S_DefenseQ3, type = "3")
 Anova(Mean_DefenseQ3, type = "3")
 
+r.squaredGLMM(S_DefenseQ3)
+r.squaredGLMM(Mean_DefenseQ3)
+
 ## Position ####
 S_PositionQ3 <- glmmTMB(S_Position ~ PC1_bioclimate +
                         PC2_bioclimate +
@@ -144,6 +150,8 @@ summary(Mean_PositionQ3)
 Anova(S_PositionQ3, type = "3")
 Anova(Mean_PositionQ3, type = "3")
 
+r.squaredGLMM(S_PositionQ3)
+r.squaredGLMM(Mean_PositionQ3)
 
 ## Depth ####
 hist(depth_pop$S_depth, breaks = 10)
