@@ -99,6 +99,7 @@ plot_theme <-     theme(axis.line = element_line(linetype = "solid", size = 1),
 
 island_fig <- function(dataset, x, y, title, subtitle)
 {ggplot(dataset, aes(x = x, y = y, colour = island, shape = island, fill = island)) + #For the function to work the colors need to be defined here.
+    stat_regline_equation(aes(group = 1, label = ..rr.label..)) +
     geom_smooth(color = "black", size = 1, method = "glm",aes(group=1)) +
     geom_point(size = 3.5, stroke = 1) + #Type of plot
     scale_fill_manual(values = c("#D55E00",
@@ -128,8 +129,8 @@ island_fig <- function(dataset, x, y, title, subtitle)
                                   "San Cristobal",
                                   "Santa Cruz")) +
     labs(
-      x = "Bioclimate Variable",
-      y = "Selection (Uneaten - Eaten)",
+      x = "Bioclimate Variable (PC1)",
+      y = "Mean trait value",
       title = title,
       subtitle = subtitle,
       #color = "Islands"
@@ -144,151 +145,34 @@ island_fig <- function(dataset, x, y, title, subtitle)
 ### Size ####
 
 pca_size_bio1 <- island_fig(pca_means_Q3,
-                       pca_means_Q3$finch_beak,
-                       pca_means_Q3$S_Size,
+                       pca_means_Q3$PC1_bioclimate,
+                       pca_means_Q3$Size_mean,
                        "Mericarp Size (PC1) ",
                        " "
 )
 
-pca_mean_size <- ggplot(pca_means_Q3, aes(x = PC1_bioclimate, y = Size_mean, colour = island, shape = island, fill = island)) + #For the function to work the colors need to be defined here.
-  geom_smooth(color = "black", size = 1, method = "glm",aes(group=1)) +
-  geom_point(size = 3.5, stroke = 1) + #Type of plot
-  scale_fill_manual(values = c("#D55E00",
-                               "#E69F00",
-                               "#009E73",
-                               "#0072B2",
-                               "#56B4E9",
-                               "#CC79A7",
-                               "#666666"), name = "Islands",
-                    labels = c("Floreana",
-                               "Isabela",
-                               "San Cristobal",
-                               "Santa Cruz")) +
-  scale_color_manual(values = c("black", 
-                                "black", 
-                                "black", 
-                                "black"),
-                     name = "Islands",
-                     labels = c("Floreana",
-                                "Isabela",
-                                "San Cristobal",
-                                "Santa Cruz")) + # Set colors
-  scale_shape_manual(values = c(21:24),
-                     name = "Islands",
-                     labels = c("Floreana",
-                                "Isabela",
-                                "San Cristobal",
-                                "Santa Cruz")) +
-  labs(
-    x = "Bioclimate Variable PC1",
-    y = "Mean trait value",
-    title = "Mean Mericarp Size",
-    subtitle = " ",
-    #color = "Islands"
-    fill = "Islands"
-  ) +
-  plot_theme 
-
 ### Defense ####
 
 pca_Defense_bio1 <- island_fig(pca_means_Q3,
-                               pca_means_Q3$finch_beak,
-                               pca_means_Q3$S_Defense,
+                               pca_means_Q3$PC1_bioclimate,
+                               pca_means_Q3$Defense_mean,
                                "Mericarp Defense (PC2) ",
                                " "
 )
 
 
-pca_mean_defense <- ggplot(pca_means_Q3, aes(x = PC1_bioclimate, y = Defense_mean, colour = island, shape = island, fill = island)) + #For the function to work the colors need to be defined here.
-  geom_smooth(color = "black", size = 1, method = "glm",aes(group=1)) +
-  geom_point(size = 3.5, stroke = 1) + #Type of plot
-  scale_fill_manual(values = c("#D55E00",
-                               "#E69F00",
-                               "#009E73",
-                               "#0072B2",
-                               "#56B4E9",
-                               "#CC79A7",
-                               "#666666"), name = "Islands",
-                    labels = c("Floreana",
-                               "Isabela",
-                               "San Cristobal",
-                               "Santa Cruz")) +
-  scale_color_manual(values = c("black", 
-                                "black", 
-                                "black", 
-                                "black"),
-                     name = "Islands",
-                     labels = c("Floreana",
-                                "Isabela",
-                                "San Cristobal",
-                                "Santa Cruz")) + # Set colors
-  scale_shape_manual(values = c(21:24),
-                     name = "Islands",
-                     labels = c("Floreana",
-                                "Isabela",
-                                "San Cristobal",
-                                "Santa Cruz")) +
-  labs(
-    x = "Bioclimate Variable PC1",
-    y = "Mean trait value",
-    title = "Mean Mericarp Defense",
-    subtitle = " ",
-    #color = "Islands"
-    fill = "Islands"
-  ) +
-  plot_theme 
-
 ### Position ####
 pca_Position_bio1 <- island_fig(pca_means_Q3,
-                                pca_means_Q3$finch_beak,
-                                pca_means_Q3$S_Position,
-                                "Mericarp Position (PC3)  ",
+                                pca_means_Q3$PC1_bioclimate,
+                                pca_means_Q3$Position_mean,
+                                "Spine Position (PC3)  ",
                                 " "
 )
 
-pca_mean_position <- ggplot(pca_means_Q3, aes(x = PC1_bioclimate, y = Position_mean, colour = island, shape = island, fill = island)) + #For the function to work the colors need to be defined here.
-  geom_smooth(color = "black", size = 1, method = "glm",aes(group=1)) +
-  geom_point(size = 3.5, stroke = 1) + #Type of plot
-  scale_fill_manual(values = c("#D55E00",
-                               "#E69F00",
-                               "#009E73",
-                               "#0072B2",
-                               "#56B4E9",
-                               "#CC79A7",
-                               "#666666"), name = "Islands",
-                    labels = c("Floreana",
-                               "Isabela",
-                               "San Cristobal",
-                               "Santa Cruz")) +
-  scale_color_manual(values = c("black", 
-                                "black", 
-                                "black", 
-                                "black"),
-                     name = "Islands",
-                     labels = c("Floreana",
-                                "Isabela",
-                                "San Cristobal",
-                                "Santa Cruz")) + # Set colors
-  scale_shape_manual(values = c(21:24),
-                     name = "Islands",
-                     labels = c("Floreana",
-                                "Isabela",
-                                "San Cristobal",
-                                "Santa Cruz")) +
-  labs(
-    x = "Bioclimate Variable PC1",
-    y = "Mean trait value",
-    title = "Mean Mericarp Spine Position",
-    subtitle = " ",
-    #color = "Islands"
-    fill = "Islands"
-  ) +
-  plot_theme 
-
 ### Combined PCA plots ####
-Q3_pca_size <- ggarrange(pca_mean_size + rremove("ylab") + rremove("xlab"),
-                         pca_mean_defense + rremove("ylab") + rremove("xlab"),
-                         pca_mean_position + rremove("ylab") + rremove("xlab"),
+Q3_pca_size <- ggarrange(pca_size_bio1 + rremove("ylab") + rremove("xlab"),
+                         pca_Defense_bio1 + rremove("ylab") + rremove("xlab"),
+                         pca_Position_bio1 + rremove("ylab") + rremove("xlab"),
                          #pca_size_bio4 + rremove("ylab") + rremove("xlab"),
                          #pca_size_bio12 + rremove("ylab") + rremove("xlab"),
                          #pca_size_bio15 + rremove("ylab") + rremove("xlab"),
@@ -303,9 +187,9 @@ Q3_pca_size <- ggarrange(pca_mean_size + rremove("ylab") + rremove("xlab"),
                          ncol = 3,
                          nrow = 1)
 
-annotate_figure(Q3_pca_size, left = textGrob("Selection (Uneaten - Eaten)", 
-                                             rot = 90, vjust = 1, gp = gpar(cex = 1.1)),
-                bottom = textGrob("Bioclimate Variables (PC1)", gp = gpar(cex = 1.1)))
+annotate_figure(Q3_pca_size, left = textGrob("Mean Trait Value", 
+                                             rot = 90, vjust = 1, gp = gpar(cex = 1.5)),
+                bottom = textGrob("Bioclimate Variables (PC1)", gp = gpar(cex = 1.5)))
 
 
 
