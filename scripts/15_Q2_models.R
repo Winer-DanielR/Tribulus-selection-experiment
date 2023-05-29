@@ -93,6 +93,8 @@ Anova(sizeQ2, type = "III")
 pR2(sizeQ2)["McFadden"]
 # Estimated R2 0.2146158 
 
+r.squaredGLMM(sizeQ2)
+
 ## Defense ####
 ## This is tricky because we are using the mean traits per population
 ## to estimate the selection per population.
@@ -119,6 +121,8 @@ Anova(defenseQ2, type = "III")
 pR2(defenseQ2)["McFadden"]
 # Estimated R2 0.3582375  
 
+r.squaredGLMM(defenseQ2)
+
 ## Position ####
 ## This is tricky because we are using the mean traits per population
 ## to estimate the selection per population.
@@ -144,6 +148,9 @@ Anova(PositionQ2, type = "III")
 
 pR2(PositionQ2)["McFadden"]
 # Estimated R2 0.1810015 
+
+r.squaredGLMM(PositionQ2)
+
 
 ## Depth ####
 # Remove NAs
