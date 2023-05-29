@@ -90,6 +90,8 @@ testResiduals(sizeQ2)
 summary(sizeQ2)
 Anova(sizeQ2, type = "III")
 
+pR2(sizeQ2)["McFadden"]
+# Estimated R2 0.2146158 
 
 ## Defense ####
 ## This is tricky because we are using the mean traits per population
@@ -114,6 +116,8 @@ testResiduals(defenseQ2)
 summary(defenseQ2)
 Anova(defenseQ2, type = "III")
 
+pR2(defenseQ2)["McFadden"]
+# Estimated R2 0.3582375  
 
 ## Position ####
 ## This is tricky because we are using the mean traits per population
@@ -138,6 +142,8 @@ testResiduals(PositionQ2)
 summary(PositionQ2)
 Anova(PositionQ2, type = "III")
 
+pR2(PositionQ2)["McFadden"]
+# Estimated R2 0.1810015 
 
 ## Depth ####
 # Remove NAs
@@ -275,6 +281,9 @@ testResiduals(spine_position_m2)
 ### Results ####
 summary(spine_position_m2)
 Anova(spine_position_m2, type = "III")
+
+pR2(spine_position_m2)["McFadden"]
+# Estimated R2 0.1810015
 
 ## Tip distance ####
 hist(tip_distance$mean_all, breaks = 30)
