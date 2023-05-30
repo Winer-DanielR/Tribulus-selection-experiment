@@ -145,7 +145,7 @@ island_fig <- function(dataset, x, y, title, subtitle)
 ### Size ####
 
 pca_size_bio1 <- island_fig(pca_means_Q3,
-                       pca_means_Q3$PC1_bioclimate,
+                       (pca_means_Q3$PC1_bioclimate*-1),
                        pca_means_Q3$Size_mean,
                        "Mericarp Size (PC1) ",
                        " "
@@ -154,7 +154,7 @@ pca_size_bio1 <- island_fig(pca_means_Q3,
 ### Defense ####
 
 pca_Defense_bio1 <- island_fig(pca_means_Q3,
-                               pca_means_Q3$PC1_bioclimate,
+                               (pca_means_Q3$PC1_bioclimate*-1),
                                pca_means_Q3$Defense_mean,
                                "Mericarp Defense (PC2) ",
                                " "
@@ -163,7 +163,7 @@ pca_Defense_bio1 <- island_fig(pca_means_Q3,
 
 ### Position ####
 pca_Position_bio1 <- island_fig(pca_means_Q3,
-                                pca_means_Q3$PC1_bioclimate,
+                                (pca_means_Q3$PC1_bioclimate*-1),
                                 pca_means_Q3$Position_mean,
                                 "Spine Position (PC3)  ",
                                 " "
