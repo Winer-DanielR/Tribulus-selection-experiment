@@ -67,7 +67,7 @@ summary(S_sizeQ3)
 Anova(S_sizeQ3, type = "3")
 
 summary(Size_meanQ3)
-Anova(Size_meanQ3, type = "3")
+Anova(Size_meanQ3, type = "2")
 
 r.squaredGLMM(S_sizeQ3)
 r.squaredGLMM(Size_meanQ3)
@@ -108,7 +108,7 @@ summary(S_DefenseQ3)
 summary(Mean_DefenseQ3)
 
 Anova(S_DefenseQ3, type = "3")
-Anova(Mean_DefenseQ3, type = "3")
+Anova(Mean_DefenseQ3, type = "2")
 
 r.squaredGLMM(S_DefenseQ3)
 r.squaredGLMM(Mean_DefenseQ3)
@@ -148,7 +148,7 @@ summary(Mean_PositionQ3)
 
 
 Anova(S_PositionQ3, type = "3")
-Anova(Mean_PositionQ3, type = "3")
+Anova(Mean_PositionQ3, type = "2")
 
 r.squaredGLMM(S_PositionQ3)
 r.squaredGLMM(Mean_PositionQ3)
