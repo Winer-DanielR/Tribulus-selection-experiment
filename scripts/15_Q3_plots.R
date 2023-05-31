@@ -81,10 +81,10 @@ plot_theme <-     theme(axis.line = element_line(linetype = "solid", size = 1),
                         ),
                         axis.text = element_text(size = 11), 
                         #axis.text.x = element_text(size = 8), 
-                        plot.title = element_text(size = 12, face = "bold", hjust = 0),
+                        plot.title = element_text(size = 16, face = "bold", hjust = 0),
                         text = element_text(family = "Noto Sans"),
-                        legend.text = element_text(size = 11), 
-                        legend.title = element_text(size = 12, face = "bold"),
+                        legend.text = element_text(size = 12), 
+                        legend.title = element_text(size = 14, face = "bold"),
                         legend.position = "right",
                         panel.background = element_rect(fill = NA),
                         legend.background = element_rect(fill = NA, size = 0),
@@ -99,7 +99,7 @@ plot_theme <-     theme(axis.line = element_line(linetype = "solid", size = 1),
 
 island_fig <- function(dataset, x, y, title, subtitle)
 {ggplot(dataset, aes(x = x, y = y, colour = island, shape = island, fill = island)) + #For the function to work the colors need to be defined here.
-    stat_regline_equation(aes(group = 1, label = ..rr.label..)) +
+    #stat_regline_equation(aes(group = 1, label = ..rr.label..)) +
     geom_smooth(color = "black", size = 1, method = "glm",aes(group=1)) +
     geom_point(size = 3.5, stroke = 1) + #Type of plot
     scale_fill_manual(values = c("#D55E00",
@@ -129,8 +129,8 @@ island_fig <- function(dataset, x, y, title, subtitle)
                                   "San Cristobal",
                                   "Santa Cruz")) +
     labs(
-      x = "Bioclimate Variable (PC1)",
-      y = "Mean trait value",
+      x = "Precipitation Seasonality (PC4)",
+      y = "Selection (Closed - Open)",
       title = title,
       subtitle = subtitle,
       #color = "Islands"
@@ -144,55 +144,160 @@ island_fig <- function(dataset, x, y, title, subtitle)
 ## PCA ####
 ### Size ####
 
-pca_size_bio1 <- island_fig(pca_means_Q3,
-                       (pca_means_Q3$PC1_bioclimate*-1),
+pca_size_PC2 <- island_fig(pca_means_Q3,
+                       pca_means_Q3$PC2_bioclimate,
                        pca_means_Q3$Size_mean,
                        "Mericarp Size (PC1) ",
                        " "
 )
 
+pca_size_finch <- island_fig(pca_means_Q3,
+                           pca_means_Q3$finch_beak,
+                           pca_means_Q3$Size_mean,
+                           "Mericarp Size (PC1) ",
+                           " "
+)
+
+size_sel_PC1 <- island_fig(pca_means_Q3,
+                             pca_means_Q3$PC1_bioclimate,
+                             pca_means_Q3$S_Size,
+                             "Mericarp Size (PC1)",
+                             " ")
+
+size_sel_PC3 <- island_fig(pca_means_Q3,
+                           pca_means_Q3$PC3_bioclimate,
+                           pca_means_Q3$S_Size,
+                           "Mericarp Size (PC1)",
+                           " ")
+
+size_sel_finch <- island_fig(pca_means_Q3,
+                             pca_means_Q3$finch_beak,
+                             pca_means_Q3$S_Size,
+                             "Mericarp Size (PC1)",
+                             " ")
+
 ### Defense ####
 
-pca_Defense_bio1 <- island_fig(pca_means_Q3,
-                               (pca_means_Q3$PC1_bioclimate*-1),
+pca_Defense_PC2 <- island_fig(pca_means_Q3,
+                               pca_means_Q3$PC2_bioclimate,
                                pca_means_Q3$Defense_mean,
                                "Mericarp Defense (PC2) ",
                                " "
 )
 
-
-### Position ####
-pca_Position_bio1 <- island_fig(pca_means_Q3,
-                                (pca_means_Q3$PC1_bioclimate*-1),
-                                pca_means_Q3$Position_mean,
-                                "Spine Position (PC3)  ",
-                                " "
+pca_Defense_PC4 <- island_fig(pca_means_Q3,
+                              pca_means_Q3$PC4_bioclimate,
+                              pca_means_Q3$Defense_mean,
+                              "Mericarp Defense (PC2) ",
+                              " "
 )
 
+
+### Position ####
+pca_Position_PC1 <- island_fig(pca_means_Q3,
+                                pca_means_Q3$PC1_bioclimate,
+                                pca_means_Q3$Position_mean,
+                                "Spine Position (PC3)  ",
+                                " ")
+
+pca_Position_PC2 <- island_fig(pca_means_Q3,
+                               pca_means_Q3$PC2_bioclimate,
+                               pca_means_Q3$Position_mean,
+                               "Spine Position (PC3)  ",
+                               " ")
+
+pca_Position_PC4 <- island_fig(pca_means_Q3,
+                               pca_means_Q3$PC4_bioclimate,
+                               pca_means_Q3$Position_mean,
+                               "Spine Position (PC3)  ",
+                               " ")
+
+pca_Position_finch <- island_fig(pca_means_Q3,
+                               pca_means_Q3$finch_beak,
+                               pca_means_Q3$Position_mean,
+                               "Spine Position (PC3)  ",
+                               " ")
+
+position_sel_PC4 <- island_fig(pca_means_Q3,
+                               pca_means_Q3$PC4_bioclimate,
+                               pca_means_Q3$S_Position,
+                               "Spine Position (PC3)",
+                               " ")
+
 ### Combined PCA plots ####
-Q3_pca_size <- ggarrange(pca_size_bio1 + rremove("ylab") + rremove("xlab"),
-                         pca_Defense_bio1 + rremove("ylab") + rremove("xlab"),
-                         pca_Position_bio1 + rremove("ylab") + rremove("xlab"),
-                         #pca_size_bio4 + rremove("ylab") + rremove("xlab"),
-                         #pca_size_bio12 + rremove("ylab") + rremove("xlab"),
+### PC2
+Q3_pca_PC2 <- ggarrange( pca_size_PC2 + rremove("ylab") + rremove("xlab"),
+                         pca_Defense_PC2 + rremove("ylab") + rremove("xlab"),
+                         pca_Position_PC2 + rremove("ylab") + rremove("xlab"),
+                         #pca_Defense_PC4 + rremove("ylab") + rremove("xlab"),
+                         #pca_Position_PC4 + rremove("ylab") + rremove("xlab"),
                          #pca_size_bio15 + rremove("ylab") + rremove("xlab"),
                          #pca_size_beak + rremove("ylab") + rremove("xlab"),
                          common.legend = T,
                          legend = "right",
                          labels = c("A", "B", 
                                     "C"
-                                    #"D"
-                                    #, "E"
+                                    #"D",
+                                    #"E"
                                     ),
                          ncol = 3,
                          nrow = 1)
 
-annotate_figure(Q3_pca_size, left = textGrob("Mean Trait Value", 
-                                             rot = 90, vjust = 1, gp = gpar(cex = 1.5)),
-                bottom = textGrob("Bioclimate Variables (PC1)", gp = gpar(cex = 1.5)))
+mean_trait_PC2 <- annotate_figure(Q3_pca_PC2, left = textGrob("Mean trait value", 
+                                             rot = 90, vjust = 1, gp = gpar(cex = 1.2)),
+                bottom = textGrob("Annual Temperature and Precipitation (PC2)", gp = gpar(cex = 1.2)))
+
+## PC4
+Q3_pca_PC4 <- ggarrange(pca_Position_PC1,
+                        pca_Defense_PC4 + rremove("ylab") + rremove("xlab"),
+                        pca_Position_PC4 + rremove("ylab") + rremove("xlab"),
+                        common.legend = T,
+                        legend = "right",
+                        labels = c("D","E", "F"),
+                        ncol = 3,
+                        nrow = 1)
+
+mean_trait_PC4 <- annotate_figure(Q3_pca_PC4, left = textGrob("Mean trait value", 
+                                            rot = 90, vjust = 1, gp = gpar(cex = 1.2)),
+                bottom = textGrob("Precipitation Seasonality (PC4)", gp = gpar(cex = 1.2)))
 
 
 
+## Combined mean trait bioclimate:
+Q3_trait_comb <- ggarrange(mean_trait_PC2,
+                           mean_trait_PC4,
+                           nrow = 2)
+
+
+## Selection plots
+# Combining Size PC1, PC3 and Spine PC4
+Q3_pca_sel <- ggarrange( size_sel_PC1 + rremove("ylab"),
+                         size_sel_PC3 + rremove("ylab"),
+                         position_sel_PC4 + rremove("ylab"),
+                         common.legend = T,
+                         legend = "right",
+                         labels = c("A", "B", "C"),
+                         ncol = 3,
+                         nrow = 1)
+
+annotate_figure(Q3_pca_sel, left = textGrob("Selection (Closed - Open)", rot = 90, vjust = 1, gp = gpar(cex = 1.2)))
+
+## Finch community plots
+## Combining finch plots Mean Size, Mean Spine Position, Selection Size
+Q3_finch_mean <- ggarrange(pca_size_finch + rremove("ylab") + rremove("xlab"),
+                        pca_Position_finch + rremove("ylab") + rremove("xlab"),
+                        size_sel_finch + rremove("xlab"),
+                        common.legend = T,
+                        legend = "right",
+                        labels = c("A","B", "C"),
+                        ncol = 2,
+                        nrow = 2)
+
+annotate_figure(Q3_finch_mean, left = textGrob("Mean trait value", 
+                                                              rot = 90, vjust = 1, gp = gpar(cex = 1.2)),
+                                  bottom = textGrob("Finch Community", gp = gpar(cex = 1.2)))
+
+                
 
 ## Lower Spine ####
 # Lower spine plots are based on their counts. They don't use the function above.
