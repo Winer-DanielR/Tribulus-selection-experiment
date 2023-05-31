@@ -64,7 +64,7 @@ testResiduals(Size_meanQ3)
 
 ### Results ####
 summary(S_sizeQ3)
-Anova(S_sizeQ3, type = "3")
+Anova(S_sizeQ3, type = "2")
 
 summary(Size_meanQ3)
 Anova(Size_meanQ3, type = "2")
