@@ -190,7 +190,7 @@ emmip(EM_Days_survived_2018_filter, ~ island, CIs = TRUE)
 #### Eaten mericarps ####
 # 
 eaten_Q4 <- glmmTMB(n_eaten ~ Categories + time + Island,
-                    data = MR_ternary,
+                    data = MR_ternary_filter,
                     REML = F,
                     family = "poisson")
  
@@ -206,8 +206,8 @@ diagnostic(resid(eaten_Q4))
 # 
  Anova(eaten_Q4)
 
-EM_eatenQ4 <- emmeans(eaten_Q4, ~ time|Categories, type="response") 
-emmip(EM_eatenQ4, ~ time|Categories, CIs = TRUE)
+EM_eatenQ4 <- emmeans(eaten_Q4, ~ Categories|Island|time, type="response") 
+emmip(EM_eatenQ4, ~ Categories|time, CIs = TRUE)
 
 #### Missing mericarps ####
 # Check if Island in this model should be random. I don't think so.
