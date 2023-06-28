@@ -97,6 +97,7 @@ MR_survival_2019 <- filter(MR_survival, year == "2019")
 Days_survived_2018 <- glmmTMB(Days_survived ~ Categories + island +
                          (1|plate/island) + (1|color) + (1|mark_position/color),
                        data = MR_survival_2018,
+                       family = "poisson",
                        REML = F)
 
 #### Model diagnostics ####
@@ -147,7 +148,7 @@ summary(Days_survived_2018_filter)
 Anova(Days_survived_2018_filter)
 
 #### Emmeans ####
-EM_Days_survived_2018_filter <- emmeans::emmeans(Days_survived_2018_filter, ~ Categories|island, type = "response")
+EM_Days_survived_2018_filter <- emmeans::emmeans(Days_survived_2018_filter, ~ island, type = "response")
 # The emmeans helps me to estimate the projected mean days survived per category.
 # Useful for describing the results. Also it helps me plot the predicted values:
 emmip(EM_Days_survived_2018_filter, ~ island, CIs = TRUE)
@@ -206,8 +207,8 @@ diagnostic(resid(eaten_Q4))
 # 
  Anova(eaten_Q4)
 
-EM_eatenQ4 <- emmeans(eaten_Q4, ~ Categories|Island|time, type="response") 
-emmip(EM_eatenQ4, ~ Categories|time, CIs = TRUE)
+EM_eatenQ4 <- emmeans(eaten_Q4, ~ Categories|Island, type="response") 
+emmip(EM_eatenQ4, ~ Categories|Island, CIs = TRUE)
 
 #### Missing mericarps ####
 # Check if Island in this model should be random. I don't think so.
