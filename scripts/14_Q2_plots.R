@@ -155,10 +155,16 @@ pca_position <- island_fig(pca_means_Q2,
                            "Spine Position (PC3)  ",
                            " ")
 
+pca_position1 <- island_fig(pca_means_Q2,
+                           pca_means_Q2$PC3_mean,
+                           pca_means_Q2$S_PC3,
+                           "Spine Position (PC3)  ",
+                           " ")
+
 ### Combined PCA plots ####
 Q2_pca_plot <- ggarrange(pca_size + rremove("ylab") + rremove("xlab"),
                          pca_defense + rremove("ylab") + rremove("xlab"),
-                         pca_position + rremove("ylab") + rremove("xlab"),
+                         pca_position1 + rremove("ylab") + rremove("xlab"),
                          common.legend = T,
                          legend = "right",
                          labels = c("A", "B", "C"),
