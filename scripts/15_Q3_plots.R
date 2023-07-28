@@ -130,7 +130,7 @@ island_fig <- function(dataset, x, y, title, subtitle)
                                   "Santa Cruz")) +
     labs(
       x = "Precipitation Seasonality (PC4)",
-      y = "Selection (Closed - Open)",
+      y = "Mean Trait Value",
       title = title,
       subtitle = subtitle,
       #color = "Islands"
@@ -202,25 +202,25 @@ pca_Position_PC1 <- island_fig(pca_means_Q3,
 
 pca_Position_PC2 <- island_fig(pca_means_Q3,
                                pca_means_Q3$PC2_bioclimate,
-                               pca_means_Q3$Position_mean,
+                               pca_means_Q3$PC3_mean,
                                "Spine Position (PC3)  ",
                                " ")
 
 pca_Position_PC4 <- island_fig(pca_means_Q3,
                                pca_means_Q3$PC4_bioclimate,
-                               pca_means_Q3$Position_mean,
+                               pca_means_Q3$PC3_mean,
                                "Spine Position (PC3)  ",
                                " ")
 
 pca_Position_finch <- island_fig(pca_means_Q3,
                                pca_means_Q3$finch_beak,
-                               pca_means_Q3$Position_mean,
+                               pca_means_Q3$PC3_mean,
                                "Spine Position (PC3)  ",
                                " ")
 
 position_sel_PC4 <- island_fig(pca_means_Q3,
                                pca_means_Q3$PC4_bioclimate,
-                               pca_means_Q3$S_Position,
+                               pca_means_Q3$S_PC3,
                                "Spine Position (PC3)",
                                " ")
 
