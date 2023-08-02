@@ -100,6 +100,9 @@ Days_survived_2018 <- glmmTMB(Days_survived ~ Categories + island +
                        family = "poisson",
                        REML = F)
 
+# When including the interaction variable the model does not converge
+
+
 #### Model diagnostics ####
 # Residual histograms
 hist(resid(Days_survived_2018), breaks = 50)
@@ -126,10 +129,12 @@ emmip(EM_Days_survived_2018, ~ island, CIs = TRUE)
 ### 2018 filtered treatments ####
 # Filtering the treatments would be useful to describe survival across 2018 and 2019.
 
-Days_survived_2018_filter <- glmmTMB(Days_survived ~ Categories + island +
-                                (1|plate/island) + (1|color) + (1|mark_position/color),
+Days_survived_2018_filter <- glmmTMB(Days_survived ~ Categories + island + island*Categories +
+                                (1|plate/island) + (1|color),
                               data = MR_survival_2018_filter,
                               REML = F)
+
+# Model converged after removing spine position and color random effect
 
 #### Model diagnostics ####
 # Residual histograms
@@ -189,48 +194,50 @@ emmip(EM_Days_survived_2018_filter, ~ island, CIs = TRUE)
 
 ### Ternary all categories #####
 #### Eaten mericarps ####
+# # 
+# eaten_Q4 <- glmmTMB(n_eaten ~ Categories + time + Island + Categories*Island,
+#                     data = MR_ternary,
+#                     REML = F,
+#                     family = "poisson")
+#  
+# # The model dont converge if we include the interaction term
 # 
-eaten_Q4 <- glmmTMB(n_eaten ~ Categories + time + Island,
-                    data = MR_ternary_filter,
-                    REML = F,
-                    family = "poisson")
- 
-##### Model diagnostics ####
-# DHARMa
-testResiduals(eaten_Q4)
-
-# Residual histograms
-diagnostic(resid(eaten_Q4))
-
-# ### Results ####
- summary(eaten_Q4)
+# ##### Model diagnostics ####
+# # DHARMa
+# testResiduals(eaten_Q4)
 # 
- Anova(eaten_Q4)
+# # Residual histograms
+# diagnostic(resid(eaten_Q4))
+# 
+# # ### Results ####
+#  summary(eaten_Q4)
+# # 
+#  Anova(eaten_Q4)
+# 
+# EM_eatenQ4 <- emmeans(eaten_Q4, ~ Categories|Island, type="response") 
+# emmip(EM_eatenQ4, ~ Island, CIs = TRUE)
 
-EM_eatenQ4 <- emmeans(eaten_Q4, ~ Categories|Island, type="response") 
-emmip(EM_eatenQ4, ~ Categories|Island, CIs = TRUE)
-
-#### Missing mericarps ####
-# Check if Island in this model should be random. I don't think so.
-Missing_Q4 <- glmmTMB(n_missing ~ Categories + time + Island,
-                      data = MR_ternary,
-                      REML = F,
-                      family = "poisson")
- 
-##### Model diagnostics ####
-# DHARMa
-testResiduals(Missing_Q4)
-
-# Residual histograms
-diagnostic(resid(Missing_Q4))
-
-##### Results ####
-summary(Missing_Q4)
-
-Anova(Missing_Q4)
-
-EM_missingQ4 <- emmeans(Missing_Q4, ~ Categories|Island, type="response") 
-emmip(EM_missingQ4, ~ Island, CIs = TRUE)
+# #### Missing mericarps ####
+# # Check if Island in this model should be random. I don't think so.
+# Missing_Q4 <- glmmTMB(n_missing ~ Categories + time + Island + Categories*Island,
+#                       data = MR_ternary,
+#                       REML = F,
+#                       family = "poisson")
+#  
+# ##### Model diagnostics ####
+# # DHARMa
+# testResiduals(Missing_Q4)
+# 
+# # Residual histograms
+# diagnostic(resid(Missing_Q4))
+# 
+# ##### Results ####
+# summary(Missing_Q4)
+# 
+# Anova(Missing_Q4)
+# 
+# EM_missingQ4 <- emmeans(Missing_Q4, ~ Categories|Island, type="response") 
+# emmip(EM_missingQ4, ~ Island, CIs = TRUE)
 
 #### Uneaten mericarps ####
 #  Uneaten mericarps are the same as survived mericarps that are being tested in the 
@@ -260,7 +267,7 @@ emmip(EM_missingQ4, ~ Island, CIs = TRUE)
 # We use filtered caetgories to match 2018 and 2019 experiments.
 #### Eaten mericarps ####
 
-eaten_Q4_filter <- glmmTMB(n_eaten ~ Categories + time + Island,
+eaten_Q4_filter <- glmmTMB(n_eaten ~ Categories + time + Island + Categories*Island,
                     data = MR_ternary_filter,
                     REML = F,
                     family = "poisson")
@@ -277,8 +284,8 @@ summary(eaten_Q4_filter)
 # 
 Anova(eaten_Q4_filter)
 
-EM_eatenQ4_filter <- emmeans(eaten_Q4_filter, ~ time|Categories, type="response") 
-emmip(eaten_Q4_filter, ~ time|Categories, CIs = TRUE)
+EM_eatenQ4_filter <- emmeans(eaten_Q4_filter, ~ Island, type="response") 
+emmip(eaten_Q4_filter, ~ Island, CIs = TRUE)
 
 #### Missing mericarps ####
 # Check if Island in this model should be random. I don't think so.
