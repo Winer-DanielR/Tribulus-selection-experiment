@@ -8,7 +8,6 @@
 # The second dataset is the life span data, where we estimated the life span of survived individual mericarps and follow their
 # survival over time. Larger lifespan scores means this individual mericarps survived more. I also have days passed as another response variable
 # 
-# This is a tentative analysis, perhaps we could use something else, like the PC scores.
 
 # Loading ternary dataset ####
 MR_ternary <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Question 4/Island_ternary_dataset.csv")
@@ -97,7 +96,7 @@ MR_survival_2019 <- filter(MR_survival, year == "2019")
 Days_survived_2018 <- glmmTMB(Days_survived ~ Categories + island +
                          (1|plate/island) + (1|color) + (1|mark_position/color),
                        data = MR_survival_2018,
-                       family = "poisson",
+                       family = "gaussian",
                        REML = F)
 
 # When including the interaction variable the model does not converge
@@ -123,7 +122,7 @@ Anova(Days_survived_2018)
 EM_Days_survived_2018 <- emmeans::emmeans(Days_survived_2018, ~ Categories|island, type = "response")
 # The emmeans helps me to estimate the projected mean days survived per category.
 # Useful for describing the results. Also it helps me plot the predicted values:
-emmip(EM_Days_survived_2018, ~ island, CIs = TRUE)
+emmip(EM_Days_survived_2018, ~ Categories, CIs = TRUE)
 
 
 ### 2018 filtered treatments ####

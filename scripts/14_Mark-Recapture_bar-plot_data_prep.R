@@ -357,3 +357,4 @@ ggplot(Cruz_uneaten_lower_spines) +
   # direction = 1) +
   labs(x = "Time", y = "Frequency Uneaten Mericarps (%)", title = "Santa Cruz Lower Spines") +
   plot_theme
+
