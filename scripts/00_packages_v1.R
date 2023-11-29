@@ -1,7 +1,7 @@
 #################################################################
 ############    Tribulus Selection experiments     ##############
 #################################################################
- # By Daniel Reyes Corral
+# By Daniel Reyes Corral
 
 # This script holds the packages used for analysis
 
