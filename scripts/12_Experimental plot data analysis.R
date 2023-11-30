@@ -105,7 +105,24 @@ biplot2
 # The main plot now is exploratory using length and comparing between
 # Treatments and years (start and end of experiment)
 
+## Theme ####
 
+plot_theme <-     theme(axis.line = element_line(linetype = "solid", size = 1), 
+                        axis.title = element_text(size = 12, 
+                                                  #face = "bold"
+                        ),
+                        axis.text = element_text(size = 11), 
+                        #axis.text.x = element_text(size = 8), 
+                        plot.title = element_text(size = 12, face = "bold", hjust = 0),
+                        text = element_text(family = "Noto Sans"),
+                        legend.text = element_text(size = 11), 
+                        legend.title = element_text(size = 12, face = "bold"),
+                        legend.position = "right",
+                        panel.background = element_rect(fill = NA),
+                        legend.background = element_rect(fill = NA, size = 0),
+                        strip.text = element_text(size = 10, face = "bold"),
+                        strip.background = element_blank(),
+                        panel.spacing = unit(1, "cm")
 
 ## Length ####
 data_plot_filter %>%
