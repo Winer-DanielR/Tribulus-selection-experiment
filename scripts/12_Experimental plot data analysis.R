@@ -12,14 +12,19 @@
 
 # Data loading ####
 
+<<<<<<< HEAD
 general_set <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Experimental plot/Experimental_plots.csv")
 general_set <- arrange(general_set, by = year, parcel, mericarp)
+=======
+exp_plot_set <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Experimental plot/Experimental_plots.csv")
+>>>>>>> a97fa1bf8245dada94e83a12045c4a12dcc5566e
 
 # This dataset is already filtered, we removed the average group treatment
 
 
 # Data prepping ####
 # Year, island, population and survival are going to be grouping factors
+<<<<<<< HEAD
 general_set <- general_set %>% mutate_at(vars(year, parcel, treatment, eaten, germinated), list(factor))
 
 # Checking outliers in the dataset
@@ -110,22 +115,54 @@ biplot2
 data_plot_filter %>%
   filter(!(treatment %in% "Two_spines")) %>%
   ggplot() +
+=======
+exp_plot_set <- exp_plot_set %>% mutate_at(vars(year, parcel, treatment, eaten, germinated), list(factor))
+
+
+# Plots ####
+# The main plot now is exploratory using length and comparing between
+# Treatments and years (start and end of experiment)
+
+ggplot(exp_plot_set) +
+  aes(x = length, fill = year, group = year) +
+  geom_density(adjust = 1L) +
+  scale_fill_brewer(palette = "Dark2", 
+                    direction = 1) +
+  labs(x = "Length (mm)", y = "Density", title = "Mericarp Length", fill = "Year") +
+  theme_minimal() +
+  theme(plot.title = element_text(size = 15L, face = "bold")) +
+  facet_grid(vars(treatment), 
+             vars())
+
+
+ggplot(exp_plot_set) +
+>>>>>>> a97fa1bf8245dada94e83a12045c4a12dcc5566e
  aes(x = length, fill = treatment, group = treatment) +
  geom_density(adjust = 1L) +
  scale_fill_brewer(palette = "Dark2", direction = 1) +
  labs(x = "Length (mm)", y = "Density", title = "Mericarp Length", 
  fill = "Plot Group") +
+<<<<<<< HEAD
  theme_transparent() +
  facet_grid(vars(year), vars())
 
 
 data_plot_filter %>%
+=======
+ theme_minimal() +
+ theme(plot.title = element_text(size = 15L, face = "bold")) +
+ facet_grid(vars(year), vars())
+
+
+exp_plot_set %>%
+>>>>>>> a97fa1bf8245dada94e83a12045c4a12dcc5566e
  filter(!(treatment %in% "Two_spines")) %>%
  ggplot() +
  aes(x = length, fill = treatment) +
  geom_density(adjust = 1L) +
  scale_fill_brewer(palette = "Dark2", 
  direction = 1) +
+<<<<<<< HEAD
   labs(x = "Length (mm)", y = "Density", title = "Mericarp Length") +
  theme_transparent() +
  theme(plot.title = element_text(size = 15L, face = "bold")) +
@@ -140,6 +177,20 @@ data_plot_filter %>%
  scale_fill_brewer(palette = "Dark2", 
  direction = 1) +
  labs(x = "Lower Spine", y = "Density", title = "Lower Spine", fill = "Group") +
+=======
+ theme_minimal() +
+ facet_grid(vars(year), vars())
+
+
+exp_plot_set %>%
+ #filter(!(treatment %in% "Two_spines")) %>%
+ ggplot() +
+ aes(x = longest_spine, fill = treatment) +
+ geom_density(adjust = 1L) +
+ scale_fill_brewer(palette = "Dark2", 
+ direction = 1) +
+ labs(x = "Spine Tip Distance", y = "Density", title = "Spine length", fill = "Group") +
+>>>>>>> a97fa1bf8245dada94e83a12045c4a12dcc5566e
  theme_minimal() +
  theme(plot.title = element_text(size = 15L, face = "bold")) +
  facet_grid(vars(year), 
