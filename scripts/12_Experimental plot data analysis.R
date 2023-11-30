@@ -60,7 +60,7 @@ data_plot_filter <- bind_cols(data_plot_filter, scores)
 fviz_pca_var(plot_PCA, col.var = "contrib",
              gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
              repel = T,
-             axes = c(1,3)) # plot axes
+             axes = c(2,3)) # plot axes
 
 
 ### Theme individual Biplot ####
@@ -108,9 +108,7 @@ biplot2
 ## Theme ####
 
 plot_theme <-     theme(axis.line = element_line(linetype = "solid", size = 1), 
-                        axis.title = element_text(size = 12, 
-                                                  #face = "bold"
-                        ),
+                        axis.title = element_text(size = 12),
                         axis.text = element_text(size = 11), 
                         #axis.text.x = element_text(size = 8), 
                         plot.title = element_text(size = 12, face = "bold", hjust = 0),
@@ -123,80 +121,139 @@ plot_theme <-     theme(axis.line = element_line(linetype = "solid", size = 1),
                         strip.text = element_text(size = 10, face = "bold"),
                         strip.background = element_blank(),
                         panel.spacing = unit(1, "cm")
+) 
+
 
 ## Length ####
 data_plot_filter %>%
-  filter(!(treatment %in% "Two_spines")) %>%
-  ggplot() +
-exp_plot_set <- exp_plot_set %>% mutate_at(vars(year, parcel, treatment, eaten, germinated), list(factor))
-
-
-# Plots ####
-# The main plot now is exploratory using length and comparing between
-# Treatments and years (start and end of experiment)
-
-ggplot(exp_plot_set) +
-  aes(x = length, fill = year, group = year) +
-  geom_density(adjust = 1L) +
-  scale_fill_brewer(palette = "Dark2", 
-                    direction = 1) +
-  labs(x = "Length (mm)", y = "Density", title = "Mericarp Length", fill = "Year") +
-  theme_minimal() +
-  theme(plot.title = element_text(size = 15L, face = "bold")) +
-  facet_grid(vars(treatment), 
-             vars())
-
-
-ggplot(exp_plot_set) +
- aes(x = length, fill = treatment, group = treatment) +
- geom_density(adjust = 1L) +
- scale_fill_brewer(palette = "Dark2", direction = 1) +
- labs(x = "Length (mm)", y = "Density", title = "Mericarp Length", 
- fill = "Plot Group") +
- theme_transparent() +
- facet_grid(vars(year), vars())
-
-data_plot_filter %>%
- theme_minimal() +
- theme(plot.title = element_text(size = 15L, face = "bold")) +
- facet_grid(vars(year), vars())
-
-
-exp_plot_set %>%
  filter(!(treatment %in% "Two_spines")) %>%
  ggplot() +
  aes(x = length, fill = treatment) +
- geom_density(adjust = 1L) +
+ geom_density(adjust = 1L, size = 1) +
  scale_fill_brewer(palette = "Dark2", 
  direction = 1) +
-  labs(x = "Length (mm)", y = "Density", title = "Mericarp Length") +
- theme_transparent() +
- theme(plot.title = element_text(size = 15L, face = "bold")) +
- facet_grid(vars(year), vars())
-
-
-data_plot_filter %>%
- #filter(!(treatment %in% "Two_spines")) %>%
- ggplot() +
- aes(x = spine_position, fill = treatment) +
- geom_density(adjust = 1L) +
- scale_fill_brewer(palette = "Dark2", 
- direction = 1) +
- labs(x = "Lower Spine", y = "Density", title = "Lower Spine", fill = "Group") +
- theme_minimal() +
- facet_grid(vars(year), vars())
-
-
-exp_plot_set %>%
- #filter(!(treatment %in% "Two_spines")) %>%
- ggplot() +
- aes(x = longest_spine, fill = treatment) +
- geom_density(adjust = 1L) +
- scale_fill_brewer(palette = "Dark2", 
- direction = 1) +
- labs(x = "Spine Tip Distance", y = "Density", title = "Spine length", fill = "Group") +
- theme_minimal() +
- theme(plot.title = element_text(size = 15L, face = "bold")) +
+ labs(x = "Length (mm)", y = "Density", title = "Mericarp Length", fill = "Groups") +
+ plot_theme +
+ theme(plot.title = element_text(size = 18L, face = "bold"), axis.title.y = element_text(size = 15L, 
+ face = "bold"), axis.title.x = element_text(size = 15L, face = "bold")) +
  facet_grid(vars(year), 
  vars())
 
+## Width ####
+data_plot_filter %>%
+  filter(!(treatment %in% "Two_spines")) %>%
+  ggplot() +
+  aes(x = width, fill = treatment) +
+  geom_density(adjust = 1L, size = 1) +
+  scale_fill_brewer(palette = "Dark2", 
+                    direction = 1) +
+  labs(x = "Width (mm)", y = "Density", title = "Mericarp Width", fill = "Groups") +
+  plot_theme +
+  theme(plot.title = element_text(size = 18L, face = "bold"), axis.title.y = element_text(size = 15L,                                                                            face = "bold"), axis.title.x = element_text(size = 15L, face = "bold")) +
+  facet_grid(vars(year), 
+             vars())
+
+## Depth ####
+data_plot_filter %>%
+  filter(!(treatment %in% "Two_spines")) %>%
+  ggplot() +
+  aes(x = depth, fill = treatment) +
+  geom_density(adjust = 1L, size = 1) +
+  scale_fill_brewer(palette = "Dark2", 
+                    direction = 1) +
+  labs(x = "Depth (mm)", y = "Density", title = "Mericarp Depth", fill = "Groups") +
+  plot_theme +
+  theme(plot.title = element_text(size = 18L, face = "bold"), axis.title.y = element_text(size = 15L,                                                                            face = "bold"), axis.title.x = element_text(size = 15L, face = "bold")) +
+  facet_grid(vars(year), 
+             vars())
+
+## Longest spine ####
+data_plot_filter %>%
+  filter(!(treatment %in% "Two_spines")) %>%
+  ggplot() +
+  aes(x = longest_spine, fill = treatment) +
+  geom_density(adjust = 1L, size = 1) +
+  scale_fill_brewer(palette = "Dark2", 
+                    direction = 1) +
+  labs(x = "Longest spine (mm)", y = "Density", title = "Longest spine", fill = "Groups") +
+  plot_theme +
+  theme(plot.title = element_text(size = 18L, face = "bold"), axis.title.y = element_text(size = 15L,                                                                            face = "bold"), axis.title.x = element_text(size = 15L, face = "bold")) +
+  facet_grid(vars(year), 
+             vars())
+
+## Spine position ####
+data_plot_filter %>%
+  filter(!(treatment %in% "Two_spines")) %>%
+  ggplot() +
+  aes(x = spine_position, fill = treatment) +
+  geom_density(adjust = 1L, size = 1) +
+  scale_fill_brewer(palette = "Dark2", 
+                    direction = 1) +
+  labs(x = "Spine position", y = "Density", title = "Spine Position", fill = "Groups") +
+  plot_theme +
+  theme(plot.title = element_text(size = 18L, face = "bold"), axis.title.y = element_text(size = 15L,                                                                            face = "bold"), axis.title.x = element_text(size = 15L, face = "bold")) +
+  facet_grid(vars(year), 
+             vars())
+
+## Lower spine ####
+data_plot_filter %>%
+  filter(!(treatment %in% "Two_spines")) %>%
+  ggplot() +
+  aes(x = lower_spine, fill = treatment) +
+  geom_density(adjust = 1L, size = 1) +
+  scale_fill_brewer(palette = "Dark2", 
+                    direction = 1) +
+  labs(x = "Lower Spine", y = "Density", title = "Lower Spine", fill = "Groups") +
+  plot_theme +
+  theme(plot.title = element_text(size = 18L, face = "bold"), axis.title.y = element_text(size = 15L,                                                                            face = "bold"), axis.title.x = element_text(size = 15L, face = "bold")) +
+  facet_grid(vars(year), 
+             vars())
+
+
+
+
+
+## PC1 Density Mericarp Size
+data_plot_filter %>%
+  #filter(!(treatment %in% "Two_spines")) %>%
+  ggplot() +
+  aes(x = PC1, fill = treatment) +
+  geom_density(adjust = 1L, size = 1) +
+  scale_fill_brewer(palette = "Dark2", 
+                    direction = 1) +
+  labs(x = "Size (PC1)", y = "Density", title = "Mericarp Size (PC1)", fill = "Groups") +
+  plot_theme +
+  theme(plot.title = element_text(size = 18L, face = "bold"), axis.title.y = element_text(size = 15L,                                                                            face = "bold"), axis.title.x = element_text(size = 15L, face = "bold")) +
+  facet_grid(vars(year), 
+             vars())
+
+## PC2 Lower spines (NEG)
+data_plot_filter %>%
+  #filter(!(treatment %in% "Two_spines")) %>%
+  ggplot() +
+  aes(x = PC2, fill = treatment) +
+  geom_density(adjust = 1L, size = 1) +
+  scale_fill_brewer(palette = "Dark2", 
+                    direction = 1) +
+  labs(x = "Lower Spines (PC2)", y = "Density", title = "Lower Spines (PC2)", fill = "Groups") +
+  plot_theme +
+  theme(plot.title = element_text(size = 18L, face = "bold"), axis.title.y = element_text(size = 15L,                                                                            face = "bold"), axis.title.x = element_text(size = 15L, face = "bold")) +
+  facet_grid(vars(year), 
+             vars())
+# PC2 is mostly associated with the presence of lower spines towards the negative end of the axis.
+# In this one I've included the two spine treatment that lacks lower spines and you can see it still holds
+# 
+## PC3 Spine position and Defense
+data_plot_filter %>%
+  #filter(!(treatment %in% "Two_spines")) %>%
+  ggplot() +
+  aes(x = PC3, fill = treatment) +
+  geom_density(adjust = 1L, size = 1) +
+  scale_fill_brewer(palette = "Dark2", 
+                    direction = 1) +
+  labs(x = "Spine Position and Defense (PC3)", y = "Density", title = "Spine Position and Defense", fill = "Groups") +
+  plot_theme +
+  theme(plot.title = element_text(size = 18L, face = "bold"), axis.title.y = element_text(size = 15L,                                                                            face = "bold"), axis.title.x = element_text(size = 15L, face = "bold")) +
+  facet_grid(vars(year), 
+             vars())
+# PC3 is associated with spine position and spine length (POS and NEG ends respectively)
