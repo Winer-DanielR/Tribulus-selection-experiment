@@ -67,7 +67,7 @@ fviz_pca_var(plot_PCA, col.var = "contrib",
 biplot2 <- fviz_pca_biplot(plot_PCA,
                            # Fill individuals by groups
                            title = "PCA Experimental Plots",
-                           axes = c(2,3),
+                           axes = c(1,2),
                            geom.ind = "point",
                            pointshape = c(21),
                            #label = "none",
@@ -125,7 +125,7 @@ plot_theme <-     theme(axis.line = element_line(linetype = "solid", size = 1),
 
 
 ## Length ####
-data_plot_filter %>%
+length <- data_plot_filter %>%
  filter(!(treatment %in% "Two_spines")) %>%
  ggplot() +
  aes(x = length, fill = treatment) +
@@ -134,13 +134,14 @@ data_plot_filter %>%
  direction = 1) +
  labs(x = "Length (mm)", y = "Density", title = "Mericarp Length", fill = "Groups") +
  plot_theme +
- theme(plot.title = element_text(size = 18L, face = "bold"), axis.title.y = element_text(size = 15L, 
+ theme(strip.text.y = element_blank()) +
+ theme(plot.title = element_text(size = 15L, face = "bold"), axis.title.y = element_text(size = 15L, 
  face = "bold"), axis.title.x = element_text(size = 15L, face = "bold")) +
  facet_grid(vars(year), 
  vars())
 
 ## Width ####
-data_plot_filter %>%
+width <- data_plot_filter %>%
   filter(!(treatment %in% "Two_spines")) %>%
   ggplot() +
   aes(x = width, fill = treatment) +
@@ -149,12 +150,13 @@ data_plot_filter %>%
                     direction = 1) +
   labs(x = "Width (mm)", y = "Density", title = "Mericarp Width", fill = "Groups") +
   plot_theme +
-  theme(plot.title = element_text(size = 18L, face = "bold"), axis.title.y = element_text(size = 15L,                                                                            face = "bold"), axis.title.x = element_text(size = 15L, face = "bold")) +
+  theme(strip.text.y = element_blank()) +
+  theme(plot.title = element_text(size = 15L, face = "bold"), axis.title.y = element_text(size = 15L,                                                                            face = "bold"), axis.title.x = element_text(size = 15L, face = "bold")) +
   facet_grid(vars(year), 
              vars())
 
 ## Depth ####
-data_plot_filter %>%
+depth <- data_plot_filter %>%
   filter(!(treatment %in% "Two_spines")) %>%
   ggplot() +
   aes(x = depth, fill = treatment) +
@@ -163,12 +165,12 @@ data_plot_filter %>%
                     direction = 1) +
   labs(x = "Depth (mm)", y = "Density", title = "Mericarp Depth", fill = "Groups") +
   plot_theme +
-  theme(plot.title = element_text(size = 18L, face = "bold"), axis.title.y = element_text(size = 15L,                                                                            face = "bold"), axis.title.x = element_text(size = 15L, face = "bold")) +
+  theme(plot.title = element_text(size = 15L, face = "bold"), axis.title.y = element_text(size = 15L,                                                                            face = "bold"), axis.title.x = element_text(size = 15L, face = "bold")) +
   facet_grid(vars(year), 
              vars())
 
 ## Longest spine ####
-data_plot_filter %>%
+spine <- data_plot_filter %>%
   filter(!(treatment %in% "Two_spines")) %>%
   ggplot() +
   aes(x = longest_spine, fill = treatment) +
@@ -177,12 +179,13 @@ data_plot_filter %>%
                     direction = 1) +
   labs(x = "Longest spine (mm)", y = "Density", title = "Longest spine", fill = "Groups") +
   plot_theme +
-  theme(plot.title = element_text(size = 18L, face = "bold"), axis.title.y = element_text(size = 15L,                                                                            face = "bold"), axis.title.x = element_text(size = 15L, face = "bold")) +
+  theme(strip.text.y = element_blank()) +
+  theme(plot.title = element_text(size = 15L, face = "bold"), axis.title.y = element_text(size = 15L,                                                                            face = "bold"), axis.title.x = element_text(size = 15L, face = "bold")) +
   facet_grid(vars(year), 
              vars())
 
 ## Spine position ####
-data_plot_filter %>%
+position <- data_plot_filter %>%
   filter(!(treatment %in% "Two_spines")) %>%
   ggplot() +
   aes(x = spine_position, fill = treatment) +
@@ -191,12 +194,12 @@ data_plot_filter %>%
                     direction = 1) +
   labs(x = "Spine position", y = "Density", title = "Spine Position", fill = "Groups") +
   plot_theme +
-  theme(plot.title = element_text(size = 18L, face = "bold"), axis.title.y = element_text(size = 15L,                                                                            face = "bold"), axis.title.x = element_text(size = 15L, face = "bold")) +
+  theme(plot.title = element_text(size = 15L, face = "bold"), axis.title.y = element_text(size = 15L,                                                                            face = "bold"), axis.title.x = element_text(size = 15L, face = "bold")) +
   facet_grid(vars(year), 
              vars())
 
 ## Lower spine ####
-data_plot_filter %>%
+lower <- data_plot_filter %>%
   filter(!(treatment %in% "Two_spines")) %>%
   ggplot() +
   aes(x = lower_spine, fill = treatment) +
@@ -205,7 +208,8 @@ data_plot_filter %>%
                     direction = 1) +
   labs(x = "Lower Spine", y = "Density", title = "Lower Spine", fill = "Groups") +
   plot_theme +
-  theme(plot.title = element_text(size = 18L, face = "bold"), axis.title.y = element_text(size = 15L,                                                                            face = "bold"), axis.title.x = element_text(size = 15L, face = "bold")) +
+  theme(strip.text.y = element_blank()) +
+  theme(plot.title = element_text(size = 15L, face = "bold"), axis.title.y = element_text(size = 15L,                                                                            face = "bold"), axis.title.x = element_text(size = 15L, face = "bold")) +
   facet_grid(vars(year), 
              vars())
 
@@ -214,7 +218,7 @@ data_plot_filter %>%
 
 
 ## PC1 Density Mericarp Size
-data_plot_filter %>%
+PC1 <- data_plot_filter %>%
   #filter(!(treatment %in% "Two_spines")) %>%
   ggplot() +
   aes(x = PC1, fill = treatment) +
@@ -223,12 +227,13 @@ data_plot_filter %>%
                     direction = 1) +
   labs(x = "Size (PC1)", y = "Density", title = "Mericarp Size (PC1)", fill = "Groups") +
   plot_theme +
+  theme(strip.text.y = element_blank()) +
   theme(plot.title = element_text(size = 18L, face = "bold"), axis.title.y = element_text(size = 15L,                                                                            face = "bold"), axis.title.x = element_text(size = 15L, face = "bold")) +
   facet_grid(vars(year), 
              vars())
 
 ## PC2 Lower spines (NEG)
-data_plot_filter %>%
+PC2 <- data_plot_filter %>%
   #filter(!(treatment %in% "Two_spines")) %>%
   ggplot() +
   aes(x = PC2, fill = treatment) +
@@ -237,6 +242,7 @@ data_plot_filter %>%
                     direction = 1) +
   labs(x = "Lower Spines (PC2)", y = "Density", title = "Lower Spines (PC2)", fill = "Groups") +
   plot_theme +
+  theme(strip.text.y = element_blank()) +
   theme(plot.title = element_text(size = 18L, face = "bold"), axis.title.y = element_text(size = 15L,                                                                            face = "bold"), axis.title.x = element_text(size = 15L, face = "bold")) +
   facet_grid(vars(year), 
              vars())
@@ -244,7 +250,7 @@ data_plot_filter %>%
 # In this one I've included the two spine treatment that lacks lower spines and you can see it still holds
 # 
 ## PC3 Spine position and Defense
-data_plot_filter %>%
+PC3 <- data_plot_filter %>%
   #filter(!(treatment %in% "Two_spines")) %>%
   ggplot() +
   aes(x = PC3, fill = treatment) +
@@ -257,3 +263,33 @@ data_plot_filter %>%
   facet_grid(vars(year), 
              vars())
 # PC3 is associated with spine position and spine length (POS and NEG ends respectively)
+# 
+# 
+# 
+
+## Combined PCA plots ####
+Ind_traits <- ggarrange(length + rremove("ylab") + rremove("xlab"),
+                         width + rremove("ylab") + rremove("xlab"),
+                         depth + rremove("ylab") + rremove("xlab"),
+                         spine + rremove("ylab") + rremove("xlab"),
+                         lower + rremove("ylab") + rremove("xlab"),
+                         position + rremove("ylab") + rremove("xlab"),
+                         common.legend = T,
+                         legend = "right",
+                         labels = c("A", "B", "C", "E", "F", "G"),
+                         ncol = 3,
+                         nrow = 2)
+
+annotate_figure(Ind_traits, left = textGrob("Density", rot = 90, vjust = 1, gp = gpar(cex = 1.5)),
+                bottom = textGrob("Trait", gp = gpar(cex = 1.5)))
+
+PCA_density <- ggarrange(PC1 + rremove("ylab") + rremove("xlab"),
+                        PC2 + rremove("ylab") + rremove("xlab"),
+                        PC3 + rremove("ylab") + rremove("xlab"),
+                        common.legend = T,
+                        legend = "right",
+                        labels = c("A", "B", "C"),
+                        ncol = 3,
+                        nrow = 1)
+annotate_figure(PCA_density, left = textGrob("Density", rot = 90, vjust = 1, gp = gpar(cex = 1.5)),
+                bottom = textGrob("PC Axis", gp = gpar(cex = 1.5)))
