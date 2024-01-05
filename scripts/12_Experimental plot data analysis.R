@@ -15,13 +15,11 @@
 general_set <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Experimental plot/Experimental_plots.csv")
 general_set <- arrange(general_set, by = year, parcel, mericarp)
 
-
 # This dataset is already filtered, we removed the average group treatment
-
 
 # Data prepping ####
 # Year, island, population and survival are going to be grouping factors
-general_set <- general_set %>% mutate_at(vars(year, parcel, treatment, eaten, germinated), list(factor))
+general_set <- general_set %>% mutate_at(vars(year, parcel, treatment, eaten, germinated,lower_spine), list(factor))
 
 # Checking outliers in the dataset
 # Depth has a couple of outliers larger than 9.
@@ -31,6 +29,90 @@ data_plot_filter <- filter(general_set, !depth > 9)
 data_plot_filter <- filter(data_plot_filter, !longest_spine > 10)
 
 # 4 samples removed that had potential outliers.
+
+# Data summary ####
+# Here is a data summary of each treatment
+
+data_plot_filter %>% group_by(treatment,year) %>%
+  summarise(mean_treatment = mean(depth, na.rm = T),
+            sd_treatment = sd(depth, na.rm = T),
+            count_treatmet = n())
+
+# The data summary was included in the methods section of the paper.
+
+# Models ####
+# These models are per trait, focusing only on the end of the experiment.
+# First, we filter the dataset to use only the 2023 data
+# then, for size traits (length, depth and width) we use the large and small treatments
+# For lower spines, we use all treatments.
+
+end_exp_data <- filter(data_plot_filter, year == "2023") # This dataset filters out the mericarps at the start of the experiment
+
+spine_data <- end_exp_data # I copy the previous dataset to edit the spine categories
+
+spine_data$treatment <- recode_factor(spine_data$treatment,
+                                      Small = "Four_spines",
+                                      Large = "Four_spines",
+                                      Two_spines = "Two_spines")
+# This renames the treatment category into four spines for large and small mericarps and two spines
+# This dataset is used for the spine analysis
+
+size_data <- filter(end_exp_data, !treatment == "Two_spines") 
+# This dataset is used for size analysis
+
+## Size analysis ####
+### Length ####
+length_model <- glmmTMB(length ~ treatment + (1|parcel),
+                        data = size_data,
+                        family = "gaussian")
+
+# Model fit
+testResiduals(length_model)
+
+summary(length_model)
+Anova(length_model)
+# Treatment is significant for length at the end of the experiment,
+# meaning that length differences are still hold suggesting a strong genetic component
+# The difference is at least 1 mm between small and large mericarps the intercept is 7.56
+
+### Depth ####
+depth_model <- glmmTMB(depth ~ treatment + (1|parcel),
+                        data = size_data,
+                        family = "gaussian")
+
+# Model fit
+testResiduals(depth_model)
+
+summary(depth_model)
+Anova(depth_model)
+# Depth is also significant between treatments, that's interesting
+# Is barely significant, the difference is -0.29 mm between small and large mericarps
+
+### Width ####
+width_model <- glmmTMB(width ~ treatment + (1|parcel),
+                       data = size_data,
+                       family = "gaussian")
+
+# Model fit
+testResiduals(width_model)
+
+summary(width_model)
+Anova(width_model)
+# Width is not significant, meaning that the differences at the start
+# of the experiment were lost at the end. Suggesting not a weak genetic component
+
+## Spine analysis ####
+
+lower_spine_model <- glmmTMB(lower_spine ~ treatment + (1|parcel),
+                             data = spine_data,
+                             family = "binomial")
+
+# Model fit
+testResiduals(lower_spine_model)
+
+summary(lower_spine_model)
+Anova(lower_spine_model)
+
 
 # PCA data preparation ####
 
