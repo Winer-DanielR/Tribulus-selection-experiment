@@ -28,6 +28,14 @@ general_set <- general_set %>% mutate_at(vars(year, parcel, treatment, eaten, ge
 data_plot_filter <- filter(general_set, !depth > 9)
 data_plot_filter <- filter(data_plot_filter, !longest_spine > 10)
 
+# Create a new column with spine treatment categories
+# four and two spines
+
+data_plot_filter$spine_treatment <- recode_factor(data_plot_filter$treatment,
+                                      Small = "Four_spines",
+                                      Large = "Four_spines",
+                                      Two_spines = "Two_spines")
+
 # 4 samples removed that had potential outliers.
 
 # Data summary ####
@@ -102,6 +110,7 @@ Anova(width_model)
 # of the experiment were lost at the end. Suggesting not a weak genetic component
 
 ## Spine analysis ####
+#### Lower spines ####
 
 lower_spine_model <- glmmTMB(lower_spine ~ treatment + (1|parcel),
                              data = spine_data,
@@ -112,7 +121,7 @@ testResiduals(lower_spine_model)
 
 summary(lower_spine_model)
 Anova(lower_spine_model)
-
+# Spine treatments are significant meaning that at the end of the experiment the presence of four or two spines is maintained
 
 # PCA data preparation ####
 
@@ -183,7 +192,7 @@ biplot2 <- fviz_pca_biplot(plot_PCA,
 biplot2
 
 
-# Individual Plots ####
+# Individual trait figures ####
 # The main plot now is exploratory using length and comparing between
 # Treatments and years (start and end of experiment)
 
@@ -205,8 +214,8 @@ plot_theme <-     theme(axis.line = element_line(linetype = "solid", size = 1),
                         panel.spacing = unit(1, "cm")
 ) 
 
-
-## Length ####
+## Density plots ####
+### Length ####
 length <- data_plot_filter %>%
  filter(!(treatment %in% "Two_spines")) %>%
  ggplot() +
@@ -222,7 +231,7 @@ length <- data_plot_filter %>%
  facet_grid(vars(year), 
  vars())
 
-## Width ####
+### Width ####
 width <- data_plot_filter %>%
   filter(!(treatment %in% "Two_spines")) %>%
   ggplot() +
@@ -237,7 +246,7 @@ width <- data_plot_filter %>%
   facet_grid(vars(year), 
              vars())
 
-## Depth ####
+### Depth ####
 depth <- data_plot_filter %>%
   filter(!(treatment %in% "Two_spines")) %>%
   ggplot() +
@@ -251,51 +260,18 @@ depth <- data_plot_filter %>%
   facet_grid(vars(year), 
              vars())
 
-## Longest spine ####
-spine <- data_plot_filter %>%
-  filter(!(treatment %in% "Two_spines")) %>%
-  ggplot() +
-  aes(x = longest_spine, fill = treatment) +
-  geom_density(adjust = 1L, size = 1) +
-  scale_fill_brewer(palette = "Dark2", 
-                    direction = 1) +
-  labs(x = "Longest spine (mm)", y = "Density", title = "Longest spine", fill = "Groups") +
-  plot_theme +
-  theme(strip.text.y = element_blank()) +
-  theme(plot.title = element_text(size = 15L, face = "bold"), axis.title.y = element_text(size = 15L,                                                                            face = "bold"), axis.title.x = element_text(size = 15L, face = "bold")) +
-  facet_grid(vars(year), 
-             vars())
-
-## Spine position ####
-position <- data_plot_filter %>%
-  filter(!(treatment %in% "Two_spines")) %>%
-  ggplot() +
-  aes(x = spine_position, fill = treatment) +
-  geom_density(adjust = 1L, size = 1) +
-  scale_fill_brewer(palette = "Dark2", 
-                    direction = 1) +
-  labs(x = "Spine position", y = "Density", title = "Spine Position", fill = "Groups") +
-  plot_theme +
-  theme(plot.title = element_text(size = 15L, face = "bold"), axis.title.y = element_text(size = 15L,                                                                            face = "bold"), axis.title.x = element_text(size = 15L, face = "bold")) +
-  facet_grid(vars(year), 
-             vars())
-
-## Lower spine ####
-lower <- data_plot_filter %>%
-  filter(!(treatment %in% "Two_spines")) %>%
-  ggplot() +
-  aes(x = lower_spine, fill = treatment) +
-  geom_density(adjust = 1L, size = 1) +
-  scale_fill_brewer(palette = "Dark2", 
-                    direction = 1) +
-  labs(x = "Lower Spine", y = "Density", title = "Lower Spine", fill = "Groups") +
-  plot_theme +
-  theme(strip.text.y = element_blank()) +
-  theme(plot.title = element_text(size = 15L, face = "bold"), axis.title.y = element_text(size = 15L,                                                                            face = "bold"), axis.title.x = element_text(size = 15L, face = "bold")) +
-  facet_grid(vars(year), 
-             vars())
-
-
+### Lower spines ####
+lower <- ggplot(data_plot_filter) +
+ aes(x = lower_spine, fill = spine_treatment) +
+ geom_bar(position = "fill") +
+ scale_fill_brewer(palette = "Dark2", direction = 1) +
+ labs(x = "Lower Spines", 
+ y = "Proportion (%)", title = "Spine Treatments", fill = "Spine Treatments") +
+ plot_theme +
+ theme(plot.title = element_text(size = 19L, 
+ face = "bold"), axis.title.y = element_text(size = 14L, face = "bold"), axis.title.x = element_text(size = 14L, 
+ face = "bold")) +
+ facet_grid(vars(year), vars())
 
 
 
