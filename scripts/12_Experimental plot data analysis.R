@@ -225,7 +225,7 @@ length <- data_plot_filter %>%
  direction = 1) +
  labs(x = "Length (mm)", y = "Density", title = "Mericarp Length", fill = "Groups") +
  plot_theme +
- theme(strip.text.y = element_blank()) +
+ #theme(strip.text.y = element_blank()) +
  theme(plot.title = element_text(size = 15L, face = "bold"), axis.title.y = element_text(size = 15L, 
  face = "bold"), axis.title.x = element_text(size = 15L, face = "bold")) +
  facet_grid(vars(year), 
@@ -239,7 +239,7 @@ width <- data_plot_filter %>%
   geom_density(adjust = 1L, size = 1) +
   scale_fill_brewer(palette = "Dark2", 
                     direction = 1) +
-  labs(x = "Width (mm)", y = "Density", title = "Mericarp Width", fill = "Groups") +
+  labs(x = "Width (mm)", y = "Density", title = "Mericarp Width (mm)", fill = "Groups") +
   plot_theme +
   theme(strip.text.y = element_blank()) +
   theme(plot.title = element_text(size = 15L, face = "bold"), axis.title.y = element_text(size = 15L,                                                                            face = "bold"), axis.title.x = element_text(size = 15L, face = "bold")) +
@@ -254,16 +254,30 @@ depth <- data_plot_filter %>%
   geom_density(adjust = 1L, size = 1) +
   scale_fill_brewer(palette = "Dark2", 
                     direction = 1) +
-  labs(x = "Depth (mm)", y = "Density", title = "Mericarp Depth", fill = "Groups") +
+  labs(x = "Depth (mm)", y = "Density", title = "Mericarp Depth (mm)", fill = "Groups") +
   plot_theme +
   theme(plot.title = element_text(size = 15L, face = "bold"), axis.title.y = element_text(size = 15L,                                                                            face = "bold"), axis.title.x = element_text(size = 15L, face = "bold")) +
   facet_grid(vars(year), 
              vars())
 
+## Combined density plots ####
+
+Ind_traits <- ggarrange(#length + rremove("ylab") + rremove("xlab"),
+                        width + rremove("ylab") + rremove("xlab"),
+                        depth + rremove("ylab") + rremove("xlab"),
+                        common.legend = T,
+                        legend = "right",
+                        labels = c("A", "B"),
+                        ncol = 2,
+                        nrow = 1)
+
+annotate_figure(Ind_traits, left = textGrob("Density", rot = 90, vjust = 1, gp = gpar(cex = 1.5)),
+                bottom = textGrob("Trait", gp = gpar(cex = 1.5)))
+
 ### Lower spines ####
 lower <- ggplot(data_plot_filter) +
  aes(x = lower_spine, fill = spine_treatment) +
- geom_bar(position = "fill") +
+ geom_bar(position = "fill", color = "black", size = 0.8) +
  scale_fill_brewer(palette = "Dark2", direction = 1) +
  labs(x = "Lower Spines", 
  y = "Proportion (%)", title = "Spine Treatments", fill = "Spine Treatments") +
@@ -326,21 +340,6 @@ PC3 <- data_plot_filter %>%
 # 
 
 ## Combined PCA plots ####
-Ind_traits <- ggarrange(length + rremove("ylab") + rremove("xlab"),
-                         width + rremove("ylab") + rremove("xlab"),
-                         depth + rremove("ylab") + rremove("xlab"),
-                         spine + rremove("ylab") + rremove("xlab"),
-                         lower + rremove("ylab") + rremove("xlab"),
-                         position + rremove("ylab") + rremove("xlab"),
-                         common.legend = T,
-                         legend = "right",
-                         labels = c("A", "B", "C", "E", "F", "G"),
-                         ncol = 3,
-                         nrow = 2)
-
-annotate_figure(Ind_traits, left = textGrob("Density", rot = 90, vjust = 1, gp = gpar(cex = 1.5)),
-                bottom = textGrob("Trait", gp = gpar(cex = 1.5)))
-
 PCA_density <- ggarrange(PC1 + rremove("ylab") + rremove("xlab"),
                         PC2 + rremove("ylab") + rremove("xlab"),
                         PC3 + rremove("ylab") + rremove("xlab"),
