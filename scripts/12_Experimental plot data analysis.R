@@ -42,9 +42,13 @@ data_plot_filter$spine_treatment <- recode_factor(data_plot_filter$treatment,
 # Here is a data summary of each treatment
 
 data_plot_filter %>% group_by(treatment,year) %>%
-  summarise(mean_treatment = mean(depth, na.rm = T),
-            sd_treatment = sd(depth, na.rm = T),
+  summarise(mean_treatment = mean(lower_spine, na.rm = T),
+            sd_treatment = sd(lower_spine, na.rm = T),
             count_treatmet = n())
+
+# Spine summary
+
+data_plot_filter %>% group_by(treatment, year) %>% count(lower_spine) %>% mutate(percent = n/sum(n))
 
 # The data summary was included in the methods section of the paper.
 
@@ -120,6 +124,7 @@ lower_spine_model <- glmmTMB(lower_spine ~ treatment + (1|parcel),
 testResiduals(lower_spine_model)
 
 summary(lower_spine_model)
+emmeans(lower_spine_model, ~ treatment, type = "response")
 Anova(lower_spine_model)
 # Spine treatments are significant meaning that at the end of the experiment the presence of four or two spines is maintained
 
