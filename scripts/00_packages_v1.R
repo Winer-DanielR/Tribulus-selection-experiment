@@ -1,10 +1,12 @@
 #################################################################
-############    Tribulus Selection experiments     ##############
+############    Tribulus Selection Paper           ##############
 #################################################################
- # By Daniel Reyes Corral
+# Code written by Daniel Reyes Corral
+# 2023-2024
 
 # This script holds the packages used for analysis
 
+### Package script
 # Data preparation
 library(readr) #Reading datasets
 library(tidyverse) #Data manipulation/arrangement
@@ -24,9 +26,6 @@ library(lattice)
 library(Matrix)
 library(factoextra)
 library(optimx)
-library(glmmTMB)
-library (vegan)
 library(bbmle)
-library(DHARMa)
-library(ggeffects)
+library(vegan)
 
