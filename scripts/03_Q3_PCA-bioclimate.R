@@ -3,7 +3,7 @@
 # Load the PCA for populations to extract bioclimate variables ####
 # This dataset is the point in time dataset for all years
 
-env <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/PCA/PCA_population_NAs.csv")
+env <- read_csv("~/Thesis reasearch/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/PCA/PCA_population_NAs.csv")
 env <- as_tibble(env)
 
 ### PCA populations ####
@@ -27,7 +27,7 @@ bioclimate_pca <- prcomp(bioclimate[,c(3:6)], scale=TRUE)
 summary(bioclimate_pca)
 
 # Eigenvalues
-fviz_eig(bioclimate_pca)
+fviz_eig(bioclimate_pca, addlabels = TRUE, ylim = c(0, 60))
 
 # The loadings show the proportions for each trait
 loadings <- bioclimate_pca$rotation # "rotation" is what R calls the PCA loadings
