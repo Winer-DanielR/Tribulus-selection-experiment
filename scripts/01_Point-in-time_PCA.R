@@ -3,7 +3,7 @@
 # Load the point in time dataset ####
 # This dataset is the point in time dataset for all years
 
-point_time <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Point in time populations.csv")
+point_time <- read_csv("~/Thesis reasearch/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Point in time populations.csv")
 point_time <- as_tibble(point_time)
 point_time
 
@@ -38,7 +38,8 @@ mericarp_pca <- prcomp(mericarp[,c(5:10)], scale=TRUE)
 summary(mericarp_pca)
 
 # Eigenvalues
-fviz_eig(mericarp_pca)
+fviz_eig(mericarp_pca, addlabels = TRUE, ylim = c(0, 50))
+
 
 # The loadings show the proportions for each trait
 loadings <- mericarp_pca$rotation # "rotation" is what R calls the PCA loadings
@@ -175,25 +176,3 @@ var2 <- fviz_pca_var(mericarp_pca,
         legend.position = "right",
         legend.background = element_rect(fill = NA, size = 0))
 var2
-
-
-# Data preparation for  Models ####
-## Question 1 ####
-
-
-# mericarp_size <- glmmTMB(eaten ~ size + (1|island/population),
-#                          REML = F,
-#                          family = binomial(link = "logit"),
-#                          data = mericarp)
-# 
-# # Test residuals model using DHARMa
-# testResiduals(mericarp_size)
-# hist(resid(mericarp_size), breaks = 50)
-# 
-# # Model summary
-# summary(mericarp_size)
-# Anova(mericarp_size, type = "3")
-# 
-# plot(ggpredict(mericarp_size, terms = "size [all]",
-#                allow.new.levels = T))
-# 
