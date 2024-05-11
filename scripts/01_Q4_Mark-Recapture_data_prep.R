@@ -1,22 +1,27 @@
+# Question 4 Data Preparation ####
+# By Daniel Reyes
+# 2023
+
+## Description: ####
 # This script is to arrange and create the figure for question 4
 # The figure would be a bar plot with the proportions of eaten mericarps
 # per treatments.
-# Also, create a ternary plot.
-# 
+
+ 
 # First I will upload and merge the datasets
 # 
 # Data loading ####
 ## Floreana ####
-Floreana_2018 <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Raw/Floreana 2018.csv")
-Floreana_2019 <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Raw/Floreana 2019.csv")
+Floreana_2018 <- read_csv("~/Thesis reasearch/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Raw/Floreana 2018.csv")
+Floreana_2019 <- read_csv("~/Thesis reasearch/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Raw/Floreana 2019.csv")
 
 ## Isabela ####
-Isabela_2018 <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Raw/Isabela 2018.csv")
-Isabela_2019 <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Raw/Isabela 2019.csv")
+Isabela_2018 <- read_csv("~/Thesis reasearch/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Raw/Isabela 2018.csv")
+Isabela_2019 <- read_csv("~/Thesis reasearch/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Raw/Isabela 2019.csv")
 
 ## Santa Cruz ####
-Cruz_2018 <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Raw/Santa Cruz 2018.csv")
-Cruz_2019 <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Raw/Santa Cruz 2019.csv")
+Cruz_2018 <- read_csv("~/Thesis reasearch/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Raw/Santa Cruz 2018.csv")
+Cruz_2019 <- read_csv("~/Thesis reasearch/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Raw/Santa Cruz 2019.csv")
 
 
 # Check the columns first
@@ -28,6 +33,135 @@ str(Isabela_2019)
 
 str(Cruz_2018)
 str(Cruz_2019)
+
+## Mark recapture histogram distributions ####
+
+### Santa Cruz 2018 ####
+SC2018 <- ggplot(Cruz_2018) +
+ aes(x = length, fill = size) +
+ geom_histogram(bins = 30L, color="black") +
+ scale_fill_brewer(palette = "Dark2", 
+ direction = 1) +
+ labs(x = "Mericarp Length (mm)", y = "Frequency", title = "Santa Cruz 2018", fill = "Size Treatment") +
+ theme_classic()
+
+### Santa Cruz 2019 ####
+SC2019 <- ggplot(Cruz_2019) +
+  aes(x = length, fill = size) +
+  geom_histogram(bins = 30L, color="black") +
+  scale_fill_brewer(palette = "Dark2", 
+                    direction = 1) +
+  labs(x = "Mericarp Length (mm)", y = "Frequency", title = "Santa Cruz 2019", fill = "Size Treatment") +
+  theme_classic()
+
+### Floreana 2018 ####
+FL2018 <- ggplot(Floreana_2018) +
+  aes(x = length, fill = size) +
+  geom_histogram(bins = 30L, color="black") +
+  scale_fill_brewer(palette = "Dark2", 
+                    direction = 1) +
+  labs(x = "Mericarp Length (mm)", y = "Frequency", title = "Floreana 2018", fill = "Size Treatment") +
+  theme_classic()
+
+### Floreana 2019 ####
+FL2019 <- ggplot(Floreana_2019) +
+  aes(x = length, fill = size) +
+  geom_histogram(bins = 30L, color="black") +
+  scale_fill_brewer(palette = "Dark2", 
+                    direction = 1) +
+  labs(x = "Mericarp Length (mm)", y = "Frequency", title = "Floreana 2019", fill = "Size Treatment") +
+  theme_classic()
+
+### Isabela 2018 ####
+IS2018 <- ggplot(Isabela_2018) +
+  aes(x = length, fill = size) +
+  geom_histogram(bins = 30L, color="black") +
+  scale_fill_brewer(palette = "Dark2", 
+                    direction = 1) +
+  labs(x = "Mericarp Length (mm)", y = "Frequency", title = "Isabela 2018", fill = "Size Treatment") +
+  theme_classic()
+
+### Isabela 2019 ####
+IS2019 <- ggplot(Isabela_2019) +
+  aes(x = length, fill = size) +
+  geom_histogram(bins = 30L, color="black") +
+  scale_fill_brewer(palette = "Dark2", 
+                    direction = 1) +
+  labs(x = "Mericarp Length (mm)", y = "Frequency", title = "Isabela 2019", fill = "Size Treatment") +
+  theme_classic()
+
+#### Combine plots ####
+MR_length_hist <- ggarrange(SC2018,
+                            SC2019,
+                            FL2018,
+                            FL2019,
+                            IS2018,
+                            IS2019,
+                              ncol = 2,
+                              nrow = 3,
+                            common.legend = TRUE, legend="right") + 
+  theme(text = element_text(family = "Noto Sans"))
+
+MR_length_hist <- annotate_figure(MR_length_hist,
+                                             top = text_grob("Mark Recapture Size Histograms",
+                                                             color = "black", face = "bold", size = 16))
+### Size summary stats ####
+#### Santa Cruz 2018 ####
+Cruz_2018_summary <- Cruz_2018 %>% group_by(size) %>% summarise(mean = mean(length),
+                                                                sd = sd(length),
+                                                                min = min(length),
+                                                                max = max(length),
+                                                                q25 = quantile(length,0.25),
+                                                                q75 = quantile(length,0.75)
+                                                                )
+#### Santa Cruz 2019 ####
+Cruz_2019_summary <- Cruz_2019 %>% group_by(size) %>% summarise(mean = mean(length),
+                                                                sd = sd(length),
+                                                                min = min(length),
+                                                                max = max(length),
+                                                                q25 = quantile(length,0.25),
+                                                                q75 = quantile(length,0.75)
+)
+
+#### Floreana 2018 ####
+FL_2018_summary <- Floreana_2018 %>% group_by(size) %>%
+  filter(!is.na(length)) %>% summarise(mean = mean(length),
+                                                                sd = sd(length),
+                                                                min = min(length),
+                                                                max = max(length),
+                                                                q25 = quantile(length,0.25),
+                                                                q75 = quantile(length,0.75)
+)
+#### Floreana 2019 ####
+FL_2019_summary <- Floreana_2019 %>% group_by(size) %>%
+  filter(!is.na(length)) %>% summarise(mean = mean(length),
+                                       sd = sd(length),
+                                       min = min(length),
+                                       max = max(length),
+                                       q25 = quantile(length,0.25),
+                                       q75 = quantile(length,0.75)
+  )
+
+#### Isabela 2018 ####
+IS_2018_summary <- Isabela_2018 %>% group_by(size) %>%
+  filter(!is.na(length)) %>% summarise(mean = mean(length),
+                                       sd = sd(length),
+                                       min = min(length),
+                                       max = max(length),
+                                       q25 = quantile(length,0.25),
+                                       q75 = quantile(length,0.75)
+  )
+
+#### Isabela 2019 ####
+IS_2019_summary <- Isabela_2019 %>% group_by(size) %>%
+  filter(!is.na(length)) %>% summarise(mean = mean(length),
+                                       sd = sd(length),
+                                       min = min(length),
+                                       max = max(length),
+                                       q25 = quantile(length,0.25),
+                                       q75 = quantile(length,0.75)
+  )
+
 
 # Merge the datasets per year
 Floreana_MR <- bind_rows(Floreana_2018, Floreana_2019)
