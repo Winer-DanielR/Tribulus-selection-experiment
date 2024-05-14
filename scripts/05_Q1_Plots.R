@@ -23,18 +23,18 @@ lower_spine_island <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Ch
 spine_position_island <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Questions_1-3_trait_datasets/spine_position_island.csv")
 
 ## Populations ####
-depth_pop <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Questions_1-3_trait_datasets/depth_population.csv")
-length_pop <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Questions_1-3_trait_datasets/length_population.csv")
-longest_spine_pop <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Questions_1-3_trait_datasets/longest_spine_population.csv")
-tip_distance_pop <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Questions_1-3_trait_datasets/tip_distance_population.csv")
-width_pop <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Questions_1-3_trait_datasets/width_population.csv")
-lower_spine_pop <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Questions_1-3_trait_datasets/lower_spines_pop.csv")
-spine_position_pop <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Questions_1-3_trait_datasets/spine_position_pop.csv")
+depth_pop <- read_csv("~/Thesis reasearch/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Questions_1-3_trait_datasets/depth_population.csv")
+length_pop <- read_csv("~/Thesis reasearch/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Questions_1-3_trait_datasets/length_population.csv")
+longest_spine_pop <- read_csv("~/Thesis reasearch/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Questions_1-3_trait_datasets/longest_spine_population.csv")
+tip_distance_pop <- read_csv("~/Thesis reasearch/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Questions_1-3_trait_datasets/tip_distance_population.csv")
+width_pop <- read_csv("~/Thesis reasearch/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Questions_1-3_trait_datasets/width_population.csv")
+lower_spine_pop <- read_csv("~/Thesis reasearch/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Questions_1-3_trait_datasets/lower_spines_pop.csv")
+spine_position_pop <- read_csv("~/Thesis reasearch/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Questions_1-3_trait_datasets/spine_position_pop.csv")
 
 ## PCA Populations ####
-pca_means <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/PCA/PCA_population_NAs.csv")
+pca_means <- read_csv("~/Thesis reasearch/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/PCA/PCA_population_NAs.csv")
 
-pca <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/PCA/PCA_scores.csv")
+pca <- read_csv("~/Thesis reasearch/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/PCA/PCA_scores.csv")
 
 # Data preparation ####
 # Making char into factors (island, populations)
@@ -93,6 +93,10 @@ island_fig <- function(dataset, x, y, title, subtitle)
   {ggplot(dataset, aes(x = x, y = y, colour = island, shape = island, fill = island)) + #For the function to work the colors need to be defined here.
     geom_abline(color = "black", size = 1) + # Abline is a 1:1 line!
   geom_point(size = 3.5, stroke = 1) + #Type of plot
+    scale_x_continuous(limits = c(-2,1), breaks = c(-2,-1.5,-1,-0.5,0,0.5,1)) +
+    scale_y_continuous(limits = c(-1,2), breaks = c(-1,-0.5,0,0.5,1,1.5,2)) +
+    geom_hline(yintercept = 0, linetype = "dashed", size = 0.8) + #Adds a dashed line trough origin 
+    geom_vline(xintercept = 0, linetype = "dashed", size = 0.8) +
     scale_fill_manual(values = c("#D55E00",
                                  "#E69F00",
                                  "#009E73",
@@ -173,9 +177,9 @@ Q1_pca_plot <- ggarrange(pca_size + rremove("ylab") + rremove("xlab"),
                             ncol = 3,
                             nrow = 1)
 
-annotate_figure(Q1_pca_plot, left = textGrob("Uneaten", 
+annotate_figure(Q1_pca_plot, left = textGrob("Morphology of Uneaten Mericarps", 
                                                rot = 90, vjust = 1, gp = gpar(cex = 1.1)),
-                bottom = textGrob("Eaten", gp = gpar(cex = 1.1)))
+                bottom = textGrob("Morphology of Eaten Mericarps", gp = gpar(cex = 1.1)))
 
 #+ geom_smooth(color = "black", size = 1, method = "lm",aes(group=1))
 
