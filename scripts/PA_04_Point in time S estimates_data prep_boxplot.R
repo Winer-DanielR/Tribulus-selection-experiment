@@ -4,16 +4,24 @@
 
 
 # In this script I want to group mericarps per year, island and population
-# Estimate their mean differences per trait with their CIs.
+# I am preparing each trait to estimate their means and calculate the difference
+# between mean eaten and mean uneaten mericarps.
+# Also calculate selection differentials mean(eaten+uneaten) - mean (uneaten)
 
 # Load the point in time dataset ####
 # This dataset is the point in time dataset for all years
 
-point_time <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Point in time populations.csv")
+## PCA point in time dataset ####
+## The PCA dataset is the main set in the paper
+point_time_pca <- read_csv()
+
+## Single traits Point in time dataset ####
+## This is mainly supplementary material
+point_time <- read_csv("~/Thesis reasearch/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Point in time populations.csv")
 point_time <- as_tibble(point_time)
 point_time
 
-# Changed variables to factors
+# Changed variables to factors ####
 point_time <- point_time %>% mutate_at(vars(year,
                                       island, population, lower_spine, eaten, eaten_insects,
                                       `year island`, year_pop,
@@ -45,14 +53,35 @@ point_time_length <- na.omit(point_time_length)
 point_time_length <- point_time_length %>%  
   summarise_each(funs(length_mean = mean,
                       length_var = var,
+                      length_sd = sd,
                       length_se = sd(.)/sqrt(n()),
                       length_n = length,
   ), length)
 
-### S*estimates ####
+### Difference between uneaten and eaten mericarps ####
 point_time_length_S <- pivot_wider(point_time_length, names_from = eaten,
-                                     values_from = c(5:8))
+                                     values_from = c(5:9))
 point_time_length_S$S_length <- (point_time_length_S$length_mean_0 - point_time_length_S$length_mean_1)
+
+
+### Selection differentials ####
+### Defined as mean(eaten+uneaten) - mean (uneaten). Per population
+
+# Estimating population means
+point_time_length_S$Pop_mean <- (point_time_length_S$length_mean_0 + point_time_length_S$length_mean_1)/2
+# Calculating selection differentials per population
+point_time_length_S$Sdif_length <- (point_time_length_S$Pop_mean) - (point_time_length_S$length_mean_0)
+
+
+# Diverging plot for selection differentials
+ggplot(point_time_length_S) +
+  aes(x = reorder(island,population), fill = population, weight = Sdif_length) +
+  geom_bar(position = "dodge") +
+  scale_fill_hue(direction = 1) +
+  theme_minimal() + coord_flip() +
+  theme(legend.position = "none") + xlab("Populations within Island") +
+  ggtitle("Selection differential All mericarps - Uneaten mericarps. Mericarp Length") +
+  ylab("Selection differential")
 
 
 ## Width ####
