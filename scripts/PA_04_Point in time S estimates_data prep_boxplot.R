@@ -13,7 +13,9 @@
 
 ## PCA point in time dataset ####
 ## The PCA dataset is the main set in the paper
-point_time_pca <- read_csv()
+point_time_pca <- read_csv("~/Thesis reasearch/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/PCA/PCA_population_NAs.csv")
+point_time_pca <- as_tibble(point_time_pca)
+point_time_pca
 
 ## Single traits Point in time dataset ####
 ## This is mainly supplementary material
@@ -22,6 +24,14 @@ point_time <- as_tibble(point_time)
 point_time
 
 # Changed variables to factors ####
+## PCA dataset ####
+
+point_time_pca <- point_time_pca %>% mutate_at(vars(island,
+                                                    population,
+                                                    finch_beak), list(factor))
+str(point_time_pca)
+
+## Indivivudal traits dataset ####
 point_time <- point_time %>% mutate_at(vars(year,
                                       island, population, lower_spine, eaten, eaten_insects,
                                       `year island`, year_pop,
@@ -34,11 +44,56 @@ point_time <- point_time %>% mutate_at(vars(year,
                                       germinated_position_6), list(factor))
 str(point_time)
 
+
+
 # Data preparation ####
+
+## PCA dataset preparation ####
+## The PCA dataset used already has means per PC axis per population
+## and the means of eaten and uneaten mericarps PC axis (Size, Defense, Position)
+
+## The dataset also has the differences of uneaten and eaten mericarps.
+## Here we are only estimating the selection differentials as
+## mean PC axis (Size, Defense, Position) - mean uneaten mericarps.
+
+### Selection differential Uneaten mericarps ####
+point_time_pca$SDif_Size_Uneaten <- (point_time_pca$Size_mean - point_time_pca$Size_mean_0) 
+
+### Selection differential Eaten mericarps ####
+point_time_pca$SDif_Size_Eaten <- (point_time_pca$Size_mean - point_time_pca$Size_mean_1)
+
+
+### Plot comparisons between selection differentials and mean differences ####
+# PLots to compare between the selectiond differentials values and the mean differences
+# values. (Mean uneaten - Mean eaten), in the dataset this is S_Size, S_defense and S_position
+
+#### Selection Differential Uneaten ####
+ggplot(point_time_pca) +
+  aes(x = reorder(island,population), fill = population, weight = SDif_Size_Eaten) +
+  geom_bar(position = "dodge") +
+  scale_fill_hue(direction = 1) +
+  ylim(-1,1) + 
+  theme_minimal() + coord_flip() +
+  theme(legend.position = "none") + xlab("Populations within Island") +
+  ggtitle("Selection differential All mericarps - Eaten mericarps. Mericarp Size (PC1)") +
+  ylab("Selection differential")
+
+#### Mean difference Uneaten - Eaten mericarps ####
+ggplot(point_time_pca) +
+  aes(x = reorder(island,population), fill = population, weight = S_Size) +
+  geom_bar(position = "dodge") +
+  scale_fill_hue(direction = 1) +
+  ylim(-1,1) + 
+  theme_minimal() + coord_flip() +
+  theme(legend.position = "none") + xlab("Populations within Island") +
+  ggtitle("Mean trait differences Uneaten - Eaten mericarps. Mericarp Size (PC1)") +
+  ylab("Mean trait differences")
+
+
+## Individual traits dataset ####
 # I grouped the dataset into year, island, population and survival (eaten/uneaten)
 # The idea is to separate each mericarp trait: length, depth, width, spine distance, longest spine, lower spines
 # into its own individual datasets to estimate means for the groups above.
-
 
 # Group by year, island and populations
 point_time <- group_by(point_time, year, island, population, eaten)
