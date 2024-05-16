@@ -14,7 +14,8 @@
 # 
 
 # Data loading ####
-## Islands ####
+## Individual traits datasets ####
+### Islands ####
 depth_island <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Questions_1-3_trait_datasets/depth_island.csv")
 length_island <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Questions_1-3_trait_datasets/length_island.csv")
 longest_spine_island <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Questions_1-3_trait_datasets/longest_spine_island.csv")
@@ -23,7 +24,7 @@ width_island <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter.
 lower_spine_island <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Questions_1-3_trait_datasets/lower_spines_island.csv")
 spine_position_island <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Questions_1-3_trait_datasets/spine_position_island.csv")
 
-## Populations ####
+### Populations ####
 depth_pop <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Questions_1-3_trait_datasets/depth_population.csv")
 length_pop <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Questions_1-3_trait_datasets/length_population.csv")
 longest_spine_pop <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Questions_1-3_trait_datasets/longest_spine_population.csv")
@@ -33,11 +34,11 @@ lower_spine_pop <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapt
 spine_position_pop <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Questions_1-3_trait_datasets/spine_position_pop.csv")
 
 ## PCA Populations ####
-pca_means_Q2 <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/PCA/PCA_population_NAs.csv")
+pca_means_Q2 <- read_csv("~/Thesis reasearch/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/PCA/PCA_population_NAs.csv")
 
 # Data preparation ####
 # Making char into factors (island, populations)
-# 
+## Individual trait datasets ####
 ### Island ####
 depth_island <- depth_island %>% mutate_at(vars(island), list(factor))
 length_island <- length_island %>% mutate_at(vars(island), list(factor))
@@ -57,7 +58,7 @@ spine_position_pop <- spine_position_pop %>% mutate_at(vars(island, population, 
 tip_distance_pop <- tip_distance_pop %>% mutate_at(vars(island, population), list(factor))
 width_pop <- width_pop %>% mutate_at(vars(island, population), list(factor))
 
-### PCA populations ####
+## PCA populations ####
 pca_means_Q2 <- pca_means_Q2 %>% mutate_at(vars(island, population), list(factor))
 str(pca_means_Q2)
 pca_means_Q2 <- na.omit(pca_means_Q2)
@@ -120,7 +121,7 @@ island_fig <- function(dataset, x, y, title, subtitle)
                                   "Santa Cruz")) +
     labs(
       x = "Mean trait (PC Scores)",
-      y = "Selection (Uneaten - Eaten)",
+      y = "Selection Differentials (All mericarps - Eaten)",
       title = title,
       subtitle = subtitle,
       #color = "Islands"
@@ -135,11 +136,11 @@ island_fig <- function(dataset, x, y, title, subtitle)
 ## PCA ####
 ## These plots are the same as the indvidual plots, no model was fitted here
 ### Size ####
-pca_size <- island_fig(pca_means_Q2,
-                       pca_means_Q2$Size_mean,
-                       pca_means_Q2$S_Size,
+pca_size <- island_fig(point_time_pca,
+                       point_time_pca$Size_mean,
+                       point_time_pca$SDif_Size_Eaten,
                        "Mericarp Size (PC1)  ",
-                       " "
+                       "Selection Differential Eaten"
 )
 
 ### Defense ####
