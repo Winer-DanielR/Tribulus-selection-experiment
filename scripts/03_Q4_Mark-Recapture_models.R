@@ -9,37 +9,43 @@
 # survival over time. Larger lifespan scores means this individual mericarps survived more. I also have days passed as another response variable
 # 
 
-# Loading ternary dataset ####
-MR_ternary <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Question 4/Island_ternary_dataset.csv")
+# Dataset loading ####
+## Mark recapture two main approaches, the estimated survival days and the relative frequency of eaten, present and missing mericarps
+
+## Loading survival dataset ####
+MR_survival <- read_csv("~/Thesis reasearch/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Question 4/MR_life_span.csv")
+MR_survival_filter <- read_csv("~/Thesis reasearch/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Question 4/MR_life_span_filter.csv")
+
+# Loading relative frequency dataset ####
+
+MR_frequency <- read_csv("~/Thesis reasearch/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Question 4/Island_ternary_dataset.csv")
 # This ternary dataset uses all categories. The dataset combines 2018 and 2019 mericarps
-MR_ternary_filter <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Question 4/Island_ternary_filter.csv")
+MR_frequency_filter <- read_csv("~/Thesis reasearch/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Question 4/Island_ternary_filter.csv")
 # This is the filtered dataset using only four treatments large and small, all spines and no spines.
 
-# Loading survival dataset ####
-MR_survival <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Question 4/MR_life_span.csv")
-MR_survival_filter <- read_csv("~/Vault of Ideas/20 - 29 Tribulus Research/24 Chapter. Tribulus natural selection experiment/24.03 R code/Tribulus Selection experiment/Data/Processed/Question 4/MR_life_span_filter.csv")
 # Data preparation ####
-## Ternary dataset ####
+## Frequency dataset ####
 # Categories <- factor
 # Time <- factor
 # Island <- factor
 
-str(MR_ternary)
-str(MR_ternary_filter)
+str(MR_frequency)
+str(MR_frequency_filter)
 
-MR_ternary <- MR_ternary %>% mutate_at(vars(time,
+MR_frequency <- MR_frequency %>% mutate_at(vars(time,
                                             Categories,
                                             Island), list(factor))
-MR_ternary_filter <- MR_ternary_filter %>% mutate_at(vars(time,
+MR_frequency_filter <- MR_frequency_filter %>% mutate_at(vars(time,
                                             Categories,
                                             Island), list(factor))
 
 # Filter out time 0 and time 4 being the most absolute values of mericarp number.
-MR_ternary <- filter(MR_ternary, !time == "0")
-MR_ternary <- filter(MR_ternary, !time == "4")
 
-MR_ternary_filter <- filter(MR_ternary_filter, !time == "0")
-MR_ternary_filter <- filter(MR_ternary_filter, !time == "4")
+MR_frequency <- filter(MR_frequency, !time == "0")
+MR_frequency <- filter(MR_frequency, !time == "4")
+
+MR_frequency_filter <- filter(MR_frequency_filter, !time == "0")
+MR_frequency_filter <- filter(MR_frequency_filter, !time == "4")
 
 ## Survival dataset ####
 ## Categories
@@ -69,6 +75,10 @@ MR_survival_filter <- MR_survival_filter %>% mutate_at(vars(island,
                                               mark_position,
                                               plate,
                                               Categories), list(factor))
+
+# Days Survived is a log normal distribution. Keep that in mind for the models.
+hist(MR_survival$Days_survived, breaks = 10)
+
 
 # Filter out per year. Days survived differ between years, but perhaps tendencies are the 
 # same. However, they are two different sets of mericarps.
@@ -195,7 +205,7 @@ emmip(EM_Days_survived_2018_filter, ~ island, CIs = TRUE)
 #### Eaten mericarps ####
 # # 
 # eaten_Q4 <- glmmTMB(n_eaten ~ Categories + time + Island + Categories*Island,
-#                     data = MR_ternary,
+#                     data = MR_frequency,
 #                     REML = F,
 #                     family = "poisson")
 #  
@@ -219,7 +229,7 @@ emmip(EM_Days_survived_2018_filter, ~ island, CIs = TRUE)
 # #### Missing mericarps ####
 # # Check if Island in this model should be random. I don't think so.
 # Missing_Q4 <- glmmTMB(n_missing ~ Categories + time + Island + Categories*Island,
-#                       data = MR_ternary,
+#                       data = MR_frequency,
 #                       REML = F,
 #                       family = "poisson")
 #  
@@ -242,7 +252,7 @@ emmip(EM_Days_survived_2018_filter, ~ island, CIs = TRUE)
 #  Uneaten mericarps are the same as survived mericarps that are being tested in the 
 #  first model above.
 # uneaten_Q4 <- glmmTMB(n_uneaten ~ Categories + time + Island,
-#                     data = MR_ternary,
+#                     data = MR_frequency,
 #                     REML = F,
 #                     family = "poisson")
 #  
@@ -267,7 +277,7 @@ emmip(EM_Days_survived_2018_filter, ~ island, CIs = TRUE)
 #### Eaten mericarps ####
 
 eaten_Q4_filter <- glmmTMB(n_eaten ~ Categories + time + Island + Categories*Island,
-                    data = MR_ternary_filter,
+                    data = MR_frequency_filter,
                     REML = F,
                     family = "poisson")
 
@@ -289,7 +299,7 @@ emmip(eaten_Q4_filter, ~ Island, CIs = TRUE)
 #### Missing mericarps ####
 # Check if Island in this model should be random. I don't think so.
 Missing_Q4 <- glmmTMB(n_missing ~ Categories + time + Island,
-                      data = MR_ternary,
+                      data = MR_frequency,
                       REML = F,
                       family = "poisson")
 
