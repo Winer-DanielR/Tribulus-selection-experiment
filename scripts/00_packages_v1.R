@@ -30,4 +30,7 @@ library(DHARMa)
 library(ggeffects)
 library(ggtern)
 library(afex)
+library(survival)
+library(survminer)
+library(KMsurv)
 
