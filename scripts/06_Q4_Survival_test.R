@@ -3,13 +3,15 @@
 # 
 # Description ####
 # Survival analysis using the mark recapture experiment.
-# I need to create one with eaten mericarps, one with missing mericarps
-# then I also need to create a filter dataset that contains only the four categories
-# of 2018 and 2019.
-# Also one with only 2018 with all categories.
-# I can also do a dataset with all information of all islands and then create
-# a single facet plot per island per category.
-
+# 
+# # 1. The survival analysis can be done per island. Comparing eaten mericarps
+# and missing mericarps results.
+# 
+# 2. Filter categories to compare between years.
+# 
+# 3. Analysis of only 2018 and all categories.
+# 
+# 4. Use time in days, rather than time 1, 2 or 3.
 
 # Mark recapture datasets ####
 # Loading the Raw mark recapture datasets per year per island.
@@ -45,56 +47,7 @@ Floreana_MR <- bind_rows(Floreana_2018, Floreana_2019)
 Isabela_MR <- bind_rows(Isabela_2018, Isabela_2019)
 Cruz_MR <- bind_rows(Cruz_2018, Cruz_2019)
 
-#### Variable tranformation into factors ####
-# Year, time, island, treatment, size, color, position, etc.
-# Transform some columns into factors for the plot for each island
-
-Floreana_MR <- Floreana_MR %>% mutate_at(vars(year,
-                                              time,
-                                              island,
-                                              treatment,
-                                              size,
-                                              color,
-                                              mark_position,
-                                              Bird_Survival,
-                                              Insect_Survival,
-                                              Categories,
-                                              plate), list(factor))
-
-
-Isabela_MR <- Isabela_MR %>% mutate_at(vars(year,
-                                            time,
-                                            island,
-                                            treatment,
-                                            size,
-                                            color,
-                                            mark_position,
-                                            Bird_Survival,
-                                            Insect_Survival,
-                                            Categories,
-                                            plate), list(factor))
-
-
-Cruz_MR <- Cruz_MR %>% mutate_at(vars(year,
-                                      time,
-                                      island,
-                                      treatment,
-                                      size,
-                                      color,
-                                      mark_position,
-                                      Bird_Survival,
-                                      Insect_Survival,
-                                      Categories,
-                                      plate), list(factor))
-
-
-str(Floreana_MR)
-str(Isabela_MR)
-str(Cruz_MR)
-# Transform treatments into factors
-
-
-#### Creating a new column that groups all tratment combinations ####
+#### Creating a new column that groups all treatment combinations ####
 #### This column will combine size and spine treatments, is named categories
 #### Each island dataset will have the new Categories column
 
@@ -110,9 +63,9 @@ Cruz_MR$Categories <- sub(" ", "_", Cruz_MR$Categories)
 
 # Selecting columns for model analysis ####
 
-Floreana_survival <- select(Floreana_MR, c(2:10, 18:20, 27))
-Isabela_survival <- select(Isabela_MR, c(2:10, 18:20, 26))
-Cruz_survival <- select(Cruz_MR, c(2:10, 18:20, 27))
+Floreana_survival <- select(Floreana_MR, c(2:10, 18:21, 27))
+Isabela_survival <- select(Isabela_MR, c(2:10, 18:21, 26))
+Cruz_survival <- select(Cruz_MR, c(2:10, 18:21, 27))
 
 # Combining island datasets into a single dataset for survival analysis
 # (this is preliminary)
@@ -121,70 +74,124 @@ MR_survival <- bind_rows(Floreana_survival,
                          Isabela_survival,
                          Cruz_survival)
 MR_survival <- as_tibble(MR_survival)
+
+## Filter Survival Dataset ####
+# Filter survival dataset to test all categories
+MR_survival_2018 <- filter(MR_survival, year == "2018")
+target1 <- c("Lower spines", "Upper spines")
+MR_survival_2018 <- filter(MR_survival_2018, treatment %in% target1)
+
+# Filter dataset to test 2018 and 2019 categories
+target <- c("All spines", "No spines")
+MR_survival_filter <- filter(MR_survival, treatment %in% target)
+
 # Survival Analysis ####
 # Run the Kaplan-Meier estimator with the
 # surfit() and Surv() functions:
 
 ## KM estimator ####
 # This KM estimator is based on the single survival dataset above.
-# I will use it to compare between islands
+# I will use it to compare multiple variables.
 
-### Time (0,1,2,3,4) and Eaten mericarps
-KM_MR <- survfit( Surv(days_pass, Eaten_Birds) ~ size + treatment + island,
-                  data = MR_survival)
-# Same thing as ~ Categories
+### 1. Compare between Time and Days Passed for eaten mericarps ####
 
-summary(KM_MR)
+#### Time and Eaten mericarps ####
+KM_MR_time_eaten <- survfit( Surv(time, Eaten_Birds) ~ size + treatment + island,
+                  data = MR_survival_filter)
+# Using 2018 and 2019 categories
 
-a <- ggsurvplot(KM_MR, legend = "none",
-           surv.median.line = "hv",
-           # Change legends: title and labels
-           #legend.title = "Treatments",
-           # legend.labs = c("Large All Spimes",
-           #                 "Large Lower Spines",
-           #                 "Large No Spines",
-           #                 "Large Upper Spines",
-           #                 "Small All Spines",
-           #                 "Small Lower Spines",
-           #                 "Small No Spines",
-           #                 "Small Upper Spines"),
-           # # Add p-value and tervals
-           pval = F,
-           conf.int = F,
-           # Add risk table
-           risk.table = T,
-           tables.height = 0.2,
-           tables.theme = theme_cleantable(),
-           ggtheme = theme_bw()
-           )
-require("survminer")
-a$plot + facet_wrap(~island)
+#### Days passed and Eaten mericarps ####
+KM_MR_days_eaten <- survfit(Surv(days_pass, Eaten_Birds) ~ size + treatment + island,
+                            data = MR_survival_filter)
 
-ggsurvplot_group_by(KM_MR, MR_survival, group.by = "island")
+# I think days is better and more intuitive than time.
 
-# =====
-## This estimate is based on time, eaten birds and combined datasets of 2018 and 2019
-KM_Isabela_time <- survival::survfit(Surv(time, Eaten_Birds) ~ Categories,
-                        data = Isabela_survival)
-# Time is monitoring time: 0, 1, 2, 3, 4
+### 2. Compare Eaten and Missing mericarps ####
 
-KM_Floreana_days <- survival::survfit(Surv(days_pass, Eaten_Birds) ~ Categories,
-                                      data = Floreana_survival)
+KM_MR_days_missing <- survfit(Surv(days_pass, Present) ~ size + treatment + island,
+                            data = MR_survival_filter)
 
-# Days is the days passed from the start until the end of the experiment
+# There is some nuance here, but I think it may be worth for discussion.
 
-KM_Floreana_Present <- survfit(Surv(days_pass, Present) ~ Categories,
-                               data = Floreana_survival)
-# Present Mericarps assuming that missing were eaten.
+# So far, it seems that eaten mericarps although there are less events
+# it can be more consistent?
 
-KM_Floreana_size <- survfit(Surv(days_pass, Eaten_Birds) ~ size,
-                            data = Floreana_survival)
+### 3. All treatments ####
+KM_MR_days_eaten_2018 <- survfit(Surv(days_pass, Eaten_Birds) ~ size + treatment + island,
+                                 data = MR_survival_2018)
 
-KM_Floreana_year <- survfit(Surv(days_pass, Eaten_Birds) ~ year,
-                            data = Floreana_survival)
+### 4. Island KM estimates ####
+#### Comparing survival between islands ####
+KM_MR_islands_eaten <- survfit(Surv(days_pass, Eaten_Birds) ~ island + size,
+                         data = MR_survival_filter)
 
-KM_Cruz_year <- survfit(Surv(time, Present) ~ Categories,
-                            data = Cruz_survival)
+#### Islands missing mericarps ####
+KM_MR_islands_missing <- survfit(Surv(days_pass, Present) ~ island,
+                         data = MR_survival_filter)
+# In general missing mericarps have much lower survival estimates but it seems that
+# comparing between islands it stills holds some consistency.
+
+## Compare survival plots ####
+#ggsurvplot(KM_MR_time_eaten, legend = "right", surv.median.line = "hv")
+ggsurvplot(KM_MR_days_eaten_2018, legend = "right", surv.median.line = "hv")
+
+
+
+
+
+
+ggsurvplot_facet(KM_MR_days_eaten_2018, MR_survival_2018, facet.by = "island",
+                 surv.median.line = "hv",
+                 legend.labs = c("Large - Lower spines", "Large - Upper spines", 
+                                 "Small - Lower spines", "Small - Upper spines"),
+                 legend.title = "Treatments",
+                 legend = "right",
+                 xlab = "Time (Days)",
+                 ggtheme = theme_minimal(),
+                 short.panel.labs = T,
+                 panel.labs.font = list(face = "bold"),
+                 conf.int = F,
+                 palette = "Dark2"
+)
+
+# It seems that large upper spines have more survival prob.
+# in Santa Cruz.
+# This is hard to compare but it may be worth to include.
+
+### Island facet plot ####
+### Showing all islands and treatments in a single plot.
+ggsurvplot_facet(KM_MR_days_eaten, MR_survival_filter, facet.by = "island", 
+                 surv.median.line = "hv", 
+                 legend.labs = c("Large - All spines", "Large - No spines", 
+                                 "Small - All spines", "Small - No spines"),
+                 legend.title = "Treatments",
+                 legend = "right",
+                 xlab = "Time (Days)",
+                 ggtheme = theme_minimal(),
+                 short.panel.labs = T,
+                 panel.labs.font = list(face = "bold"),
+                 conf.int = F,
+                 palette = "Dark2"
+                 )
+
+
+
+# The island plot may be useful
+ggsurvplot(KM_MR_islands_missing, legend = "right", surv.median.line = "hv",
+           pval = T,
+           conf.int = T,
+           palette = "Dark2")
+
+
+ggsurvplot(KM_MR_islands_eaten, legend = "right", surv.median.line = "hv",
+           pval = T,
+           conf.int = T,
+           palette = "Dark2")
+
+ggsurvplot_facet(KM_MR_islands_eaten, MR_survival_filter,
+                 facet.by = "island",
+                 palette = "Dark2")
+
 
 
 # Notice that the Surv() function accepts two
