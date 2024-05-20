@@ -86,6 +86,9 @@ MR_survival_2018 <- filter(MR_survival_2018, treatment %in% target1)
 target <- c("All spines", "No spines")
 MR_survival_filter <- filter(MR_survival, treatment %in% target)
 
+Isabela_MR_filter <- filter(Isabela_MR, treatment %in% target)
+Cruz_MR_filter <- filter(Cruz_MR, treatment %in% target)
+
 ## Plot preparation ####
 ## Color scales and plot themes
 colors <- c("#0072B2",
@@ -104,7 +107,7 @@ plot_theme <-     theme(axis.line = element_line(linetype = "solid", size = 1),
                         axis.title = element_text(size = 14, 
                                                   face = "bold"
                         ),
-                        axis.text = element_text(size = 12, face = "bold"), 
+                        axis.text = element_text(size = 12), 
                         axis.text.x = element_text(size = 12), 
                         plot.title = element_text(size = 16, face = "bold", hjust = 0),
                         text = element_text(family = "Noto Sans"),
@@ -142,7 +145,7 @@ KM_Floreana_days_missing <- survfit(Surv(days_pass, Present) ~ size + treatment,
                                     data = Floreana_MR)
 
 #### Floreana Survival plot ####
-ggsurvplot(KM_Floreana_days_missing, legend = "right",
+ggsurvplot(KM_Floreana_days_eaten, legend = "right",
            surv.median.line = "hv",
            pval = T,
            conf.int = T,
@@ -157,76 +160,51 @@ ggsurvplot(KM_Floreana_days_missing, legend = "right",
            ggtheme = plot_theme)
 
 
-ggsurvplot(KM_MR_islands_missing, legend = "right", surv.median.line = "hv",
+#### KM Isabela ####
+KM_Isabela_days_eaten <- survfit(Surv(days_pass, Eaten_Birds) ~ size + treatment,
+                                  data = Isabela_MR_filter)
+# Using eaten mericarps as survival estimates
+
+KM_Isabela_days_missing <- survfit(Surv(days_pass, Present) ~ size + treatment,
+                                    data = Isabela_MR_filter)
+
+#### Isabela Survival plot ####
+ggsurvplot(KM_Isabela_days_eaten, legend = "right",
+           surv.median.line = "hv",
            pval = T,
            conf.int = T,
-           palette = "Okabe-Ito")
+           palette = colors,
+           xlab = "Time (Days)",
+           legend.title = "Mericarp Categories",
+           legend.labs = c("Large - All spines",
+                           "Large - No spines",
+                           "Small - All spines",
+                           "Small - No spines"),
+           title = "Isabela",
+           ggtheme = plot_theme)
 
+#### KM Santa Cruz ####
+KM_Cruz_days_eaten <- survfit(Surv(days_pass, Eaten_Birds) ~ size + treatment,
+                                 data = Cruz_MR_filter)
+# Using eaten mericarps as survival estimates
 
-### 1. Compare between Time and Days Passed for eaten mericarps ####
+KM_Cruz_days_missing <- survfit(Surv(days_pass, Present) ~ size + treatment,
+                                   data = Cruz_MR_filter)
 
-#### Time and Eaten mericarps ####
-KM_MR_time_eaten <- survfit( Surv(time, Eaten_Birds) ~ size + treatment + island,
-                  data = MR_survival_filter)
-# Using 2018 and 2019 categories
-
-#### Days passed and Eaten mericarps ####
-KM_MR_days_eaten <- survfit(Surv(days_pass, Eaten_Birds) ~ size + treatment + island,
-                            data = MR_survival_filter)
-
-# I think days is better and more intuitive than time.
-
-### 2. Compare Eaten and Missing mericarps ####
-
-KM_MR_days_missing <- survfit(Surv(days_pass, Present) ~ size + treatment + island,
-                            data = MR_survival_filter)
-
-# There is some nuance here, but I think it may be worth for discussion.
-
-# So far, it seems that eaten mericarps although there are less events
-# it can be more consistent?
-
-### 3. All treatments ####
-KM_MR_days_eaten_2018 <- survfit(Surv(days_pass, Eaten_Birds) ~ size + treatment + island,
-                                 data = MR_survival_2018)
-
-### 4. Island KM estimates ####
-#### Comparing survival between islands ####
-KM_MR_islands_eaten <- survfit(Surv(days_pass, Eaten_Birds) ~ island + size,
-                         data = MR_survival_filter)
-
-#### Islands missing mericarps ####
-KM_MR_islands_missing <- survfit(Surv(days_pass, Present) ~ island,
-                         data = MR_survival_filter)
-# In general missing mericarps have much lower survival estimates but it seems that
-# comparing between islands it stills holds some consistency.
-
-## Compare survival plots ####
-#ggsurvplot(KM_MR_time_eaten, legend = "right", surv.median.line = "hv")
-ggsurvplot(KM_MR_days_eaten_2018, legend = "right", surv.median.line = "hv")
-
-
-
-
-
-
-ggsurvplot_facet(KM_MR_days_eaten_2018, MR_survival_2018, facet.by = "island",
-                 surv.median.line = "hv",
-                 legend.labs = c("Large - Lower spines", "Large - Upper spines", 
-                                 "Small - Lower spines", "Small - Upper spines"),
-                 legend.title = "Treatments",
-                 legend = "right",
-                 xlab = "Time (Days)",
-                 ggtheme = theme_minimal(),
-                 short.panel.labs = T,
-                 panel.labs.font = list(face = "bold"),
-                 conf.int = F,
-                 palette = "Dark2"
-)
-
-# It seems that large upper spines have more survival prob.
-# in Santa Cruz.
-# This is hard to compare but it may be worth to include.
+#### Santa Cruz Survival plot ####
+ggsurvplot(KM_Cruz_days_eaten, legend = "right",
+           surv.median.line = "hv",
+           pval = T,
+           conf.int = T,
+           palette = colors,
+           xlab = "Time (Days)",
+           legend.title = "Mericarp Categories",
+           legend.labs = c("Large - All spines",
+                           "Large - No spines",
+                           "Small - All spines",
+                           "Small - No spines"),
+           title = "Santa Cruz",
+           ggtheme = plot_theme)
 
 ### Island facet plot ####
 ### Showing all islands and treatments in a single plot.
@@ -241,29 +219,85 @@ ggsurvplot_facet(KM_MR_days_eaten, MR_survival_filter, facet.by = "island",
                  short.panel.labs = T,
                  panel.labs.font = list(face = "bold"),
                  conf.int = F,
-                 palette = "Dark2"
+                 palette = colors,
+                 ggtheme = plot_theme
                  )
 
 
 
-# The island plot may be useful
-ggsurvplot(KM_MR_islands_missing, legend = "right", surv.median.line = "hv",
-           pval = T,
-           conf.int = T,
-           palette = "Dark2")
+### Island KM estimates ####
+#### Comparing survival between islands ####
+KM_MR_islands_eaten <- survfit(Surv(days_pass, Eaten_Birds) ~ island + size,
+                               data = MR_survival_filter)
+
+#### Islands missing mericarps ####
+KM_MR_islands_missing <- survfit(Surv(days_pass, Present) ~ island,
+                                 data = MR_survival_filter)
+# In general missing mericarps have much lower survival estimates but it seems that
+# comparing between islands it stills holds some consistency.
+
+#### Island survival plot ####
+#### This is comparing general mericarp survival, between islands.
+#### I can compare mericarp size perhaps.
+
+ggsurvplot_facet(KM_MR_days_eaten_2018, MR_survival_2018, facet.by = "island",
+                 surv.median.line = "hv",
+                 legend.labs = c("Large - Lower spines", "Large - Upper spines", 
+                                 "Small - Lower spines", "Small - Upper spines"),
+                 legend.title = "Treatments",
+                 legend = "right",
+                 xlab = "Time (Days)",
+                 ggtheme = plot_theme,
+                 short.panel.labs = T,
+                 panel.labs.font = list(face = "bold"),
+                 conf.int = F,
+                 palette = colors
+                 )
+
+## General comparisons ####
+### 1. Time vs Days pass comparison ####
+#### Using Eaten mericarps ####
+KM_MR_time_eaten <- survfit( Surv(time, Eaten_Birds) ~ size + treatment + island,
+                  data = MR_survival_filter)
+# Using 2018 and 2019 categories
+
+#### Days passed and Eaten mericarps ####
+KM_MR_days_eaten <- survfit(Surv(days_pass, Eaten_Birds) ~ size + treatment + island,
+                            data = MR_survival_filter)
+
+#### Survival plots ####
+#ggsurvplot(KM_MR_time_eaten, legend = "right", surv.median.line = "hv")
+#ggsurvplot(KM_MR_days_eaten, legend = "right", surv.median.line = "hv")
+
+#### Comparison conclusion ####
+# Between times and days, days have more monitoring points than time.
+
+### 2. Compare Eaten and Missing mericarps ####
+KM_MR_days_missing <- survfit(Surv(days_pass, Present) ~ size + treatment + island,
+                            data = MR_survival_filter)
+
+#### Survival plots ####
+ggsurvplot(KM_MR_days_eaten, legend = "right",
+           surv.median.line = "hv")
+
+ggsurvplot(KM_MR_days_missing, legend = "right",
+           surv.median.line = "hv")
+
+#### Comparison conclusion ####
+# There is some nuance here, but I think it may be worth for discussion.
+# So far, it seems that eaten mericarps although there are less events
+# it can be more consistent?
+
+### 3. All treatments ####
+### Upper, Lower, All and No spines
+
+KM_MR_days_eaten_2018 <- survfit(Surv(days_pass, Eaten_Birds) ~ size + treatment + island,
+                                 data = MR_survival_2018)
+
+#### All treatments survival plots ####
 
 
-ggsurvplot(KM_MR_islands_eaten, legend = "right", surv.median.line = "hv",
-           pval = T,
-           conf.int = T,
-           palette = "Dark2")
-
-ggsurvplot_facet(KM_MR_islands_eaten, MR_survival_filter,
-                 facet.by = "island",
-                 palette = "Dark2")
-
-
-
+# General Survival observations ####
 # Notice that the Surv() function accepts two
 # arguments: 1. the time variable; 
 # 2. the event variable.
@@ -273,95 +307,16 @@ ggsurvplot_facet(KM_MR_islands_eaten, MR_survival_filter,
 # 
 # Then, display the results and draw the Kaplan - Meier plot
 
-## Results ####
-summary(KM_Floreana_time)
-
-summary(KM_Floreana_days)
-# I think either one shows similar survival probabilities however, I think days is better estimate
-# in the sense that much similar than the example of the survival analysis.
-
-
-summary(KM_Floreana_Present)
-# This shows a lower survival probability than just eaten mericarps. I think
-# because this was a more common event than having eaten mericarps.
-
-summary(KM_Floreana_size)
-# Size has a clear effect larger mericarps have a higher survival prob.
-
-summary(KM_Floreana_year)
-
-# The survival probabilities can be found in the survival column.
-
-## Survival Plot ####
-# We can use the ggsurvplot() function within the
-# survminer package:
-
-ggsurvplot(KM_Isabela_time, conf.int = F, legend = "right",
-           surv.median.line = "hv")
-
-ggsurvplot(KM_Floreana_days, conf.int = F, legend = "right",
-           surv.median.line = "hv", title = "Eaten Mericarps Floreana",
-           risk.table = T, fun = "cumhaz")
-
-ggsurvplot(KM_Floreana_Present, conf.int = F, legend = "right",
-           surv.median.line = "hv", title = "Missing Mericarps Floreana")
-
-ggsurvplot(KM_Floreana_size, conf.int = F, legend = "right",
-           surv.median.line = "hv")
-# In this case, at the end of the experiment, larger mericarps with all spines
-# have a lower survival prob. 
-
-ggsurvplot(KM_Floreana_year, conf.int = F, legend = "right",
-           surv.median.line = "hv")
-# 2018 is mostly the one that carries all the estimates. However, I think 
-# we can still combine the experiments in this case because there is not a lot
-# of difference.
-
-plot <- ggsurvplot(KM_Cruz_year, conf.int = F, legend = "right",
-           surv.median.line = "hv")
-
-ggsurvplot_facet(KM_Cruz_year, Cruz_survival, facet.by = "color",
-                 palette = "jco", pval = T)
-
-# Whereas with eaten mericarps the ones eaten the most are the small ones
-# with no spines.
-
-
-# Crosses are observations
-
-
-# Suppose the event of interest is death ####
+## Death ####
+# Suppose the event of interest is death
 # In this case eaten mericarps.
 # - At the time zero, the survival probability is 1 (100% are uneaten)
-# - The median indicates that the median survival is 9.
-# This is the time where survival (S)t is 50% 
+# - The median indicates that the median survival (S)t is 50% 
 # at which half of the subjects are expected to have died. 
-# - From the plot, we also see that the probability of survival more than 5 years
-# is 75%. 
-
-# Another example with a larger dataset ####
-## Load data ####
-data("tongue")
-head(tongue)
-
-# Type: Categories
-# Time
-# Delta: Eaten/Uneaten
-
-# Filter the dataset for category.
-anaploid <- subset(tongue, type == 1)
-
-### Results ####
-fit <- survfit(Surv(time, delta) ~ type,
-               data = tongue,
-               conf.type = "log-log")
-
-summary(fit)
-
-ggsurvplot(fit, conf.int = T, surv.median.line = "hv")
-
+ 
 
 # Hypothesis testing of survival data ####
+
 # Comparing survival on one population in the overall population
 # Comparison of two or more populations, are there differences in survival
 # among different groups of subjects.
@@ -371,3 +326,7 @@ ggsurvplot(fit, conf.int = T, surv.median.line = "hv")
 # all spines, no spines, large and small treatments.
 #
 # The long-rank test for two groups 
+
+## Cox model ####
+MR_Cox <- survival::coxph(Surv(days_pass, Eaten_Birds) ~ size + treatment,
+                          data = MR)
