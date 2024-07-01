@@ -12,6 +12,7 @@ library(ggrepel)
 library(ggpubr)
 library(grid)
 library(ggokabeito)
+library(broom)
 
 # Data analysis
 library(lme4)
@@ -34,4 +35,6 @@ library(afex)
 library(survival)
 library(survminer)
 library(KMsurv)
+library(finalfit)
+library(coxme)
 
