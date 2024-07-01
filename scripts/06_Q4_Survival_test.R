@@ -133,7 +133,7 @@ plot_theme <-     theme(axis.line = element_line(linetype = "solid", size = 1),
 # general survival dataset above.
 # I will use it to compare multiple variables.
 
-### KM estimates per island and survival plots ####
+### KM estimates per island, survival plots and Cox models ####
 ### Here I am generating KM estimates and plots per island
 ### using the All spines and No spines treatments.
 #### KM Floreana ####
@@ -147,7 +147,7 @@ KM_Floreana_days_missing <- survfit(Surv(days_pass, Present) ~ size + treatment,
 #### Floreana Survival plot ####
 ggsurvplot(KM_Floreana_days_eaten, legend = "right",
            surv.median.line = "hv",
-           pval = T,
+           pval = F,
            conf.int = T,
            palette = colors,
            xlab = "Time (Days)",
@@ -159,6 +159,82 @@ ggsurvplot(KM_Floreana_days_eaten, legend = "right",
            title = "Floreana",
            ggtheme = plot_theme)
 
+#### Floreana Cox model ####
+# The Cox hazards model is a regression model. 
+# Commonly used to investigate the association between
+# the time to an event and a set of explanatory variables.
+# 
+# Cox proportional hazards regression can be performed using the function
+# coxph() and finalfit(). The latter produces a table containing counts for factors,
+# mean, SD for continuous variable and univariable and multivariable CPH regression.
+# 
+# The output of the function shows the number of mericarps and 
+# the number of events, either eaten or missing. The coefficient can be
+# exponentiated and interpreted as a hazard ratio exp(coef).
+
+##### Floreana Cox Eaten ####
+Floreana_cox_eaten <- coxph(Surv(days_pass, Eaten_Birds) ~ size + treatment 
+                            + mark_position, data = Floreana_MR)
+
+summary(Floreana_cox_eaten)
+Anova(Floreana_cox_eaten)
+
+Floreana_cox_eaten_mixed <- coxme(Surv(days_pass, Eaten_Birds) ~ size + treatment 
+                                    + (1|plate) 
+                                  #+ (1|color) 
+                                  + (1|mark_position/color),
+                                  data = Floreana_MR)
+
+# Call the model
+Floreana_cox_eaten_mixed
+Anova(Floreana_cox_eaten_mixed)
+
+#### Emmeans ####
+Floreana_cox_eaten_emmeans <- emmeans::emmeans(Floreana_cox_eaten_mixed, ~ treatment|size, type = "response")
+# The emmeans helps me to estimate the projected mean days survived per category.
+# Useful for describing the results. Also it helps me plot the predicted values:
+emmip(Floreana_cox_eaten_emmeans, ~ treatment|size, CIs = TRUE)
+
+
+##### Floreana Cox Missing ####
+Floreana_cox_missing <- coxph(Surv(days_pass, Present) ~ size + treatment
+                              + mark_position,
+                              data = Floreana_MR)
+
+
+summary(Floreana_cox_missing)
+(Anova(Floreana_cox_missing))
+
+Floreana_cox_missing_mixed <- coxme(Surv(days_pass, Present) ~ size + treatment 
+                                  + (1|plate) 
+                                  #+ (1|color) 
+                                  + (1|mark_position/color)
+                                  , data = Floreana_MR)
+
+# Call the model
+Floreana_cox_missing_mixed
+Anova(Floreana_cox_missing_mixed)
+
+#### Emmeans ####
+Floreana_cox_missing_emmeans <- emmeans::emmeans(Floreana_cox_missing_mixed, ~ treatment|size, type = "response")
+# The emmeans helps me to estimate the projected mean days survived per category.
+# Useful for describing the results. Also it helps me plot the predicted values:
+emmip(Floreana_cox_missing_emmeans, ~ treatment|size, CIs = TRUE)
+
+#### Finalfit() function
+dependent_eaten <- "Surv(days_pass, Eaten_Birds)"
+dependent_missing <- "Surv(days_pass, Present)"
+explanatory <- c("Categories", "mark_position")
+
+Floreana_eaten_fit <- Floreana_MR %>% finalfit(dependent_eaten, explanatory)
+Floreana_missing_fit <- Floreana_MR %>% finalfit(dependent_missing, explanatory)
+
+# I think this shows specifically which categories are significant, even position marks.
+
+# I can use emmeans to test some of these variables or to plot some of the model
+# results too.
+
+# The output shows the hazard ratio exp(coef). with confidence intervals.
 
 #### KM Isabela ####
 KM_Isabela_days_eaten <- survfit(Surv(days_pass, Eaten_Birds) ~ size + treatment,
@@ -169,7 +245,7 @@ KM_Isabela_days_missing <- survfit(Surv(days_pass, Present) ~ size + treatment,
                                     data = Isabela_MR_filter)
 
 #### Isabela Survival plot ####
-ggsurvplot(KM_Isabela_days_eaten, legend = "right",
+ggsurvplot(KM_Isabela_days_missing, legend = "right",
            surv.median.line = "hv",
            pval = T,
            conf.int = T,
@@ -182,6 +258,66 @@ ggsurvplot(KM_Isabela_days_eaten, legend = "right",
                            "Small - No spines"),
            title = "Isabela",
            ggtheme = plot_theme)
+
+##### Isabela Cox Eaten ####
+Isabela_cox_eaten <- coxph(Surv(days_pass, Eaten_Birds) ~ treatment + size 
+                            + mark_position
+                           , data = Isabela_MR_filter)
+
+summary(Isabela_cox_eaten)
+Anova(Isabela_cox_eaten)
+
+Isabela_cox_eaten_mixed <- coxme(Surv(days_pass, Eaten_Birds) ~ size + treatment 
+                                  + (1|plate) 
+                                 #+ (1|color) 
+                                 + (1|mark_position/color),
+                                  data = Isabela_MR_filter)
+
+# Call the model
+Isabela_cox_eaten_mixed
+Anova(Isabela_cox_eaten_mixed)
+
+#### Emmeans ####
+Isabela_cox_eaten_emmeans <- emmeans::emmeans(Isabela_cox_eaten_mixed, ~ treatment|size, type = "response")
+# The emmeans helps me to estimate the projected mean days survived per category.
+# Useful for describing the results. Also it helps me plot the predicted values:
+emmip(Isabela_cox_eaten_emmeans, ~ treatment|size, CIs = TRUE)
+
+
+##### Isabela Cox Missing ####
+Isabela_cox_missing <- coxph(Surv(days_pass, Present) ~ size + treatment
+                              + mark_position
+                             , data = Isabela_MR_filter)
+
+summary(Isabela_cox_missing)
+Anova(Isabela_cox_missing)
+
+Isabela_cox_missing_mixed <- coxme(Surv(days_pass, Present) ~ size + treatment 
+                                 + (1|plate) 
+                                 #+ (1|color) 
+                                 + (1|mark_position/color)
+                                 , data = Isabela_MR_filter)
+
+# Call the model
+Isabela_cox_missing_mixed
+Anova(Isabela_cox_missing_mixed)
+
+#### Emmeans ####
+Isabela_cox_missing_emmeans <- emmeans::emmeans(Isabela_cox_missing_mixed, ~ treatment|size, type = "response")
+# The emmeans helps me to estimate the projected mean days survived per category.
+# Useful for describing the results. Also it helps me plot the predicted values:
+emmip(Isabela_cox_missing_emmeans, ~ treatment|size, CIs = TRUE)
+
+
+#### Finalfit() function
+dependent_eaten <- "Surv(days_pass, Eaten_Birds)"
+dependent_missing <- "Surv(days_pass, Present)"
+explanatory <- c("Categories", "mark_position")
+
+Isabela_eaten_fit <- Isabela_MR_filter %>% finalfit(dependent_eaten, explanatory)
+Isabela_missing_fit <- Isabela_MR_filter %>% finalfit(dependent_missing, explanatory)
+
+# Eaten is not significant and missing mericarps are significant to mark position as well
 
 #### KM Santa Cruz ####
 KM_Cruz_days_eaten <- survfit(Surv(days_pass, Eaten_Birds) ~ size + treatment,
@@ -206,22 +342,67 @@ ggsurvplot(KM_Cruz_days_eaten, legend = "right",
            title = "Santa Cruz",
            ggtheme = plot_theme)
 
-### Island facet plot ####
-### Showing all islands and treatments in a single plot.
-ggsurvplot_facet(KM_MR_days_eaten, MR_survival_filter, facet.by = "island", 
-                 surv.median.line = "hv", 
-                 legend.labs = c("Large - All spines", "Large - No spines", 
-                                 "Small - All spines", "Small - No spines"),
-                 legend.title = "Treatments",
-                 legend = "right",
-                 xlab = "Time (Days)",
-                 ggtheme = theme_minimal(),
-                 short.panel.labs = T,
-                 panel.labs.font = list(face = "bold"),
-                 conf.int = F,
-                 palette = colors,
-                 ggtheme = plot_theme
-                 )
+
+##### Cruz Cox Eaten ####
+Cruz_cox_eaten <- coxph(Surv(days_pass, Eaten_Birds) ~ size + treatment 
+                            + mark_position, data = Cruz_MR_filter)
+
+summary(Cruz_cox_eaten)
+Anova(Cruz_cox_eaten)
+
+
+Cruz_cox_eaten_mixed <- coxme(Surv(days_pass, Eaten_Birds) ~ size + treatment 
+                                + (1|island) 
+                              #+ (1|color) 
+                              + (1|mark_position)
+                              , data = Cruz_MR_filter)
+
+# Call the model
+Cruz_cox_eaten_mixed
+Anova(Cruz_cox_eaten_mixed)
+
+#### Emmeans ####
+Cruz_cox_eaten_emmeans <- emmeans::emmeans(Cruz_cox_eaten_mixed, ~ treatment|size, type = "response")
+# The emmeans helps me to estimate the projected mean days survived per category.
+# Useful for describing the results. Also it helps me plot the predicted values:
+emmip(Cruz_cox_eaten_emmeans, ~ treatment|size, CIs = TRUE)
+
+
+##### Cruz Cox Missing ####
+Cruz_cox_missing <- coxph(Surv(days_pass, Present) ~ size + treatment
+                              + mark_position,
+                              data = Cruz_MR_filter)
+
+
+summary(Cruz_cox_missing)
+Anova(Cruz_cox_missing)
+
+
+Cruz_cox_missing_mixed <- coxme(Surv(days_pass, Present) ~ size + treatment 
+                                   + (1|island) 
+                                #+ (1|color) 
+                                + (1|mark_position)
+                                , data = Cruz_MR_filter)
+
+# Call the model
+Cruz_cox_missing_mixed
+Anova(Cruz_cox_missing_mixed)
+
+#### Emmeans ####
+Cruz_cox_missing_emmeans <- emmeans::emmeans(Cruz_cox_missing_mixed, ~ treatment|size, type = "response")
+# The emmeans helps me to estimate the projected mean days survived per category.
+# Useful for describing the results. Also it helps me plot the predicted values:
+emmip(Cruz_cox_missing_emmeans, ~ treatment|size, CIs = TRUE)
+
+
+
+#### Finalfit() function
+dependent_eaten <- "Surv(days_pass, Eaten_Birds)"
+dependent_missing <- "Surv(days_pass, Present)"
+explanatory <- c("Categories", "mark_position")
+
+Cruz_eaten_fit <- Cruz_MR_filter %>% finalfit(dependent_eaten, explanatory)
+Cruz_missing_fit <- Cruz_MR_filter %>% finalfit(dependent_missing, explanatory)
 
 
 
@@ -229,6 +410,23 @@ ggsurvplot_facet(KM_MR_days_eaten, MR_survival_filter, facet.by = "island",
 #### Comparing survival between islands ####
 KM_MR_islands_eaten <- survfit(Surv(days_pass, Eaten_Birds) ~ island + size,
                                data = MR_survival_filter)
+
+### Island facet plot ####
+### Showing all islands and treatments in a single plot.
+ggsurvplot_facet(KM_MR_islands_eaten, MR_survival_filter, facet.by = "island", 
+                 surv.median.line = "hv", 
+                 legend.labs = c("Large - All spines", "Large - No spines", 
+                                 "Small - All spines", "Small - No spines"),
+                 legend.title = "Treatments",
+                 legend = "right",
+                 xlab = "Time (Days)",
+                 short.panel.labs = T,
+                 panel.labs.font = list(face = "bold"),
+                 conf.int = T,
+                 palette = colors,
+                 ggtheme = plot_theme
+                 )
+
 
 #### Islands missing mericarps ####
 KM_MR_islands_missing <- survfit(Surv(days_pass, Present) ~ island,
@@ -240,17 +438,22 @@ KM_MR_islands_missing <- survfit(Surv(days_pass, Present) ~ island,
 #### This is comparing general mericarp survival, between islands.
 #### I can compare mericarp size perhaps.
 
-ggsurvplot_facet(KM_MR_days_eaten_2018, MR_survival_2018, facet.by = "island",
+ggsurvplot(KM_MR_islands_eaten, surv.median.line = "hv",
+           ggtheme = plot_theme,
+           palette = colors,
+           conf.int = T,
+           pval = T)
+
+ggsurvplot_facet(KM_MR_islands_missing, MR_survival_filter, facet.by = "island",
                  surv.median.line = "hv",
-                 legend.labs = c("Large - Lower spines", "Large - Upper spines", 
-                                 "Small - Lower spines", "Small - Upper spines"),
+                 legend.labs = c("Large", "Small"),
                  legend.title = "Treatments",
                  legend = "right",
                  xlab = "Time (Days)",
                  ggtheme = plot_theme,
                  short.panel.labs = T,
                  panel.labs.font = list(face = "bold"),
-                 conf.int = F,
+                 conf.int = T,
                  palette = colors
                  )
 
@@ -269,6 +472,23 @@ KM_MR_days_eaten <- survfit(Surv(days_pass, Eaten_Birds) ~ size + treatment + is
 #ggsurvplot(KM_MR_time_eaten, legend = "right", surv.median.line = "hv")
 #ggsurvplot(KM_MR_days_eaten, legend = "right", surv.median.line = "hv")
 
+### Island facet plot ####
+### Showing all islands and treatments in a single plot.
+ggsurvplot_facet(KM_MR_days_eaten, MR_survival_filter, facet.by = "island", 
+                 surv.median.line = "hv", 
+                 legend.labs = c("Large - All spines", "Large - No spines", 
+                                 "Small - All spines", "Small - No spines"),
+                 legend.title = "Treatments",
+                 legend = "right",
+                 xlab = "Time (Days)",
+                 short.panel.labs = T,
+                 panel.labs.font = list(face = "bold"),
+                 conf.int = T,
+                 palette = colors,
+                 ggtheme = plot_theme
+)
+
+
 #### Comparison conclusion ####
 # Between times and days, days have more monitoring points than time.
 
@@ -284,17 +504,7 @@ ggsurvplot(KM_MR_days_missing, legend = "right",
            surv.median.line = "hv")
 
 #### Comparison conclusion ####
-# There is some nuance here, but I think it may be worth for discussion.
-# So far, it seems that eaten mericarps although there are less events
-# it can be more consistent?
 
-### 3. All treatments ####
-### Upper, Lower, All and No spines
-
-KM_MR_days_eaten_2018 <- survfit(Surv(days_pass, Eaten_Birds) ~ size + treatment + island,
-                                 data = MR_survival_2018)
-
-#### All treatments survival plots ####
 
 
 # General Survival observations ####
@@ -313,20 +523,3 @@ KM_MR_days_eaten_2018 <- survfit(Surv(days_pass, Eaten_Birds) ~ size + treatment
 # - At the time zero, the survival probability is 1 (100% are uneaten)
 # - The median indicates that the median survival (S)t is 50% 
 # at which half of the subjects are expected to have died. 
- 
-
-# Hypothesis testing of survival data ####
-
-# Comparing survival on one population in the overall population
-# Comparison of two or more populations, are there differences in survival
-# among different groups of subjects.
-# - Examples:
-# 2 groups: we are interested in comparing survival for female and male
-# 3 groups or more: we are interested in comparing survival for mericarps with
-# all spines, no spines, large and small treatments.
-#
-# The long-rank test for two groups 
-
-## Cox model ####
-MR_Cox <- survival::coxph(Surv(days_pass, Eaten_Birds) ~ size + treatment,
-                          data = MR)
