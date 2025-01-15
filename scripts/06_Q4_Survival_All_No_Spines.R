@@ -158,6 +158,15 @@ summary(Floreana_cox_eaten)
 
 Anova(Floreana_cox_eaten)
 
+Floreana_cox_emmeans <- emmeans::emmeans(Floreana_cox_eaten, ~ treatment|size, type = "response")
+emmip(Floreana_cox_emmeans, ~ treatment|size, CIs = TRUE)
+
+---
+# Based on the emmeans in Floreana being smaller and without spines
+# has the highest risk of being eaten. While being larger with spines provides
+# better chances of survival.
+---
+
 #### Survival plot Floreana eaten ####
 ggsurvplot(KM_Floreana_days_eaten, legend = "right",
            surv.median.line = "hv",
@@ -186,6 +195,13 @@ Floreana_cox_missing <- coxph(Surv(days_pass, Present) ~ size + treatment
 summary(Floreana_cox_missing)
 (Anova(Floreana_cox_missing))
 
+Floreana_cox_emmeans_miss <- emmeans::emmeans(Floreana_cox_missing, ~ treatment|size, type = "response")
+emmip(Floreana_cox_emmeans_miss, ~ treatment|size, CIs = TRUE)
+
+---
+# Missing mericarps in Floreana show similar hazard ratios.
+# which means that mericarps get lost around the same.
+---
 #### Survival plot Floreana Missing ####
 ggsurvplot(KM_Floreana_days_missing, legend = "right",
            surv.median.line = "hv",
@@ -229,6 +245,16 @@ Isabela_cox_eaten <- coxph(Surv(days_pass, Eaten_Birds) ~ treatment + size,
 summary(Isabela_cox_eaten)
 Anova(Isabela_cox_eaten)
 
+Isabela_cox_emmeans <- emmeans::emmeans(Isabela_cox_eaten, ~ treatment|size, type = "response")
+emmip(Isabela_cox_emmeans, ~ treatment|size, CIs = TRUE)
+
+---
+# The results of eaten mericarps in Isabela are not significant.
+# However, the estimated hazard ratios show that smaller mericarps without
+# spines have a higher risk of being eaten. Also larger mericarps without spines.
+# Here in Isabela it seems that the spine presence overall improves survival.
+---
+
 #### Survival plot Isabela eaten ####
 ggsurvplot(KM_Isabela_days_eaten, legend = "right",
            surv.median.line = "hv",
@@ -254,6 +280,13 @@ Isabela_cox_missing <- coxph(Surv(days_pass, Present) ~ size + treatment, data =
 summary(Isabela_cox_missing)
 Anova(Isabela_cox_missing)
 
+Isabela_cox_emmeans_miss <- emmeans::emmeans(Isabela_cox_missing, ~ treatment|size, type = "response")
+emmip(Isabela_cox_emmeans_miss, ~ treatment|size, CIs = TRUE)
+
+---
+# Similar to Floreana, it seems that in Isabela mericarps have a similar
+# risk of being missing.
+---
 
 #### Survival plot Isabela missing ####
 ggsurvplot(KM_Isabela_days_missing, legend = "right",
@@ -296,6 +329,16 @@ Cruz_cox_eaten <- coxph(Surv(days_pass, Eaten_Birds) ~ size + treatment
 summary(Cruz_cox_eaten)
 Anova(Cruz_cox_eaten)
 
+Cruz_cox_emmeans <- emmeans::emmeans(Cruz_cox_eaten, ~ treatment|size, type = "response")
+emmip(Cruz_cox_emmeans, ~ treatment|size, CIs = TRUE)
+
+# In Santa Cruz, were he observed the highest predation.
+# Again, smaller mericarps show the highest risk of being eaten,
+# however, it is the ones with spines that show the highest risks
+# This is also true for larger mericarps.
+
+
+
 #### Survival plot Santa Cruz eaten ####
 ggsurvplot(KM_Cruz_days_eaten, legend = "right",
            surv.median.line = "hv",
@@ -322,6 +365,11 @@ Cruz_cox_missing <- coxph(Surv(days_pass, Present) ~ size + treatment
 
 summary(Cruz_cox_missing)
 Anova(Cruz_cox_missing)
+
+Cruz_cox_emmeans_miss <- emmeans::emmeans(Cruz_cox_missing, ~ treatment|size, type = "response")
+emmip(Cruz_cox_emmeans_miss, ~ treatment|size, CIs = TRUE)
+
+# Santa Cruz missing mericarps had the same chance of getting lost
 
 #### Survival plot Santa Cruz missing ####
 ggsurvplot(KM_Cruz_days_missing, legend = "right",
