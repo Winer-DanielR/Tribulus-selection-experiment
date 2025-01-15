@@ -1,3 +1,8 @@
+# Survival Analysis tests ####
+# Comparison between days passed and time
+# Using time in days, rather than time 1, 2 or 3.
+# Mixed Cox models including plate and color as random effects
+
 # Mark recapture datasets ####
 # Loading the Raw mark recapture datasets per year per island.
 
@@ -112,3 +117,110 @@ ggsurvplot(KM_MR_days_missing, legend = "right",
            surv.median.line = "hv")
 
 #### Comparison conclusion ####
+
+# COx mixed models per island ####
+## Floreana eaten ####
+#### Floreana eaten mericarps mixed cox model ####
+# Floreana_cox_eaten_mixed <- coxme(Surv(days_pass, Eaten_Birds) ~ size + treatment 
+#                                   + (1|plate) 
+#                                   #+ (1|color) 
+#                                   + (1|mark_position/color),
+#                                   data = Floreana_MR)
+# 
+# # Call the model
+# summary(Floreana_cox_eaten_mixed)
+# Anova(Floreana_cox_eaten_mixed)
+# 
+# #### Emmeans ###
+# Floreana_cox_eaten_emmeans <- emmeans::emmeans(Floreana_cox_eaten_mixed, ~ treatment|size, type = "response")
+# # The emmeans helps me to estimate the projected mean days survived per category.
+# # Useful for describing the results. Also it helps me plot the predicted values:
+# emmip(Floreana_cox_eaten_emmeans, ~ treatment|size, CIs = TRUE)
+
+## Floreana missing mericarps ####
+# Floreana_cox_missing_mixed <- coxme(Surv(days_pass, Present) ~ size + treatment 
+#                                   + (1|plate) 
+#                                   #+ (1|color) 
+#                                   + (1|mark_position/color)
+#                                   , data = Floreana_MR)
+# 
+# # Call the model
+# Floreana_cox_missing_mixed
+# Anova(Floreana_cox_missing_mixed)
+# 
+# #### Emmeans ###
+# Floreana_cox_missing_emmeans <- emmeans::emmeans(Floreana_cox_missing_mixed, ~ treatment|size, type = "response")
+# # The emmeans helps me to estimate the projected mean days survived per category.
+# # Useful for describing the results. Also it helps me plot the predicted values:
+# emmip(Floreana_cox_missing_emmeans, ~ treatment|size, CIs = TRUE)
+
+## Isabela eaten ####
+# Isabela_cox_eaten_mixed <- coxme(Surv(days_pass, Eaten_Birds) ~ size + treatment 
+#                                  + (1|plate) 
+#                                  #+ (1|color) 
+#                                  + (1|mark_position/color),
+#                                  data = Isabela_MR_filter)
+# 
+# # Call the model
+# summary(Isabela_cox_eaten_mixed)
+# Anova(Isabela_cox_eaten_mixed)
+# 
+# #### Emmeans ###
+# Isabela_cox_eaten_emmeans <- emmeans::emmeans(Isabela_cox_eaten_mixed, ~ treatment|size, type = "response")
+# # The emmeans helps me to estimate the projected mean days survived per category.
+# # Useful for describing the results. Also it helps me plot the predicted values:
+# emmip(Isabela_cox_eaten_emmeans, ~ treatment|size, CIs = TRUE)
+
+# Isabela_cox_missing_mixed <- coxme(Surv(days_pass, Present) ~ size + treatment 
+#                                  + (1|plate) 
+#                                  #+ (1|color) 
+#                                  + (1|mark_position/color)
+#                                  , data = Isabela_MR_filter)
+# 
+# # Call the model
+# Isabela_cox_missing_mixed
+# Anova(Isabela_cox_missing_mixed)
+# 
+# #### Emmeans ###
+# Isabela_cox_missing_emmeans <- emmeans::emmeans(Isabela_cox_missing_mixed, ~ treatment|size, type = "response")
+# # The emmeans helps me to estimate the projected mean days survived per category.
+# # Useful for describing the results. Also it helps me plot the predicted values:
+# emmip(Isabela_cox_missing_emmeans, ~ treatment|size, CIs = TRUE)
+
+## Santa Cruz eaten ####
+## 
+# Cruz_cox_eaten_mixed <- coxme(Surv(days_pass, Eaten_Birds) ~ size + treatment 
+#                               + (1|plate) 
+#                               #+ (1|color) 
+#                               + (1|mark_position/color)
+#                               , data = Cruz_MR_filter)
+# 
+# # Call the model
+# summary(Cruz_cox_eaten_mixed)
+# Anova(Cruz_cox_eaten_mixed)
+# 
+# #### Emmeans ###
+# Cruz_cox_eaten_emmeans <- emmeans::emmeans(Cruz_cox_eaten_mixed, ~ treatment|size, type = "response")
+# # The emmeans helps me to estimate the projected mean days survived per category.
+# # Useful for describing the results. Also it helps me plot the predicted values:
+# emmip(Cruz_cox_eaten_emmeans, ~ treatment|size, CIs = TRUE)
+
+## Santa Cruz missing ####
+# Cruz_cox_missing_mixed <- coxme(Surv(days_pass, Present) ~ size + treatment 
+#                                    + (1|island) 
+#                                 #+ (1|color) 
+#                                 + (1|mark_position)
+#                                 , data = Cruz_MR_filter)
+# 
+# # Call the model
+# Cruz_cox_missing_mixed
+# Anova(Cruz_cox_missing_mixed)
+# 
+# #### Emmeans ###
+# Cruz_cox_missing_emmeans <- emmeans::emmeans(Cruz_cox_missing_mixed, ~ treatment|size, type = "response")
+# # The emmeans helps me to estimate the projected mean days survived per category.
+# # Useful for describing the results. Also it helps me plot the predicted values:
+# emmip(Cruz_cox_missing_emmeans, ~ treatment|size, CIs = TRUE)
+
+
+
