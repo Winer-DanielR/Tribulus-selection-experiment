@@ -39,6 +39,7 @@ Cruz_MR <- bind_rows(Cruz_2018, Cruz_2019)
 # This will create a new column for the categories
 Floreana_MR$Categories <- paste(Floreana_MR$size, Floreana_MR$treatment, sep = "_")
 Floreana_MR$Categories <- sub(" ", "_", Floreana_MR$Categories)
+Floreana_MR$Missing <- ifelse(Floreana_MR$Present == 0, 1, 0)
 
 Isabela_MR$Categories <- paste(Isabela_MR$size, Isabela_MR$treatment, sep = "_")
 Isabela_MR$Categories <- sub(" ", "_", Isabela_MR$Categories)

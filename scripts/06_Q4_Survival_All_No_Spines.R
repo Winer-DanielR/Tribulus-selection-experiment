@@ -47,6 +47,8 @@ Cruz_MR <- bind_rows(Cruz_2018, Cruz_2019)
 # This will create a new column for the categories
 Floreana_MR$Categories <- paste(Floreana_MR$size, Floreana_MR$treatment, sep = "_")
 Floreana_MR$Categories <- sub(" ", "_", Floreana_MR$Categories)
+Floreana_MR$Missing <- ifelse(Floreana_MR$Present == 0, 1, 0)
+
 
 Isabela_MR$Categories <- paste(Isabela_MR$size, Isabela_MR$treatment, sep = "_")
 Isabela_MR$Categories <- sub(" ", "_", Isabela_MR$Categories)
@@ -74,15 +76,21 @@ MR_survival <- as_tibble(MR_survival)
 # Filter survival dataset to test all categories
 MR_survival_2018 <- filter(MR_survival, year == "2018")
 target1 <- c("Lower spines", "Upper spines")
+
 MR_survival_lower_upper_spines <- filter(MR_survival_2018, treatment %in% target1)
 
 ## Dataset combining 2018 and 2019 experiments ####
 # Filter dataset to test 2018 and 2019 categories
 target <- c("All spines", "No spines")
+
 MR_survival_all_no_spines <- filter(MR_survival, treatment %in% target)
 
 Isabela_MR_all_no_spines <- filter(Isabela_MR, treatment %in% target)
+Isabela_MR_all_no_spines$Missing <- ifelse(Isabela_MR_all_no_spines$Present == 0, 1, 0)
+
+
 Cruz_MR_all_no_spines <- filter(Cruz_MR, treatment %in% target)
+Cruz_MR_all_no_spines$Missing <- ifelse(Cruz_MR_all_no_spines$Present == 0, 1, 0)
 
 ## Plot preparation ####
 ## Color scales and plot themes
@@ -161,11 +169,11 @@ Anova(Floreana_cox_eaten)
 Floreana_cox_emmeans <- emmeans::emmeans(Floreana_cox_eaten, ~ treatment|size, type = "response")
 emmip(Floreana_cox_emmeans, ~ treatment|size, CIs = TRUE)
 
----
+
 # Based on the emmeans in Floreana being smaller and without spines
 # has the highest risk of being eaten. While being larger with spines provides
 # better chances of survival.
----
+
 
 #### Survival plot Floreana eaten ####
 ggsurvplot(KM_Floreana_days_eaten, legend = "right",
@@ -185,11 +193,11 @@ ggsurvplot(KM_Floreana_days_eaten, legend = "right",
 ### KM Floreana missing ####
 #### Using missing mericarps as survival estitames due to the low number of events for eaten mericarps
 
-KM_Floreana_days_missing <- survfit(Surv(days_pass, Present) ~ size + treatment,
+KM_Floreana_days_missing <- survfit(Surv(days_pass, Missing) ~ size + treatment,
                                     data = Floreana_MR)
 
 #### Floreana Cox Missing ####
-Floreana_cox_missing <- coxph(Surv(days_pass, Present) ~ size + treatment
+Floreana_cox_missing <- coxph(Surv(days_pass, Missing) ~ size + treatment
                               , data = Floreana_MR)
 
 summary(Floreana_cox_missing)
@@ -198,14 +206,14 @@ summary(Floreana_cox_missing)
 Floreana_cox_emmeans_miss <- emmeans::emmeans(Floreana_cox_missing, ~ treatment|size, type = "response")
 emmip(Floreana_cox_emmeans_miss, ~ treatment|size, CIs = TRUE)
 
----
+
 # Missing mericarps in Floreana show similar hazard ratios.
 # which means that mericarps get lost around the same.
----
+
 #### Survival plot Floreana Missing ####
-ggsurvplot(KM_Floreana_days_missing, legend = "right",
+Floreana_miss <- ggsurvplot(KM_Floreana_days_missing, legend = "right",
            surv.median.line = "hv",
-           pval = F,
+           pval = T,
            conf.int = T,
            palette = colors,
            xlab = "Time (Days)",
@@ -271,11 +279,11 @@ ggsurvplot(KM_Isabela_days_eaten, legend = "right",
            ggtheme = plot_theme)
 
 ### KM Isabela missing mericarps ####
-KM_Isabela_days_missing <- survfit(Surv(days_pass, Present) ~ size + treatment,
+KM_Isabela_days_missing <- survfit(Surv(days_pass, Missing) ~ size + treatment,
                                     data = Isabela_MR_all_no_spines)
 
 ##### Isabela Cox Missing ####
-Isabela_cox_missing <- coxph(Surv(days_pass, Present) ~ size + treatment, data = Isabela_MR_all_no_spines)
+Isabela_cox_missing <- coxph(Surv(days_pass, Missing) ~ size + treatment, data = Isabela_MR_all_no_spines)
 
 summary(Isabela_cox_missing)
 Anova(Isabela_cox_missing)
@@ -283,13 +291,13 @@ Anova(Isabela_cox_missing)
 Isabela_cox_emmeans_miss <- emmeans::emmeans(Isabela_cox_missing, ~ treatment|size, type = "response")
 emmip(Isabela_cox_emmeans_miss, ~ treatment|size, CIs = TRUE)
 
----
+
 # Similar to Floreana, it seems that in Isabela mericarps have a similar
 # risk of being missing.
----
+
 
 #### Survival plot Isabela missing ####
-ggsurvplot(KM_Isabela_days_missing, legend = "right",
+Isabela_miss <- ggsurvplot(KM_Isabela_days_missing, legend = "right",
            surv.median.line = "hv",
            pval = T,
            conf.int = T,
@@ -356,11 +364,11 @@ ggsurvplot(KM_Cruz_days_eaten, legend = "right",
 
 
 #### KM Santa Cruz missing ####
-KM_Cruz_days_missing <- survfit(Surv(days_pass, Present) ~ size + treatment,
+KM_Cruz_days_missing <- survfit(Surv(days_pass, Missing) ~ size + treatment,
                                    data = Cruz_MR_all_no_spines)
 
 ##### Cruz Cox Missing ####
-Cruz_cox_missing <- coxph(Surv(days_pass, Present) ~ size + treatment
+Cruz_cox_missing <- coxph(Surv(days_pass, Missing) ~ size + treatment
                               , data = Cruz_MR_all_no_spines)
 
 summary(Cruz_cox_missing)
@@ -372,7 +380,7 @@ emmip(Cruz_cox_emmeans_miss, ~ treatment|size, CIs = TRUE)
 # Santa Cruz missing mericarps had the same chance of getting lost
 
 #### Survival plot Santa Cruz missing ####
-ggsurvplot(KM_Cruz_days_missing, legend = "right",
+Santa_Cruz_miss <- ggsurvplot(KM_Cruz_days_missing, legend = "right",
            surv.median.line = "hv",
            pval = T,
            conf.int = T,
@@ -401,11 +409,11 @@ Cruz_missing_fit <- Cruz_MR_filter %>% finalfit(dependent_missing, explanatory)
 # Survival_filter is the All spine and No spines comparisons
 
 KM_MR_islands_eaten <- survfit(Surv(days_pass, Eaten_Birds) ~ island
-                               , data = MR_survival_filter)
+                               , data = MR_survival_all_no_spines)
 
 #### Islands missing mericarps ####
 KM_MR_islands_missing <- survfit(Surv(days_pass, Present) ~ island,
-                                 data = MR_survival_filter)
+                                 data = MR_survival_all_no_spines)
 
 # This KM summary could be included into the main text
 
@@ -425,7 +433,7 @@ ggsurvplot(KM_MR_islands_eaten, surv.median.line = "hv",
 
 ### Island facet plot eaten ####
 ### Showing all islands and treatments in a single plot.
-ggsurvplot_facet(KM_MR_islands_eaten, MR_survival_filter, facet.by = "island", 
+ggsurvplot_facet(KM_MR_islands_eaten, MR_survival_all_no_spines, facet.by = "island", 
                  surv.median.line = "hv", 
                  legend.labs = c("Large - All spines", "Large - No spines", 
                                  "Small - All spines", "Small - No spines"),
@@ -440,7 +448,7 @@ ggsurvplot_facet(KM_MR_islands_eaten, MR_survival_filter, facet.by = "island",
                  )
 
 ### Island facet plot missing ####
-ggsurvplot_facet(KM_MR_islands_missing, MR_survival_filter, facet.by = "island", 
+ggsurvplot_facet(KM_MR_islands_missing, MR_survival_lower_upper_spines, facet.by = "island", 
                  surv.median.line = "hv", 
                  legend.labs = c("Large - All spines", "Large - No spines", 
                                  "Small - All spines", "Small - No spines"),
@@ -453,6 +461,8 @@ ggsurvplot_facet(KM_MR_islands_missing, MR_survival_filter, facet.by = "island",
                  palette = colors,
                  ggtheme = plot_theme
 )
+
+
 
 
 # General Survival observations ####
