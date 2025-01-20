@@ -46,6 +46,14 @@ Floreana_survival <- select(Floreana_MR, c(2:10, 18:21, 27))
 Isabela_survival <- select(Isabela_MR, c(2:10, 18:21, 26))
 Cruz_survival <- select(Cruz_MR, c(2:10, 18:21, 27))
 
+# Combining island datasets into a single dataset for survival analysis
+# 
+
+MR_survival <- bind_rows(Floreana_survival,
+                         Isabela_survival,
+                         Cruz_survival)
+MR_survival <- as_tibble(MR_survival)
+
 ## Dataset for upper an lower spines treatment ####
 # Filter survival dataset to test all categories
 MR_survival_2018 <- filter(MR_survival, year == "2018")
@@ -53,7 +61,10 @@ target1 <- c("Lower spines", "Upper spines")
 MR_survival_lower_upper_spines <- filter(MR_survival_2018, treatment %in% target1)
 
 MR_lower_upper_Isabela <- filter(MR_survival_lower_upper_spines, island == "Isabela")
+MR_lower_upper_Isabela$Missing <- ifelse(MR_lower_upper_Isabela$Present == 0, 1, 0)
+
 MR_lower_upper_Cruz <- filter(MR_survival_lower_upper_spines, island == "Santa Cruz")
+MR_lower_upper_Cruz$Missing <- ifelse(MR_lower_upper_Cruz$Present == 0, 1, 0)
 
 ## Plot preparation ####
 ## Color scales and plot themes
@@ -100,6 +111,9 @@ Isabela_cox_lower_upper <- coxph(Surv(days_pass, Eaten_Birds) ~ size + treatment
 summary(Isabela_cox_lower_upper)
 Anova(Isabela_cox_lower_upper)
 
+Isabela_emmeans_lower_upper <- emmeans::emmeans(Isabela_cox_lower_upper, ~ treatment|size, type = "response")
+emmip(Isabela_emmeans_lower_upper, ~ treatment|size, CIs = TRUE)
+
 # Size is significant difference in survival
 
 #### Survival plot Isabela eaten ####
@@ -118,18 +132,21 @@ ggsurvplot(KM_Isabela_lower_upper, legend = "right",
            ggtheme = plot_theme)
 
 #### KM Isabela missing####
-KM_Isabela_lower_upper_miss <- survfit(Surv(days_pass, Present) ~ size + treatment,
+KM_Isabela_lower_upper_miss <- survfit(Surv(days_pass, Missing) ~ size + treatment,
                                   data = MR_lower_upper_Isabela)
 
-Isabela_diff_lower_upper_miss <- survdiff(Surv(days_pass, Present) ~ size + treatment,
+Isabela_diff_lower_upper_miss <- survdiff(Surv(days_pass, Missing) ~ size + treatment,
                                       data = MR_lower_upper_Isabela)
 
 #### Isabela Cox Eaten ####
-Isabela_cox_lower_upper_miss <- coxph(Surv(days_pass, Present) ~ size + treatment,
+Isabela_cox_lower_upper_miss <- coxph(Surv(days_pass, Missing) ~ size + treatment,
                                  data = MR_lower_upper_Isabela)
 
 summary(Isabela_cox_lower_upper_miss)
 Anova(Isabela_cox_lower_upper_miss)
+
+Isabela_emmeans_lower_upper_miss <- emmeans::emmeans(Isabela_cox_lower_upper_miss, ~ treatment|size, type = "response")
+emmip(Isabela_emmeans_lower_upper_miss, ~ treatment|size, CIs = TRUE)
 
 # Size is significant difference in survival
 
@@ -165,6 +182,9 @@ Cruz_cox_lower_upper <- coxph(Surv(days_pass, Eaten_Birds) ~ size + treatment
 summary(Cruz_cox_lower_upper)
 Anova(Cruz_cox_lower_upper)
 
+Cruz_emmeans_lower_upper <- emmeans::emmeans(Cruz_cox_lower_upper, ~ treatment|size, type = "response")
+emmip(Cruz_emmeans_lower_upper, ~ treatment|size, CIs = TRUE)
+
 #### Survival plot Santa Cruz eaten ####
 ggsurvplot(KM_Cruz_lower_upper, legend = "right",
            surv.median.line = "hv",
@@ -182,19 +202,22 @@ ggsurvplot(KM_Cruz_lower_upper, legend = "right",
 
 
 #### KM Santa Cruz missing ####
-KM_Cruz_lower_upper_miss <- survfit(Surv(days_pass, Present) ~ size + treatment,
+KM_Cruz_lower_upper_miss <- survfit(Surv(days_pass, Missing) ~ size + treatment,
                                data = MR_lower_upper_Cruz)
 
-Cruz_diff_lower_upper_miss <- survdiff(Surv(days_pass, Present) ~ size + treatment,
+Cruz_diff_lower_upper_miss <- survdiff(Surv(days_pass, Missing) ~ size + treatment,
                                   data = MR_lower_upper_Cruz)
 
 ##### Cruz Cox Eaten ####
-Cruz_cox_lower_upper_miss <- coxph(Surv(days_pass, Present) ~ size + treatment 
+Cruz_cox_lower_upper_miss <- coxph(Surv(days_pass, Missing) ~ size + treatment 
                               # + mark_position
                               , data = MR_lower_upper_Cruz)
 
 summary(Cruz_cox_lower_upper_miss)
 Anova(Cruz_cox_lower_upper_miss)
+
+Cruz_emmeans_lower_upper_miss <- emmeans::emmeans(Cruz_cox_lower_upper_miss, ~ treatment|size, type = "response")
+emmip(Cruz_emmeans_lower_upper_miss, ~ treatment|size, CIs = TRUE)
 
 #### Survival plot Santa Cruz missing ####
 ggsurvplot(KM_Cruz_lower_upper_miss, legend = "right",
